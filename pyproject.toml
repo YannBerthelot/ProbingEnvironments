@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "probing_environments"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+gym = {git = "https://github.com/rlberry-py/gym_fix_021"}
+stable-baselines3 = "^1.8.0"
+
+[tool.poetry.dev-dependencies]
+
+pytest = "^5.2"
+pre-commit = "^2.20.0"
+scriv = {extras = ["toml"], version = "^0.15.2"}
+tox = "^3.25.1"
+flake8 = "^5.0.3"
+black = {version = "^22.6.0", allow-prereleases = true}
+coverage = {extras = ["toml"], version = "^6.4.3"}
+mypy = "^0.971"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest]
+addopts = ["--ignore=.tox/coverage/lib/python3.9/site-packages/probing_environments/*"]
+
+[tool.coverage.run]
+omit = [".tox/coverage/lib/python3.*/site-packages/probing_environments/*.py"]
