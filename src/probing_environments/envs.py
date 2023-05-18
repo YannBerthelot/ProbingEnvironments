@@ -7,7 +7,6 @@ from gym import spaces
 
 class ProbeEnv1(gym.Env):
     """
-    Probe Env 1:
     One action, zero observation, one timestep long, +1 reward every timestep:\
     This isolates the value network. If my agent can't learn that the value of\
     the only observation it ever sees it 1, there's a problem with the value \
@@ -18,18 +17,13 @@ class ProbeEnv1(gym.Env):
 
     def __init__(self):
         super().__init__()
-        # Define action and observation space
-        # They must be gym.spaces objects
-        # Example when using discrete actions:
         self.action_space = spaces.Discrete(1)
-        # Example for using image as input:
         self.observation_space = spaces.Discrete(1)
 
     def step(self, action):
         return np.array((0), dtype=np.float32), 1, True, {}
 
     def reset(self, seed=None):
-        # Reset the state of the environment to an initial state
         return np.array((0), dtype=np.float32)
 
     def render(self):
@@ -43,7 +37,7 @@ def get_random_obs():
 class ProbeEnv2(gym.Env):
     """
     One action, random +1/-1 observation, one timestep long, obs-dependent \
-    +1/-1 reward every time: If my agent can learn the value in (1.) but not \
+    +1/-1 reward every time: If my agent can learn the value in ProbeEnv1 but not \
     this one - meaning it can learn a constant reward but not a \
     predictable one! - it must be that backpropagation through my network is broken.
     """
