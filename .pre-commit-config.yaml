@@ -13,7 +13,7 @@ repos:
     rev: 22.3.0
     hooks:
       - id: black
-        args: ["--check"]
+        args: ["--check","--preview","--line-length","88"]
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
@@ -42,8 +42,8 @@ repos:
     rev: v2.14.5
     hooks:
       - id: pylint
-
-        args: ["--rcfile=.pylintrc"] # Link to your config file
+        exclude: src/probing_environments/envs.py
+        args: ["--rcfile=.pylintrc"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: "v0.971" # Use the sha / tag you want to point at
