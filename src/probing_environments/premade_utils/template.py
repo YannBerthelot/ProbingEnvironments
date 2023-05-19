@@ -1,7 +1,7 @@
 """
 Premade connectors for stable-baselines3
 """
-from typing import Any
+from typing import Any, Optional
 
 import gym
 import numpy as np
@@ -9,7 +9,7 @@ import numpy as np
 AgentType = Any
 
 
-def init_agent(env: gym.Env, gamma: float = 0.5) -> AgentType:
+def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
     """
     Initialize your agent on a given env while also setting the discount factor.
 
@@ -27,7 +27,7 @@ def init_agent(env: gym.Env, gamma: float = 0.5) -> AgentType:
     raise NotImplementedError
 
 
-def train_agent(agent: AgentType, budget: int = int(1e3)) -> AgentType:
+def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType:
     """
     Train your agent for a given budget/number of timesteps.
 

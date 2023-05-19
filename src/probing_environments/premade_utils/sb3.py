@@ -1,7 +1,7 @@
 """
 Connectors template for your agent.
 """
-from typing import Any
+from typing import Any, Optional
 
 import gym
 import numpy as np
@@ -11,7 +11,7 @@ from stable_baselines3.a2c import A2C
 AgentType = Any
 
 
-def init_agent(env: gym.Env, gamma: float = 0.5) -> AgentType:
+def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
     """
     Initialize your agent on a given env while also setting the discount factor.
 
@@ -29,7 +29,7 @@ def init_agent(env: gym.Env, gamma: float = 0.5) -> AgentType:
     return A2C("MlpPolicy", env, gamma=gamma)
 
 
-def train_agent(agent: AgentType, budget: int = int(1e3)) -> AgentType:
+def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType:
     """
     Train your agent for a given budget/number of timesteps.
 
