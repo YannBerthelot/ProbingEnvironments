@@ -18,16 +18,23 @@ class ProbeEnv1(gym.Env):
     def __init__(self, discrete=True):
         super().__init__()
         self.action_space = spaces.Discrete(1)
+        self.discrete = discrete
         if discrete:
             self.observation_space = spaces.Discrete(1)
         else:
             self.observation_space = spaces.Box(0, 1, shape=(3,))
 
     def step(self, action):
-        return np.array((0, 0, 0)), 1, True, {}
+        if self.discrete:
+            return np.array((0)), 1, True, {}
+        else:
+            return np.array((0, 0, 0)), 1, True, {}
 
     def reset(self, seed=None):
-        return np.array((0, 0, 0))
+        if self.discrete:
+            return np.array((0))
+        else:
+            return np.array((0, 0, 0))
 
 
 def get_random_obs():

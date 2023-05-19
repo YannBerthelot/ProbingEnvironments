@@ -25,7 +25,7 @@ def check_loss_or_optimizer_value_net(
     ],
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
-    discrete: bool = False,
+    discrete: bool = True,
 ):
     """
     Train and test your agent on ProbeEnv1 : Check for problems in the loss calculation\
@@ -59,7 +59,7 @@ def check_backprop_value_net(
     ],
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
-    discrete: bool = False,
+    discrete: bool = True,
 ):
     """
     Train and test your agent on ProbeEnv2 : Check for problems in the backprop of your\
@@ -84,10 +84,12 @@ def check_backprop_value_net(
             "There is most lilely a problem with the backprop in your value network."
             f" Expected a value of {expected_value}, got {predicted_value}"
         )
-        assert pytest.approx(0, abs=EPS) == get_value(agent, predicted_value), err_msg
+        assert pytest.approx(expected_value, abs=EPS) == get_value(
+            agent, predicted_value
+        ), err_msg
 
-        expected_value = get_value(agent, np.array(1))
-        predicted_value = np.array(0)
+        predicted_value = get_value(agent, np.array(1))
+        expected_value = np.array(1)
         err_msg = (
             "There is most lilely a problem with the backprop in your value network."
             f" Expected a value of {expected_value}, got {predicted_value}"
@@ -102,9 +104,7 @@ def check_backprop_value_net(
             "There is most lilely a problem with the backprop in your value network."
             f" Expected a value of {expected_value}, got {predicted_value}"
         )
-        assert pytest.approx(0, abs=EPS) == get_value(
-            agent, np.array([0, 0, 0])
-        ), err_msg
+        assert pytest.approx(expected_value, abs=EPS) == predicted_value, err_msg
 
         expected_value = 1
         predicted_value = get_value(agent, np.array([1, 1, 1]))
@@ -112,9 +112,7 @@ def check_backprop_value_net(
             "There is most lilely a problem with the backprop in your value network."
             f" Expected a value of {expected_value}, got {predicted_value}"
         )
-        assert pytest.approx(1, abs=EPS) == get_value(
-            agent, np.array([1, 1, 1])
-        ), err_msg
+        assert pytest.approx(expected_value, abs=EPS) == predicted_value, err_msg
 
 
 def check_reward_discounting(
