@@ -15,16 +15,19 @@ class ProbeEnv1(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self):
+    def __init__(self, discrete=True):
         super().__init__()
         self.action_space = spaces.Discrete(1)
-        self.observation_space = spaces.Discrete(1)
+        if discrete:
+            self.observation_space = spaces.Discrete(1)
+        else:
+            self.observation_space = spaces.Box(0, 1, shape=(3,))
 
     def step(self, action):
-        return np.array((0)), 1, True, {}
+        return np.array((0, 0, 0)), 1, True, {}
 
     def reset(self, seed=None):
-        return np.array((0))
+        return np.array((0, 0, 0))
 
 
 def get_random_obs():
@@ -41,20 +44,31 @@ class ProbeEnv2(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self):
+    def __init__(self, discrete=True):
         super().__init__()
+        self.discrete = discrete
         self.action_space = spaces.Discrete(1)
-        self.observation_space = spaces.Discrete(2)
+        if discrete:
+            self.observation_space = spaces.Discrete(2)
+        else:
+            self.observation_space = spaces.Box(0, 1, shape=(3,))
         self.random_obs = get_random_obs()
 
     def step(self, action):
-        return np.array(get_random_obs()), self.random_obs, True, {}
+        random_obs = get_random_obs()
+        if self.discrete:
+            return np.array(random_obs), self.random_obs, True, {}
+        else:
+            return np.array([random_obs for i in range(3)]), self.random_obs, True, {}
 
     def reset(self, seed=None):
         # Reset the state of the environment to an initial state
         np.random.seed(seed)
         self.random_obs = get_random_obs()
-        return np.array(self.random_obs)
+        if self.discrete:
+            return np.array(self.random_obs)
+        else:
+            return np.array([self.random_obs for i in range(3)])
 
 
 class ProbeEnv3(gym.Env):
@@ -66,20 +80,35 @@ class ProbeEnv3(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self):
+    def __init__(self, discrete=True):
         super().__init__()
+        self.discrete = discrete
         self.action_space = spaces.Discrete(1)
-        self.observation_space = spaces.Discrete(2)
+        if discrete:
+            self.observation_space = spaces.Discrete(2)
+        else:
+            self.observation_space = spaces.Box(0, 1, shape=(3,))
         self.t = 0
 
     def step(self, action):
         self.t += 1
-        return np.array([self.t]), int(self.t == 2), self.t == 2, {}
+        if self.discrete:
+            return np.array([self.t]), int(self.t == 2), self.t == 2, {}
+        else:
+            return (
+                np.array([self.t for i in range(3)]),
+                int(self.t == 2),
+                self.t == 2,
+                {},
+            )
 
     def reset(self, seed=None):
         self.t = 0
         # Reset the state of the environment to an initial state
-        return np.array([self.t])
+        if self.discrete:
+            return np.array([self.t])
+        else:
+            return np.array([self.t for i in range(3)])
 
 
 # class ProbeEnv4(gym.Env):
