@@ -21,10 +21,10 @@ class ProbeEnv1(gym.Env):
         self.observation_space = spaces.Discrete(1)
 
     def step(self, action):
-        return np.array((0), dtype=np.float32), 1, True, {}
+        return np.array((0)), 1, True, {}
 
     def reset(self, seed=None):
-        return np.array((0), dtype=np.float32)
+        return np.array((0))
 
     def render(self):
         pass
@@ -113,11 +113,11 @@ class ProbeEnv4(gym.Env):
         self.observation_space = spaces.Discrete(1)
 
     def step(self, action):
-        return np.array([0]), 1 if action == 0 else -1, True, False, None
+        return np.array([0]), 1 if action == 0 else -1, True, {}
 
     def reset(self, seed=None):
         # Reset the state of the environment to an initial state
-        return np.array([0]), None
+        return np.array([0])
 
     def render(self):
         pass
