@@ -9,11 +9,14 @@ import numpy as np
 AgentType = Any
 
 
-def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
+def init_agent(
+    agent: AgentType, env: gym.Env, gamma: Optional[float] = 0.5
+) -> AgentType:
     """
     Initialize your agent on a given env while also setting the discount factor.
 
     Args:
+        agent (AgentType) : The agent to be used
         env (gym.Env): The env to use with your agent.
         gamma (float, optional): The discount factor to use. Defaults to 0.5.
 

@@ -6,16 +6,18 @@ from typing import Any, Optional
 import gym
 import numpy as np
 import torch
-from rlberry.agents.torch import A2CAgent
 
 AgentType = Any
 
 
-def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
+def init_agent(
+    agent: AgentType, env: gym.Env, gamma: Optional[float] = 0.5
+) -> AgentType:
     """
     Initialize your agent on a given env while also setting the discount factor.
 
     Args:
+        agent (AgentType) : The agent to be used
         env (gym.Env): The env to use with your agent.
         gamma (float, optional): The discount factor to use. Defaults to 0.5.
 
@@ -26,11 +28,11 @@ def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
     Returns:
         AgentType: Your agent with the right settings.
     """
-    agent = A2CAgent(env, gamma=gamma, learning_rate=0.01)
+    agent = agent(env, gamma=gamma, learning_rate=0.01)
     return agent
 
 
-def train_agent(agent: A2CAgent, budget: Optional[int] = int(1e3)) -> AgentType:
+def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType:
     """
     Train your agent for a given budget/number of timesteps.
 
@@ -50,7 +52,7 @@ def train_agent(agent: A2CAgent, budget: Optional[int] = int(1e3)) -> AgentType:
     return agent
 
 
-def get_value(agent: A2CAgent, obs: np.ndarray) -> np.ndarray:
+def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
     """
     Predict the value of a given obs (in numpy array format) using your current value \
         net.
@@ -69,7 +71,7 @@ def get_value(agent: A2CAgent, obs: np.ndarray) -> np.ndarray:
     return agent.value_net(torch.tensor(np.array([obs])))[0][0].detach().numpy()
 
 
-def get_gamma(agent: A2CAgent) -> float:
+def get_gamma(agent: AgentType) -> float:
     """
     Fetch the gamma/discount factor value from your agent (to use it in tests)
 

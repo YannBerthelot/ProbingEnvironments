@@ -2,6 +2,7 @@
 from typing import Any
 
 import pytest
+from rlberry.agents.torch import A2CAgent
 
 from probing_environments.checks import (
     check_backprop_value_net,
@@ -16,6 +17,7 @@ from probing_environments.premade_utils.rlberry import (
 )
 
 AgentType = Any
+AGENT = A2CAgent
 
 
 def test_successfull():
@@ -24,11 +26,11 @@ def test_successfull():
           return any bugs.
     """
     check_loss_or_optimizer_value_net(
-        init_agent, train_agent, get_value, discrete=False
+        AGENT, init_agent, train_agent, get_value, discrete=False
     )
-    check_backprop_value_net(init_agent, train_agent, get_value, discrete=False)
+    check_backprop_value_net(AGENT, init_agent, train_agent, get_value, discrete=False)
     check_reward_discounting(
-        init_agent, train_agent, get_value, get_gamma, discrete=False
+        AGENT, init_agent, train_agent, get_value, get_gamma, discrete=False
     )
 
 
@@ -39,11 +41,17 @@ def test_errors():
     """
     with pytest.raises(AssertionError):
         check_loss_or_optimizer_value_net(
-            init_agent, train_agent, get_value=lambda x, y: -1
+            AGENT, init_agent, train_agent, get_value=lambda x, y: -1
         )
     with pytest.raises(AssertionError):
-        check_backprop_value_net(init_agent, train_agent, get_value=lambda x, y: -1)
+        check_backprop_value_net(
+            AGENT, init_agent, train_agent, get_value=lambda x, y: -1
+        )
     with pytest.raises(AssertionError):
         check_reward_discounting(
-            init_agent, train_agent, get_value=lambda x, y: -1, get_gamma=get_gamma
+            AGENT,
+            init_agent,
+            train_agent,
+            get_value=lambda x, y: -1,
+            get_gamma=get_gamma,
         )

@@ -19,7 +19,10 @@ AgentType = Any
 
 
 def check_loss_or_optimizer_value_net(
-    init_agent: Callable[[gym.Env, DefaultNamedArg(float, "gamma")], AgentType],
+    agent: AgentType,
+    init_agent: Callable[
+        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
+    ],
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     discrete: bool = False,
@@ -29,6 +32,7 @@ def check_loss_or_optimizer_value_net(
           or optimizer of the value network.
 
     Args:
+        agent (AgentType) : The agent to be used
         init_agent (Callable[[gym.Env, Optional[float]], None ]): Init your agent on\
               a given Env and gamma/discount factor. See template.
         train_agent (Callable[[float], AgentType]): Train your agent for a given budget\
@@ -37,7 +41,7 @@ def check_loss_or_optimizer_value_net(
             given obs using your critic. See template.
     """
     env = ProbeEnv1(discrete)
-    agent = init_agent(env)
+    agent = init_agent(agent, env)
     agent = train_agent(agent, int(1e3))
     expected_value = 1
     predicted_value = get_value(agent, env.reset())
@@ -49,7 +53,10 @@ def check_loss_or_optimizer_value_net(
 
 
 def check_backprop_value_net(
-    init_agent: Callable[[gym.Env, DefaultNamedArg(float, "gamma")], None],
+    agent: AgentType,
+    init_agent: Callable[
+        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
+    ],
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     discrete: bool = False,
@@ -59,6 +66,7 @@ def check_backprop_value_net(
           value net.
 
     Args:
+        agent (AgentType) : The agent to be used
         init_agent (Callable[[gym.Env, float]]): Init your agent on a given Env and \
             gamma/discount factor. See template.
         train_agent (Callable[[float], AgentType]): Train your agent for a given \
@@ -66,7 +74,7 @@ def check_backprop_value_net(
         get_value (Callable[[AgentType, np.ndarray], np.ndarray]): Get value for a \
             given obs using your critic. See template.
     """
-    agent = init_agent(ProbeEnv2(discrete))
+    agent = init_agent(agent, ProbeEnv2(discrete))
     agent = train_agent(agent, int(1e3))
 
     if discrete:
@@ -110,7 +118,10 @@ def check_backprop_value_net(
 
 
 def check_reward_discounting(
-    init_agent: Callable[[gym.Env, DefaultNamedArg(float, "gamma")], None],
+    agent: AgentType,
+    init_agent: Callable[
+        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
+    ],
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     get_gamma: Callable[[AgentType], float],
@@ -121,6 +132,7 @@ def check_reward_discounting(
           computation
 
     Args:
+        agent (AgentType) : The agent to be used
         init_agent (Callable[[gym.Env, float]]): Init your agent on a given Env and \
             gamma/discount factor. See template.
         train_agent (Callable[[float], AgentType]): Train your agent for a given budget\
@@ -130,7 +142,7 @@ def check_reward_discounting(
         get_gamma (Callable[[AgentType], float]): Get the current value of \
             gamma/discount factor or your agent. See template.
     """
-    agent = init_agent(ProbeEnv3(discrete), gamma=0.5)
+    agent = init_agent(agent, ProbeEnv3(discrete), gamma=0.5)
     agent = train_agent(agent, int(1e3))
     expected_value = get_gamma(agent)
     if discrete:

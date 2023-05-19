@@ -1,21 +1,22 @@
 """
 Connectors template for your agent.
 """
-from typing import Any, Optional
+from typing import Optional
 
 import gym
 import numpy as np
 import torch
-from stable_baselines3.a2c import A2C
-
-AgentType = Any
+from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
 
 
-def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
+def init_agent(
+    agent: OnPolicyAlgorithm, env: gym.Env, gamma: Optional[float] = 0.5
+) -> OnPolicyAlgorithm:
     """
     Initialize your agent on a given env while also setting the discount factor.
 
     Args:
+        agent (OnPolicyAlgorithm) : The agent to be used
         env (gym.Env): The env to use with your agent.
         gamma (float, optional): The discount factor to use. Defaults to 0.5.
 
@@ -26,10 +27,12 @@ def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
     Returns:
         AgentType: Your agent with the right settings.
     """
-    return A2C("MlpPolicy", env, gamma=gamma)
+    return agent("MlpPolicy", env, gamma=gamma)
 
 
-def train_agent(agent: A2C, budget: Optional[int] = int(1e3)) -> AgentType:
+def train_agent(
+    agent: OnPolicyAlgorithm, budget: Optional[int] = int(1e3)
+) -> OnPolicyAlgorithm:
     """
     Train your agent for a given budget/number of timesteps.
 
@@ -48,7 +51,7 @@ def train_agent(agent: A2C, budget: Optional[int] = int(1e3)) -> AgentType:
     return agent.learn(budget)
 
 
-def get_value(agent: A2C, obs: np.ndarray) -> np.ndarray:
+def get_value(agent: OnPolicyAlgorithm, obs: np.ndarray) -> np.ndarray:
     """
     Predict the value of a given obs (in numpy array format) using your current value \
         net.
@@ -71,7 +74,7 @@ def get_value(agent: A2C, obs: np.ndarray) -> np.ndarray:
     )
 
 
-def get_gamma(agent: A2C) -> float:
+def get_gamma(agent: OnPolicyAlgorithm) -> float:
     """
     Fetch the gamma/discount factor value from your agent (to use it in tests)
 
