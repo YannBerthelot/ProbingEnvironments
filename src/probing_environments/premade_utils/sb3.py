@@ -29,7 +29,7 @@ def init_agent(env: gym.Env, gamma: Optional[float] = 0.5) -> AgentType:
     return A2C("MlpPolicy", env, gamma=gamma)
 
 
-def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType:
+def train_agent(agent: A2C, budget: Optional[int] = int(1e3)) -> AgentType:
     """
     Train your agent for a given budget/number of timesteps.
 
@@ -48,7 +48,7 @@ def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType
     return agent.learn(budget)
 
 
-def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
+def get_value(agent: A2C, obs: np.ndarray) -> np.ndarray:
     """
     Predict the value of a given obs (in numpy array format) using your current value \
         net.
@@ -71,7 +71,7 @@ def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
     )
 
 
-def get_gamma(agent: AgentType) -> float:
+def get_gamma(agent: A2C) -> float:
     """
     Fetch the gamma/discount factor value from your agent (to use it in tests)
 
