@@ -1,16 +1,26 @@
-import pytest
-import gym
-import numpy as np
-from stable_baselines3.a2c import A2C
-from probing_environments.premade import env_1, env_2, env_3
-from probing_environments.envs import ProbeEnv1, ProbeEnv2, ProbeEnv3
-from stable_baselines3.common.utils import obs_as_tensor
-import torch
+"Unit tests for the tests ... :)"
+from typing import Any
 
-def get_value(agent, obs):
-    return agent.policy.predict_values(torch.tensor(np.array([obs]))).detach().numpy()[0][0]
+from probing_environments.checks import (
+    check_backprop_value_net,
+    check_loss_or_optimizer_value_net,
+    check_reward_discounting,
+)
+from probing_environments.premade_utils.sb3 import (
+    get_gamma,
+    get_value,
+    init_agent,
+    train_agent,
+)
+
+AgentType = Any
+
 
 def test_tests():
-    env_1(A2C("MlpPolicy", ProbeEnv1()), get_value)
-    env_2(A2C("MlpPolicy", ProbeEnv2()), get_value)
-    env_3(A2C("MlpPolicy", ProbeEnv3(), gamma=0.5), get_value)
+    """
+    Run all tests on sb3 (that we assume to work) and make sure they pass and don't\
+          return any bugs.
+    """
+    check_backprop_value_net(init_agent, train_agent, get_value)
+    check_loss_or_optimizer_value_net(init_agent, get_value)
+    check_reward_discounting(init_agent, get_value, get_gamma)

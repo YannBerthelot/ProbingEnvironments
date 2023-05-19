@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.8"
 gym = {git = "https://github.com/rlberry-py/gym_fix_021"}
 stable-baselines3 = "^1.8.0"
+mypy-extensions = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 

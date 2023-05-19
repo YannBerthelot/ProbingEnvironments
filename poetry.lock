@@ -877,7 +877,7 @@ reports = ["lxml"]
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -1621,4 +1621,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "addc44fae24e14ebac0ce725879313421b72ce0087f8708f7c9768445b82190f"
+content-hash = "73fd15614508ef5035dd44fd7e963b029fa890b548a9c55afa7d931838f33865"
