@@ -22,5 +22,5 @@ def test_tests():
           return any bugs.
     """
     check_backprop_value_net(init_agent, train_agent, get_value)
-    check_loss_or_optimizer_value_net(init_agent, get_value)
-    check_reward_discounting(init_agent, get_value, get_gamma)
+    check_loss_or_optimizer_value_net(init_agent, train_agent, get_value)
+    check_reward_discounting(init_agent, train_agent, get_value, get_gamma)

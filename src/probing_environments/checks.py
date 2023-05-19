@@ -35,7 +35,7 @@ def check_loss_or_optimizer_value_net(
         get_value (Callable[[AgentType, np.ndarray], np.ndarray]): Get value for a \
             given obs using your critic. See template.
     """
-    agent = init_agent(ProbeEnv1)
+    agent = init_agent(ProbeEnv1())
     agent = train_agent(agent, int(1e3))
 
     try:
@@ -64,7 +64,7 @@ def check_backprop_value_net(
         get_value (Callable[[AgentType, np.ndarray], np.ndarray]): Get value for a \
             given obs using your critic. See template.
     """
-    agent = init_agent(ProbeEnv2)
+    agent = init_agent(ProbeEnv2())
     agent = train_agent(agent, int(1e3))
     try:
         assert pytest.approx(0, abs=EPS) == get_value(agent, np.array(0))
@@ -93,7 +93,7 @@ def check_reward_discounting(
         get_gamma (Callable[[AgentType], float]): Get the current value of \
             gamma/discount factor or your agent. See template.
     """
-    agent = init_agent(ProbeEnv3, gamma=0.5)
+    agent = init_agent(ProbeEnv3(), gamma=0.5)
     agent = train_agent(agent, int(1e3))
     try:
         assert pytest.approx(get_gamma(agent), rel=EPS) == get_value(

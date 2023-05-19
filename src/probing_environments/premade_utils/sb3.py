@@ -45,7 +45,7 @@ def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType
     Returns:
         AgentType: Your trained agents.
     """
-    raise agent.learn(budget)
+    return agent.learn(budget)
 
 
 def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:

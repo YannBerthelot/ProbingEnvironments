@@ -48,7 +48,7 @@ class ProbeEnv2(gym.Env):
         super().__init__()
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Discrete(2)
-        self.random_obs = None
+        self.random_obs = get_random_obs()
 
     def step(self, action):
         return np.array(get_random_obs()), self.random_obs, True, {}
