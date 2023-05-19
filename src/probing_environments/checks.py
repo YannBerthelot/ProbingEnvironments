@@ -35,16 +35,14 @@ def check_loss_or_optimizer_value_net(
         get_value (Callable[[AgentType, np.ndarray], np.ndarray]): Get value for a \
             given obs using your critic. See template.
     """
-    agent = init_agent(ProbeEnv1())
+    env = ProbeEnv1()
+    agent = init_agent(env)
     agent = train_agent(agent, int(1e3))
 
-    try:
-        assert pytest.approx(1, abs=EPS) == get_value(agent, agent.get_env().reset())
-    except AssertionError:
-        print(
-            "There's most likely a problem with the value         loss"
-            " calculation or the optimizer"
-        )
+    err_msg = (
+        "There's most likely a problem with the value loss calculation or the optimizer"
+    )
+    assert pytest.approx(1, abs=EPS) == get_value(agent, env.reset()), err_msg
 
 
 def check_backprop_value_net(
@@ -66,11 +64,9 @@ def check_backprop_value_net(
     """
     agent = init_agent(ProbeEnv2())
     agent = train_agent(agent, int(1e3))
-    try:
-        assert pytest.approx(0, abs=EPS) == get_value(agent, np.array(0))
-        assert pytest.approx(1, abs=EPS) == get_value(agent, np.array(1))
-    except AssertionError:
-        print("There is most lilely a problem with the backprop in your value network")
+    err_msg = "There is most lilely a problem with the backprop in your value network"
+    assert pytest.approx(0, abs=EPS) == get_value(agent, np.array(0)), err_msg
+    assert pytest.approx(1, abs=EPS) == get_value(agent, np.array(1)), err_msg
 
 
 def check_reward_discounting(
@@ -95,10 +91,8 @@ def check_reward_discounting(
     """
     agent = init_agent(ProbeEnv3(), gamma=0.5)
     agent = train_agent(agent, int(1e3))
-    try:
-        assert pytest.approx(get_gamma(agent), rel=EPS) == get_value(
-            agent, np.array([0])
-        )
-        assert pytest.approx(1, rel=EPS) == get_value(agent, np.array([1]))
-    except AssertionError:
-        print("There is most likely a problem with your reward discounting")
+    err_msg = "There is most likely a problem with your reward discounting"
+    assert pytest.approx(get_gamma(agent), rel=EPS) == get_value(
+        agent, np.array([0])
+    ), err_msg
+    assert pytest.approx(1, rel=EPS) == get_value(agent, np.array([1])), err_msg
