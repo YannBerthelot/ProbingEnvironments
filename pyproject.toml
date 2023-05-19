@@ -9,9 +9,14 @@ readme = "README.md"
 python = "^3.8"
 gym = {git = "https://github.com/rlberry-py/gym_fix_021"}
 mypy-extensions = "^1.0.0"
+rlberry = { extras = ["torch_agents"], version = "^0.4.0", optional = true }
+stable-baselines3 = {version = "^1.8.0", optional = true }
+
+[tool.poetry.extras]
+rlberry = ["rlberry"]
+sb3 = ["stable-baselines3"]
 
 [tool.poetry.dev-dependencies]
-
 pytest = "^5.2"
 pre-commit = "^2.20.0"
 scriv = {extras = ["toml"], version = "^0.15.2"}
@@ -20,7 +25,7 @@ flake8 = "^5.0.3"
 black = {version = "^22.6.0", allow-prereleases = true}
 coverage = {extras = ["toml"], version = "^6.4.3"}
 mypy = "^0.971"
-stable-baselines3 = "^1.8.0"
+
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
@@ -37,6 +42,39 @@ profile = "black"
 
 [tool.flake8]
 max-line-length = 88
+
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist =
+    py38
+    linting
+    coverage
+
+[testenv:testing]
+deps = pyproject.toml
+whitelist_externals = pytest
+changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
+commands =
+    pytest {toxinidir}
+
+[testenv:linting]
+deps = pre-commit
+commands = pre-commit run --all-files
+
+[testenv:coverage]
+whitelist_externals = coverage
+commands =
+    coverage run --source=probing_environments --branch -m pytest {toxinidir}
+    coverage report -m --fail-under 90
+    coverage xml -o {toxinidir}/coverage.xml
+
+[gh-actions]
+python =
+    3.8: py38, coverage, linting
+"""
 
 [build-system]
 requires = ["poetry-core"]
