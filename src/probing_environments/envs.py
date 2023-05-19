@@ -118,33 +118,38 @@ class ProbeEnv3(gym.Env):
             return np.array([self.t for i in range(3)])
 
 
-# class ProbeEnv4(gym.Env):
-#     """
-#     Two actions, zero observation, one timestep long, action-dependent +1/-1\
-#     reward: The first env to exercise the policy! If my agent can't learn \
-#     to pick the better action, there's something wrong with either my \
-#     advantage calculations, my policy loss or my policy update. That's three \
-#     things, but it's easy to work out by hand the expected values for each one \
-#     and check that the values produced by your actual code line up with them.
-#     """
+class ProbeEnv4(gym.Env):
+    """
+    Two actions, zero observation, one timestep long, action-dependent +1/-1\
+    reward: The first env to exercise the policy! If my agent can't learn \
+    to pick the better action, there's something wrong with either my \
+    advantage calculations, my policy loss or my policy update. That's three \
+    things, but it's easy to work out by hand the expected values for each one \
+    and check that the values produced by your actual code line up with them.
+    """
 
-#     metadata = {"render.modes": ["human"]}
+    metadata = {"render.modes": ["human"]}
 
-#     def __init__(self):
-#         super().__init__()
-#         # Define action and observation space
-#         # They must be gym.spaces objects
-#         # Example when using discrete actions:
-#         self.action_space = spaces.Discrete(2)
-#         # Example for using image as input:
-#         self.observation_space = spaces.Discrete(1)
+    def __init__(self, discrete):
+        super().__init__()
+        self.discrete = discrete
+        self.action_space = spaces.Discrete(2)
+        if discrete:
+            self.observation_space = spaces.Discrete(1)
+        else:
+            self.observation_space = spaces.Box(0, 1, shape=(3,))
 
-#     def step(self, action):
-#         return np.array([0]), 1 if action == 0 else -1, True, {}
+    def step(self, action):
+        if self.discrete:
+            return np.array([0]), 1 if action == 0 else -1, True, {}
+        else:
+            return np.array([0, 0, 0]), 1 if action == 0 else -1, True, {}
 
-#     def reset(self, seed=None):
-#         # Reset the state of the environment to an initial state
-#         return np.array([0])
+    def reset(self, seed=None):
+        if self.discrete:
+            return np.array([0])
+        else:
+            return np.array([0, 0, 0])
 
 
 # class ProbeEnv5(gym.Env):
@@ -183,32 +188,3 @@ class ProbeEnv3(gym.Env):
 #         self.random_obs = get_random_obs()
 #         # Reset the state of the environment to an initial state
 #         return np.array([self.random_obs]), None
-
-
-# class ProbeEnv6(gym.Env):
-#     """
-#     One action, zero-then-one observation, two timesteps long, +1 reward at \
-#     the end: If my agent can learn the value in (2.) but not this one, it must\
-#      be that my reward discounting is broken.
-#     """
-
-#     metadata = {"render.modes": ["human"]}
-
-#     def __init__(self):
-#         super().__init__()
-#         # Define action and observation space
-#         # They must be gym.spaces objects
-#         # Example when using discrete actions:
-#         self.action_space = spaces.Discrete(1)
-#         # Example for using image as input:
-#         self.observation_space = spaces.Discrete(1)
-#         self.t = 0
-
-#     def step(self, action):
-#         self.t += 1
-#         return np.array([self.t]), int(self.t == 2), self.t == 2, False, None
-
-#     def reset(self):
-#         self.t = 0
-#         # Reset the state of the environment to an initial state
-#         return np.array([self.t]), None

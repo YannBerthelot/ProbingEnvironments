@@ -13,6 +13,3 @@ Functionnalities :
 
 # Disclaimer
 The idea for this library comes from this presentation from Andy L Jones : https://andyljones.com/posts/rl-debugging.html
-
-
-

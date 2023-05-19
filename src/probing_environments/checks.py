@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 from mypy_extensions import DefaultNamedArg
 
-from probing_environments.envs import ProbeEnv1, ProbeEnv2, ProbeEnv3
+from probing_environments.envs import ProbeEnv1, ProbeEnv2, ProbeEnv3, ProbeEnv4
 
 EPS = 1e-1
 GAMMA = 0.5
@@ -172,3 +172,39 @@ def check_reward_discounting(
             f" value of {expected_value} but got {predicted_value}"
         )
         assert pytest.approx(expected_value, rel=EPS) == predicted_value, err_msg
+
+
+def check_advantage_policy(
+    agent: AgentType,
+    init_agent: Callable[
+        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
+    ],
+    train_agent: Callable[[AgentType, float], AgentType],
+    get_action: Callable[[AgentType, np.ndarray], np.ndarray],
+    discrete: bool = True,
+):
+    """
+    Train and test your agent on ProbeEnv4: Check problems in the advantage computation\
+        , the policy update or the policy loss.
+
+    Args:
+        agent (AgentType): The agent to be used
+        init_agent (Callable[ [AgentType, gym.Env, DefaultNamedArg): Init your agent on\
+              a given Env and gamma/discount factor. See template.
+        train_agent (Callable[[AgentType, float], AgentType]): Train your agent for a \
+            given budget. See template.
+        get_action (Callable[[AgentType, np.ndarray], np.ndarray]): Get action for a \
+            given obs using your actor. See template.
+        discrete (bool, optional): _description_. Defaults to True.
+    """
+    env = ProbeEnv4(discrete)
+    agent = init_agent(agent, env, gamma=0.5)
+    agent = train_agent(agent, int(1e3))
+    excepted_action = 0
+    predicted_action = get_action(agent, env.reset())
+    err_msg = (
+        "There is most likely a problem with your reward advantage computing or your"
+        " policy loss or your policy update. Expected the actor to select"
+        f" {excepted_action} but got {predicted_action}"
+    )
+    assert predicted_action == excepted_action, err_msg

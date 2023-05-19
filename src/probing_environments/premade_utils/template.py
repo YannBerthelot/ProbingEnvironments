@@ -68,6 +68,25 @@ def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
     raise NotImplementedError
 
 
+def get_action(agent: AgentType, obs: np.ndarray) -> int:
+    """
+    Predict the action of a given obs (in numpy array format) using your current policy\
+         net.
+
+    Args:
+        agent (AgentType): Your agent to make the prediction.
+        obs (np.ndarray): The observation to make the prediction on.
+
+    Raises:
+        NotImplementedError: While you haven't implemented your own functions or picked\
+              from the existing ones
+
+    Returns:
+        int: The predicted action for the given observation.
+    """
+    raise NotImplementedError
+
+
 def get_gamma(agent: AgentType) -> float:
     """
     Fetch the gamma/discount factor value from your agent (to use it in tests)
