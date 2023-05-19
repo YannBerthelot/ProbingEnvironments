@@ -8,7 +8,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.8"
 gym = {git = "https://github.com/rlberry-py/gym_fix_021"}
-stable-baselines3 = "^1.8.0"
 mypy-extensions = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
@@ -21,6 +20,7 @@ flake8 = "^5.0.3"
 black = {version = "^22.6.0", allow-prereleases = true}
 coverage = {extras = ["toml"], version = "^6.4.3"}
 mypy = "^0.971"
+stable-baselines3 = "^1.8.0"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
