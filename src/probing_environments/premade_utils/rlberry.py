@@ -1,7 +1,7 @@
 """
 Premade connectors for rlberry
 """
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import gym
 import numpy as np
@@ -71,7 +71,7 @@ def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
     return agent.value_net(torch.tensor(np.array([obs])))[0][0].detach().numpy()
 
 
-def get_action(agent: AgentType, obs: np.ndarray) -> int:
+def get_policy(agent: AgentType, obs: np.ndarray) -> List[float]:
     """
     Predict the action of a given obs (in numpy array format) using your current policy\
          net.
@@ -87,7 +87,7 @@ def get_action(agent: AgentType, obs: np.ndarray) -> int:
     Returns:
         int: The predicted action for the given observation.
     """
-    return agent.policy(obs)
+    return agent._policy_old(torch.tensor(np.array([obs]))).probs.detach().numpy()[0]
 
 
 def get_gamma(agent: AgentType) -> float:

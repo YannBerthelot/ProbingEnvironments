@@ -1,7 +1,7 @@
 """
 Connectors template for your agent.
 """
-from typing import Optional
+from typing import List, Optional
 
 import gym
 import numpy as np
@@ -74,10 +74,10 @@ def get_value(agent: OnPolicyAlgorithm, obs: np.ndarray) -> np.ndarray:
     )
 
 
-def get_action(agent: OnPolicyAlgorithm, obs: np.ndarray) -> int:
+def get_policy(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
     """
-    Predict the action of a given obs (in numpy array format) using your current policy\
-         net.
+    Predict the probability of actions of a given obs (in numpy array format)\
+          using your current policy net.
 
     Args:
         agent (AgentType): Your agent to make the prediction.
@@ -88,9 +88,12 @@ def get_action(agent: OnPolicyAlgorithm, obs: np.ndarray) -> int:
               from the existing ones
 
     Returns:
-        int: The predicted action for the given observation.
+        List[float]: The probability of taking every action.
     """
-    return agent.predict(obs)[0]
+    dis = agent.policy.get_distribution(torch.tensor(np.array([obs])))
+    probs = dis.distribution.probs
+    probs_np = probs.detach().numpy()
+    return probs_np[0]
 
 
 def get_gamma(agent: OnPolicyAlgorithm) -> float:

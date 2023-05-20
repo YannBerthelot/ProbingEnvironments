@@ -152,39 +152,48 @@ class ProbeEnv4(gym.Env):
             return np.array([0, 0, 0])
 
 
-# class ProbeEnv5(gym.Env):
-#     """
-#     Two actions, random +1/-1 observation, one timestep long, action-and-obs \
-#     dependent +1/-1 reward: Now we've got a dependence on both obs and action.\
-#     The policy and value networks interact here, so there's a couple of things \
-#     to verify: that the policy network learns to pick the right action in each \
-#     of the two states, and that the value network learns that the value of \
-#     each state is +1. If everything's worked up until now, then if - for \
-#     example - the value network fails to learn here, it likely means your \
-#     batching process is feeding the value network stale experience.
-#     """
+class ProbeEnv5(gym.Env):
+    """
+    Two actions, random +1/-1 observation, one timestep long, action-and-obs \
+    dependent +1/-1 reward: Now we've got a dependence on both obs and action.\
+    The policy and value networks interact here, so there's a couple of things \
+    to verify: that the policy network learns to pick the right action in each \
+    of the two states, and that the value network learns that the value of \
+    each state is +1. If everything's worked up until now, then if - for \
+    example - the value network fails to learn here, it likely means your \
+    batching process is feeding the value network stale experience.
+    """
 
-#     metadata = {"render.modes": ["human"]}
+    metadata = {"render.modes": ["human"]}
 
-#     def __init__(self):
-#         super().__init__()
-#         self.action_space = spaces.Discrete(2)
-#         self.observation_space = spaces.Discrete(1)
-#         self.random_obs = None
+    def __init__(self, discrete):
+        super().__init__()
+        self.discrete = discrete
+        self.action_space = spaces.Discrete(2)
+        if discrete:
+            self.observation_space = spaces.Discrete(2)
+        else:
+            self.observation_space = spaces.Box(0, 1, shape=(3,))
+        self.random_obs = get_random_obs()
 
-#     def step(self, action):
-#         reward = (
-#             1
-#             if (
-#                 (self.random_obs == -1 and action == 0)
-#                 or (self.random_obs == 1 and action == 1)
-#             )
-#             else -1
-#         )
-#         return np.array([self.random_obs]), reward, True, False, None
+    def step(self, action):
+        reward = (
+            1
+            if (
+                (self.random_obs == 0 and action == 0)
+                or (self.random_obs == 1 and action == 1)
+            )
+            else 0
+        )
+        if self.discrete:
+            return np.array([self.random_obs]), reward, True, {}
+        else:
+            return np.array([self.random_obs for i in range(3)]), reward, True, {}
 
-#     def reset(self, seed=None):
-#         np.random.seed(seed)
-#         self.random_obs = get_random_obs()
-#         # Reset the state of the environment to an initial state
-#         return np.array([self.random_obs]), None
+    def reset(self, seed=None):
+        np.random.seed(seed)
+        self.random_obs = get_random_obs()
+        if self.discrete:
+            return np.array([self.random_obs])
+        else:
+            return np.array([self.random_obs for i in range(3)])

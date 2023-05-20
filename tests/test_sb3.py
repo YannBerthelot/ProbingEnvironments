@@ -7,12 +7,13 @@ from stable_baselines3.a2c import A2C
 from probing_environments.checks import (
     check_advantage_policy,
     check_backprop_value_net,
+    check_batching_process,
     check_loss_or_optimizer_value_net,
     check_reward_discounting,
 )
 from probing_environments.premade_utils.sb3 import (
-    get_action,
     get_gamma,
+    get_policy,
     get_value,
     init_agent,
     train_agent,
@@ -51,7 +52,16 @@ def test_check_advantage_policy():
     """
     Test that check_advantage_policy works on failproof sb3.
     """
-    check_advantage_policy(AGENT, init_agent, train_agent, get_action, discrete=True)
+    check_advantage_policy(AGENT, init_agent, train_agent, get_policy, discrete=True)
+
+
+def test_check_batching_process():
+    """
+    Test that check_advantage_policy works on failproof sb3.
+    """
+    check_batching_process(
+        AGENT, init_agent, train_agent, get_policy, get_value, discrete=True
+    )
 
 
 def test_errors():
@@ -74,4 +84,21 @@ def test_errors():
             train_agent,
             get_value=lambda x, y: -1,
             get_gamma=get_gamma,
+        )
+
+    with pytest.raises(AssertionError):
+        check_advantage_policy(
+            AGENT,
+            init_agent,
+            train_agent,
+            get_policy=lambda x, y: [0.1, 0.9],
+        )
+
+    with pytest.raises(AssertionError):
+        check_batching_process(
+            AGENT,
+            init_agent,
+            train_agent,
+            get_policy=lambda x, y: [0.1, 0.9],
+            get_value=lambda x, y: -1,
         )
