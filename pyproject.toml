@@ -66,8 +66,12 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
+extras = 
+    rlberry
+    sb3
 deps = 
     coverage[toml]
+    pyproject.toml
     pytest
 commands =
     coverage run --source=probing_environments --branch -m pytest {toxinidir}
