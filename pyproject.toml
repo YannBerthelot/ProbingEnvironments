@@ -74,7 +74,7 @@ commands =
 
 [gh-actions]
 python =
-    3.8: py38, coverage, linting
+    3.8: py38, testing, linting
 """
 
 [build-system]
