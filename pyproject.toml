@@ -66,8 +66,7 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
-deps = pyproject.toml
-whitelist_externals = coverage
+whitelist_externals = coverage, pytest
 commands =
     coverage run --source=probing_environments --branch -m pytest {toxinidir}
     coverage report -m --fail-under 90
