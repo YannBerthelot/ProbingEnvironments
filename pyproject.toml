@@ -15,6 +15,7 @@ stable-baselines3 = {version = "^1.8.0", optional = true }
 [tool.poetry.extras]
 rlberry = ["rlberry"]
 sb3 = ["stable-baselines3"]
+testing = ["rlberry", "stable-baselines3"]
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -67,6 +68,7 @@ commands = pre-commit run --all-files
 
 [testenv:coverage]
 deps = 
+    probing_environments[testing]
     coverage[toml]
     pytest
 commands =
