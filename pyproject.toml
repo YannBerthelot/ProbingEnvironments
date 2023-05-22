@@ -56,7 +56,7 @@ envlist =
 
 [testenv:testing]
 deps = pyproject.toml
-whitelist_externals = pytest
+allowlist_externals = pytest
 changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
 commands =
     pytest {toxinidir}
@@ -66,7 +66,9 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
-whitelist_externals = coverage, pytest
+allowlist_externals = 
+    coverage
+    pytest
 commands =
     coverage run --source=probing_environments --branch -m pytest {toxinidir}
     coverage report -m --fail-under 90
@@ -74,7 +76,7 @@ commands =
 
 [gh-actions]
 python =
-    3.8: py38, testing, linting
+    3.8: py38, coverage, linting
 """
 
 [build-system]
