@@ -46,6 +46,7 @@ max-line-length = 88
 
 [tool.tox]
 legacy_tox_ini = """
+
 [tox]
 isolated_build = True
 envlist =
@@ -55,7 +56,7 @@ envlist =
 
 [testenv:testing]
 deps = pyproject.toml
-whitelist_externals = pytest
+allowlist_externals = pytest
 changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
 commands =
     pytest {toxinidir}
@@ -65,7 +66,13 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
-whitelist_externals = coverage
+extras = 
+    rlberry
+    sb3
+deps = 
+    coverage[toml]
+    pyproject.toml
+    pytest
 commands =
     coverage run --source=probing_environments --branch -m pytest {toxinidir}
     coverage report -m --fail-under 90
