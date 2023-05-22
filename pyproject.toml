@@ -55,7 +55,6 @@ envlist =
     coverage
 
 [testenv:testing]
-deps = pyproject.toml
 allowlist_externals = pytest
 changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
 commands =
@@ -66,10 +65,6 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
-deps = 
-    probing_environments[testing]
-    coverage[toml]
-    pytest
 commands =
     coverage run --source=probing_environments --branch -m pytest {toxinidir}
     coverage report -m --fail-under 90
