@@ -66,6 +66,7 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
+deps = pyproject.toml
 allowlist_externals = 
     coverage
     pytest
