@@ -1,7 +1,7 @@
 """
 Premade connectors for stable-baselines3
 """
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import gym
 import numpy as np
@@ -68,10 +68,10 @@ def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
     raise NotImplementedError
 
 
-def get_action(agent: AgentType, obs: np.ndarray) -> int:
+def get_policy(agent: AgentType, obs: np.ndarray) -> List[float]:
     """
-    Predict the action of a given obs (in numpy array format) using your current policy\
-         net.
+    Predict the probabilitie of actions in a given obs (in numpy array format) using\
+          your current policy net.
 
     Args:
         agent (AgentType): Your agent to make the prediction.
@@ -82,7 +82,7 @@ def get_action(agent: AgentType, obs: np.ndarray) -> int:
               from the existing ones
 
     Returns:
-        int: The predicted action for the given observation.
+        List[float]: The probabilities of taking every actions.
     """
     raise NotImplementedError
 
