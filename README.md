@@ -11,5 +11,96 @@ Functionnalities :
 - Premade connectors to connect your agent to the tests (to adapt to the way you coded your agent without requiring refactoring) and a template to create yours.
 
 
+# Installation 
+```bash
+pip install git+https://github.com/YannBerthelot/ProbingEnvironments
+```
+OR
+```bash
+poetry add git+https://github.com/YannBerthelot/ProbingEnvironments
+```
+
+
+# How-to
+- Install this library
+- Create a unit test file in your project.
+- Import pytest and the checks from ProbingEnvironments :
+```python
+import pytest
+from probing_environments.checks import (
+    check_advantage_policy,
+    check_backprop_value_net,
+    check_batching_process,
+    check_loss_or_optimizer_value_net,
+    check_reward_discounting,
+)
+```
+- Import the connectors for your library OR write them yourself (see template in premade_utils):
+```python
+from probing_environments.premade_utils.sb3 import (
+    get_gamma,
+    get_policy,
+    get_value,
+    init_agent,
+    train_agent,
+)
+```
+- Import your agent to be fed into the tests.
+- You can then use the following tests in your unit tests (adapt the discrete parameter depending on if your agent handles Discrete or Box gym environments):
+```python
+def test_check_loss_or_optimizer_value_net():
+    """
+    Test that check_loss_or_optimizer_value_net works on failproof sb3.
+    """
+    check_loss_or_optimizer_value_net(
+        AGENT, init_agent, train_agent, get_value, discrete=False
+    )
+
+
+def test_check_backprop_value_net():
+    """
+    Test that check_backprop_value_net works on failproof sb3.
+    """
+    check_backprop_value_net(AGENT, init_agent, train_agent, get_value, discrete=False)
+
+
+def test_check_reward_discounting():
+    """
+    Test that check_reward_discounting works on failproof sb3.
+    """
+    check_reward_discounting(
+        AGENT, init_agent, train_agent, get_value, get_gamma, discrete=False
+    )
+
+
+def test_check_advantage_policy():
+    """
+    Test that check_advantage_policy works on failproof sb3.
+    """
+    check_advantage_policy(AGENT, init_agent, train_agent, get_policy, discrete=False)
+
+
+def test_check_batching_process():
+    """
+    Test that check_batching_process works on failproof sb3.
+    """
+    check_batching_process(
+        AGENT, init_agent, train_agent, get_policy, get_value, discrete=False
+    )
+```
+- Run your tests and the (potential) error output should help you pinpoint where to start debugging !
+- Keep them in your tests for non-regression testing
+
 # Disclaimer
 The idea for this library comes from this presentation from Andy L Jones : https://andyljones.com/posts/rl-debugging.html
+
+
+# To-do
+
+- [ ] Expand Readme with example of debugging
+- [ ] Expand Readme with example of connector definition
+- [ ] Fix the single action policy bug (sb3 policy returns an int instead of a list of float when probability is 100%)
+- [ ] Further expand tests
+- [ ] Fix the no-direct dependency issue when building for PyPi
+- [ ] Release on Test-PyPi
+- [ ] Init changelog and version automation
