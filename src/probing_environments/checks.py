@@ -10,11 +10,11 @@ import pytest
 from mypy_extensions import DefaultNamedArg
 
 from probing_environments.envs import (
-    ProbeEnv1,
-    ProbeEnv2,
-    ProbeEnv3,
-    ProbeEnv4,
-    ProbeEnv5,
+    AdvantagePolicyLossPolicyUpdateEnv,
+    PolicyAndValueEnv,
+    RewardDiscountingEnv,
+    ValueBackpropEnv,
+    ValueLossOrOptimizerEnv,
 )
 
 EPS = 1e-1
@@ -47,7 +47,7 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ProbeEnv1(discrete)
+    env = ValueLossOrOptimizerEnv(discrete)
     agent = init_agent(agent, env)
     agent = train_agent(agent, int(1e3))
     expected_value = 1
@@ -83,7 +83,7 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, ProbeEnv2(discrete))
+    agent = init_agent(agent, ValueBackpropEnv(discrete))
     agent = train_agent(agent, int(1e3))
 
     if discrete:
@@ -155,7 +155,7 @@ def check_reward_discounting(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, ProbeEnv3(discrete), gamma=0.5)
+    agent = init_agent(agent, RewardDiscountingEnv(discrete), gamma=0.5)
     agent = train_agent(agent, int(1e3))
     expected_value = get_gamma(agent)
     if discrete:
@@ -221,7 +221,7 @@ def check_advantage_policy(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ProbeEnv4(discrete)
+    env = AdvantagePolicyLossPolicyUpdateEnv(discrete)
     agent = init_agent(agent, env, gamma=0.5)
     agent = train_agent(agent, int(1e3))
     excepted_action = 0
@@ -262,7 +262,7 @@ def check_batching_process(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ProbeEnv5(discrete)
+    env = PolicyAndValueEnv(discrete)
     agent = init_agent(agent, env)
     agent = train_agent(agent, int(1e3))
 

@@ -5,7 +5,7 @@ import numpy as np
 from gym import spaces
 
 
-class ProbeEnv1(gym.Env):
+class ValueLossOrOptimizerEnv(gym.Env):
     """
     One action, zero observation, one timestep long, +1 reward every timestep:\
     This isolates the value network. If my agent can't learn that the value of\
@@ -41,7 +41,7 @@ def get_random_obs():
     return random.choice([0, 1])
 
 
-class ProbeEnv2(gym.Env):
+class ValueBackpropEnv(gym.Env):
     """
     One action, random +1/-1 observation, one timestep long, obs-dependent \
     +1/-1 reward every time: If my agent can learn the value in ProbeEnv1 but not \
@@ -78,7 +78,7 @@ class ProbeEnv2(gym.Env):
             return np.array([self.random_obs for i in range(3)])
 
 
-class ProbeEnv3(gym.Env):
+class RewardDiscountingEnv(gym.Env):
     """
     One action, zero-then-one observation, two timesteps long, +1 reward at \
     the end: If my agent can learn the value in (2.) but not this one, it must\
@@ -118,7 +118,7 @@ class ProbeEnv3(gym.Env):
             return np.array([self.t for i in range(3)])
 
 
-class ProbeEnv4(gym.Env):
+class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
     """
     Two actions, zero observation, one timestep long, action-dependent +1/-1\
     reward: The first env to exercise the policy! If my agent can't learn \
@@ -152,7 +152,7 @@ class ProbeEnv4(gym.Env):
             return np.array([0, 0, 0])
 
 
-class ProbeEnv5(gym.Env):
+class PolicyAndValueEnv(gym.Env):
     """
     Two actions, random +1/-1 observation, one timestep long, action-and-obs \
     dependent +1/-1 reward: Now we've got a dependence on both obs and action.\
