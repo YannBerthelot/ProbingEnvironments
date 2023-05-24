@@ -2,7 +2,7 @@
 Premade tests including the initialization of the agent, the training and the
 parameter tests.
 """
-from typing import Any, Callable, List
+from typing import Callable, List
 
 import gym
 import numpy as np
@@ -16,11 +16,10 @@ from probing_environments.envs import (
     ValueBackpropEnv,
     ValueLossOrOptimizerEnv,
 )
+from probing_environments.types import AgentType
 
 EPS = 1e-1
 GAMMA = 0.5
-
-AgentType = Any
 
 
 def check_loss_or_optimizer_value_net(

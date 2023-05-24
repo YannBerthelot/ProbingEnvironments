@@ -1,12 +1,12 @@
 """
 Premade connectors for stable-baselines3
 """
-from typing import Any, List, Optional
+from typing import List, Optional
 
 import gym
 import numpy as np
 
-AgentType = Any
+from probing_environments.types import AgentType
 
 
 def init_agent(

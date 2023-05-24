@@ -104,3 +104,5 @@ The idea for this library comes from this presentation from Andy L Jones : https
 - [ ] Fix the no-direct dependency issue when building for PyPi
 - [ ] Release on Test-PyPi
 - [ ] Init changelog and version automation
+- [ ] Rework message codes so they are not cutoff on screen
+- [ ] Rework the setup part of readme with extras for reproducibility

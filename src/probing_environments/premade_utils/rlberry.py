@@ -1,13 +1,13 @@
 """
 Premade connectors for rlberry
 """
-from typing import Any, List, Optional
+from typing import List, Optional
 
 import gym
 import numpy as np
 import torch
 
-AgentType = Any
+from probing_environments.types import AgentType
 
 
 def init_agent(

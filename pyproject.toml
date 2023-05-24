@@ -55,6 +55,9 @@ envlist =
     coverage
 
 [testenv:testing]
+extras = 
+    rlberry
+    sb3
 deps = pyproject.toml
 allowlist_externals = pytest
 changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
