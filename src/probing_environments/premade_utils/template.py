@@ -6,7 +6,7 @@ from typing import List, Optional
 import gym
 import numpy as np
 
-from probing_environments.types import AgentType
+from probing_environments.type_hints import AgentType
 
 
 def init_agent(

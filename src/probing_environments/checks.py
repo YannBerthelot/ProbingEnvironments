@@ -16,7 +16,7 @@ from probing_environments.envs import (
     ValueBackpropEnv,
     ValueLossOrOptimizerEnv,
 )
-from probing_environments.types import AgentType
+from probing_environments.type_hints import AgentType
 
 EPS = 1e-1
 GAMMA = 0.5
