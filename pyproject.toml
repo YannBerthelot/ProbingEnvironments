@@ -22,7 +22,7 @@ pre-commit = "^2.20.0"
 scriv = {extras = ["toml"], version = "^0.15.2"}
 tox = "^3.25.1"
 flake8 = "^5.0.3"
-black = {version = "^22.6.0", allow-prereleases = true}
+black = {version = "22.3.0", allow-prereleases = true}
 coverage = {extras = ["toml"], version = "^6.4.3"}
 mypy = "^0.971"
 
@@ -36,6 +36,7 @@ adopts = ["--ignore==src/probing_environments/envs.py"]
 [tool.black]
 line-length = 88
 preview = true
+verbose = true
 
 [tool.isort]
 profile = "black"
