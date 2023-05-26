@@ -1,21 +1,19 @@
 [tool.poetry]
 name = "probing_environments"
-version = "0.1.0"
+version = "0.2.0"
 description = "Probing environments for RL/DeepRL algorithms debugging"
 authors = ["Yann Berthelot <yannberthelot1@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-gym = {git = "https://github.com/rlberry-py/gym_fix_021"}
 mypy-extensions = "^1.0.0"
-rlberry = { extras = ["torch_agents"], version = "^0.4.0", optional = true }
-stable-baselines3 = {version = "^1.8.0", optional = true }
 pytest = "^5.2"
+gymnasium = "^0.28.1"
+sb3-contrib = {version="2.0.0a1", optional=true}
 
 [tool.poetry.extras]
-rlberry = ["rlberry"]
-sb3 = ["stable-baselines3"]
+sb3 = ["sb3-contrib"]
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"
