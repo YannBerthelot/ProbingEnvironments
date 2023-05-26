@@ -3,7 +3,7 @@ Connectors template for your agent.
 """
 from typing import List, Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm

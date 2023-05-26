@@ -1,8 +1,8 @@
 import random
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 
 class ValueLossOrOptimizerEnv(gym.Env):
@@ -26,15 +26,15 @@ class ValueLossOrOptimizerEnv(gym.Env):
 
     def step(self, action):
         if self.discrete:
-            return np.array((0)), 1, True, {}
+            return np.array((0)), 1, True, False, {}
         else:
-            return np.array((0, 0, 0)), 1, True, {}
+            return np.array((0, 0, 0)), 1, True, False, {}
 
     def reset(self, seed=None):
         if self.discrete:
-            return np.array((0))
+            return np.array((0)), {}
         else:
-            return np.array((0, 0, 0))
+            return np.array((0, 0, 0)), {}
 
 
 def get_random_obs():
@@ -64,18 +64,24 @@ class ValueBackpropEnv(gym.Env):
     def step(self, action):
         random_obs = get_random_obs()
         if self.discrete:
-            return np.array(random_obs), self.random_obs, True, {}
+            return np.array(random_obs), self.random_obs, True, False, {}
         else:
-            return np.array([random_obs for i in range(3)]), self.random_obs, True, {}
+            return (
+                np.array([random_obs for i in range(3)]),
+                self.random_obs,
+                True,
+                False,
+                {},
+            )
 
     def reset(self, seed=None):
         # Reset the state of the environment to an initial state
         np.random.seed(seed)
         self.random_obs = get_random_obs()
         if self.discrete:
-            return np.array(self.random_obs)
+            return np.array(self.random_obs), {}
         else:
-            return np.array([self.random_obs for i in range(3)])
+            return np.array([self.random_obs for i in range(3)]), {}
 
 
 class RewardDiscountingEnv(gym.Env):
@@ -100,12 +106,13 @@ class RewardDiscountingEnv(gym.Env):
     def step(self, action):
         self.t += 1
         if self.discrete:
-            return np.array([self.t]), int(self.t == 2), self.t == 2, {}
+            return np.array([self.t]), int(self.t == 2), self.t == 2, False, {}
         else:
             return (
                 np.array([self.t for i in range(3)]),
                 int(self.t == 2),
                 self.t == 2,
+                False,
                 {},
             )
 
@@ -113,9 +120,9 @@ class RewardDiscountingEnv(gym.Env):
         self.t = 0
         # Reset the state of the environment to an initial state
         if self.discrete:
-            return np.array([self.t])
+            return np.array([self.t]), {}
         else:
-            return np.array([self.t for i in range(3)])
+            return np.array([self.t for i in range(3)]), {}
 
 
 class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
@@ -141,15 +148,15 @@ class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
 
     def step(self, action):
         if self.discrete:
-            return np.array([0]), 1 if action == 0 else -1, True, {}
+            return np.array([0]), 1 if action == 0 else -1, True, False, {}
         else:
-            return np.array([0, 0, 0]), 1 if action == 0 else -1, True, {}
+            return np.array([0, 0, 0]), 1 if action == 0 else -1, True, False, {}
 
     def reset(self, seed=None):
         if self.discrete:
-            return np.array([0])
+            return np.array([0]), {}
         else:
-            return np.array([0, 0, 0])
+            return np.array([0, 0, 0]), {}
 
 
 class PolicyAndValueEnv(gym.Env):
@@ -186,14 +193,20 @@ class PolicyAndValueEnv(gym.Env):
             else 0
         )
         if self.discrete:
-            return np.array([self.random_obs]), reward, True, {}
+            return np.array([self.random_obs]), reward, True, False, {}
         else:
-            return np.array([self.random_obs for i in range(3)]), reward, True, {}
+            return (
+                np.array([self.random_obs for i in range(3)]),
+                reward,
+                True,
+                False,
+                {},
+            )
 
     def reset(self, seed=None):
         np.random.seed(seed)
         self.random_obs = get_random_obs()
         if self.discrete:
-            return np.array([self.random_obs])
+            return np.array([self.random_obs]), {}
         else:
-            return np.array([self.random_obs for i in range(3)])
+            return np.array([self.random_obs for i in range(3)]), {}

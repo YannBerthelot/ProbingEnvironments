@@ -3,7 +3,7 @@ Premade connectors for stable-baselines3
 """
 from typing import List, Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
 
 from probing_environments.utils.type_hints import AgentType
