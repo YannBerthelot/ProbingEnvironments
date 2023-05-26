@@ -16,7 +16,7 @@ from probing_environments.envs import (
     ValueBackpropEnv,
     ValueLossOrOptimizerEnv,
 )
-from probing_environments.type_hints import AgentType
+from probing_environments.utils.type_hints import AgentType
 
 EPS = 1e-1
 GAMMA = 0.5
@@ -223,7 +223,7 @@ def check_advantage_policy(
     )
 
 
-def check_batching_process(
+def check_actor_and_critic_coupling(
     agent: AgentType,
     init_agent: Callable[
         [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType

@@ -4,19 +4,19 @@ from typing import Any
 import pytest
 from stable_baselines3.a2c import A2C
 
-from probing_environments.checks import (
-    check_advantage_policy,
-    check_backprop_value_net,
-    check_batching_process,
-    check_loss_or_optimizer_value_net,
-    check_reward_discounting,
-)
-from probing_environments.premade_utils.sb3 import (
+from probing_environments.adaptors.sb3 import (
     get_gamma,
     get_policy,
     get_value,
     init_agent,
     train_agent,
+)
+from probing_environments.checks import (
+    check_actor_and_critic_coupling,
+    check_advantage_policy,
+    check_backprop_value_net,
+    check_loss_or_optimizer_value_net,
+    check_reward_discounting,
 )
 
 AgentType = Any
@@ -55,11 +55,11 @@ def test_check_advantage_policy():
     check_advantage_policy(AGENT, init_agent, train_agent, get_policy, discrete=True)
 
 
-def test_check_batching_process():
+def test_check_actor_and_critic_coupling():
     """
-    Test that check_advantage_policy works on failproof sb3.
+    Test that check_actor_and_critic_coupling works on failproof sb3.
     """
-    check_batching_process(
+    check_actor_and_critic_coupling(
         AGENT, init_agent, train_agent, get_policy, get_value, discrete=True
     )
 
@@ -95,7 +95,7 @@ def test_errors():
         )
 
     with pytest.raises(AssertionError):
-        check_batching_process(
+        check_actor_and_critic_coupling(
             AGENT,
             init_agent,
             train_agent,

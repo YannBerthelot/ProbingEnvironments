@@ -1,13 +1,12 @@
 """
-Premade connectors for rlberry
+Premade connectors for stable-baselines3
 """
 from typing import List, Optional
 
 import gym
 import numpy as np
-import torch
 
-from probing_environments.type_hints import AgentType
+from probing_environments.utils.type_hints import AgentType
 
 
 def init_agent(
@@ -28,8 +27,7 @@ def init_agent(
     Returns:
         AgentType: Your agent with the right settings.
     """
-    agent = agent(env, gamma=gamma, learning_rate=0.01)
-    return agent
+    raise NotImplementedError
 
 
 def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType:
@@ -48,8 +46,7 @@ def train_agent(agent: AgentType, budget: Optional[int] = int(1e3)) -> AgentType
     Returns:
         AgentType: Your trained agents.
     """
-    agent.fit(budget * 10)
-    return agent
+    raise NotImplementedError
 
 
 def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
@@ -68,13 +65,13 @@ def get_value(agent: AgentType, obs: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: The predicted value of the given observation.
     """
-    return agent.value_net(torch.tensor(np.array([obs])))[0][0].detach().numpy()
+    raise NotImplementedError
 
 
 def get_policy(agent: AgentType, obs: np.ndarray) -> List[float]:
     """
-    Predict the action of a given obs (in numpy array format) using your current policy\
-         net.
+    Predict the probabilitie of actions in a given obs (in numpy array format) using\
+          your current policy net.
 
     Args:
         agent (AgentType): Your agent to make the prediction.
@@ -85,9 +82,9 @@ def get_policy(agent: AgentType, obs: np.ndarray) -> List[float]:
               from the existing ones
 
     Returns:
-        int: The predicted action for the given observation.
+        List[float]: The probabilities of taking every actions.
     """
-    return agent._policy_old(torch.tensor(np.array([obs]))).probs.detach().numpy()[0]
+    raise NotImplementedError
 
 
 def get_gamma(agent: AgentType) -> float:
@@ -104,4 +101,4 @@ def get_gamma(agent: AgentType) -> float:
     Returns:
         float: The gamma/discount factor value of your agent
     """
-    return agent.gamma
+    raise NotImplementedError

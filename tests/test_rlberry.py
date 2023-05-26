@@ -4,19 +4,19 @@ from typing import Any
 import pytest
 from rlberry.agents.torch import A2CAgent
 
-from probing_environments.checks import (
-    check_advantage_policy,
-    check_backprop_value_net,
-    check_batching_process,
-    check_loss_or_optimizer_value_net,
-    check_reward_discounting,
-)
-from probing_environments.premade_utils.rlberry import (
+from probing_environments.adaptors.rlberry import (
     get_gamma,
     get_policy,
     get_value,
     init_agent,
     train_agent,
+)
+from probing_environments.checks import (
+    check_actor_and_critic_coupling,
+    check_advantage_policy,
+    check_backprop_value_net,
+    check_loss_or_optimizer_value_net,
+    check_reward_discounting,
 )
 
 AgentType = Any
@@ -25,7 +25,7 @@ AGENT = A2CAgent
 
 def test_check_loss_or_optimizer_value_net():
     """
-    Test that check_loss_or_optimizer_value_net works on failproof sb3.
+    Test that check_loss_or_optimizer_value_net works
     """
     check_loss_or_optimizer_value_net(
         AGENT, init_agent, train_agent, get_value, discrete=False
@@ -34,14 +34,14 @@ def test_check_loss_or_optimizer_value_net():
 
 def test_check_backprop_value_net():
     """
-    Test that check_backprop_value_net works on failproof sb3.
+    Test that check_backprop_value_net works
     """
     check_backprop_value_net(AGENT, init_agent, train_agent, get_value, discrete=False)
 
 
 def test_check_reward_discounting():
     """
-    Test that check_reward_discounting works on failproof sb3.
+    Test that check_reward_discounting works
     """
     check_reward_discounting(
         AGENT, init_agent, train_agent, get_value, get_gamma, discrete=False
@@ -50,16 +50,16 @@ def test_check_reward_discounting():
 
 def test_check_advantage_policy():
     """
-    Test that check_advantage_policy works on failproof sb3.
+    Test that check_advantage_policy works
     """
     check_advantage_policy(AGENT, init_agent, train_agent, get_policy, discrete=False)
 
 
-def test_check_batching_process():
+def test_check_actor_and_critic_coupling():
     """
-    Test that check_batching_process works on failproof sb3.
+    Test that check_actor_and_critic_coupling works
     """
-    check_batching_process(
+    check_actor_and_critic_coupling(
         AGENT, init_agent, train_agent, get_policy, get_value, discrete=False
     )
 
@@ -95,7 +95,7 @@ def test_errors():
         )
 
     with pytest.raises(AssertionError):
-        check_batching_process(
+        check_actor_and_critic_coupling(
             AGENT,
             init_agent,
             train_agent,
