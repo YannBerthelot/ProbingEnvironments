@@ -54,24 +54,35 @@ tests-no-zope = ["cloudpickle", "hypothesis", "mypy (>=1.1.1)", "pympler", "pyte
 
 [[package]]
 name = "black"
-version = "22.12.0"
+version = "22.3.0"
 description = "The uncompromising code formatter."
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.6.2"
 files = [
-    {file = "black-22.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9eedd20838bd5d75b80c9f5487dbcb06836a43833a37846cf1d8c1cc01cef59d"},
-    {file = "black-22.12.0-cp310-cp310-win_amd64.whl", hash = "sha256:159a46a4947f73387b4d83e87ea006dbb2337eab6c879620a3ba52699b1f4351"},
-    {file = "black-22.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d30b212bffeb1e252b31dd269dfae69dd17e06d92b87ad26e23890f3efea366f"},
-    {file = "black-22.12.0-cp311-cp311-win_amd64.whl", hash = "sha256:7412e75863aa5c5411886804678b7d083c7c28421210180d67dfd8cf1221e1f4"},
-    {file = "black-22.12.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c116eed0efb9ff870ded8b62fe9f28dd61ef6e9ddd28d83d7d264a38417dcee2"},
-    {file = "black-22.12.0-cp37-cp37m-win_amd64.whl", hash = "sha256:1f58cbe16dfe8c12b7434e50ff889fa479072096d79f0a7f25e4ab8e94cd8350"},
-    {file = "black-22.12.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:77d86c9f3db9b1bf6761244bc0b3572a546f5fe37917a044e02f3166d5aafa7d"},
-    {file = "black-22.12.0-cp38-cp38-win_amd64.whl", hash = "sha256:82d9fe8fee3401e02e79767016b4907820a7dc28d70d137eb397b92ef3cc5bfc"},
-    {file = "black-22.12.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:101c69b23df9b44247bd88e1d7e90154336ac4992502d4197bdac35dd7ee3320"},
-    {file = "black-22.12.0-cp39-cp39-win_amd64.whl", hash = "sha256:559c7a1ba9a006226f09e4916060982fd27334ae1998e7a38b3f33a37f7a2148"},
-    {file = "black-22.12.0-py3-none-any.whl", hash = "sha256:436cc9167dd28040ad90d3b404aec22cedf24a6e4d7de221bec2730ec0c97bcf"},
-    {file = "black-22.12.0.tar.gz", hash = "sha256:229351e5a18ca30f447bf724d007f890f97e13af070bb6ad4c0a441cd7596a2f"},
+    {file = "black-22.3.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:2497f9c2386572e28921fa8bec7be3e51de6801f7459dffd6e62492531c47e09"},
+    {file = "black-22.3.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:5795a0375eb87bfe902e80e0c8cfaedf8af4d49694d69161e5bd3206c18618bb"},
+    {file = "black-22.3.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e3556168e2e5c49629f7b0f377070240bd5511e45e25a4497bb0073d9dda776a"},
+    {file = "black-22.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:67c8301ec94e3bcc8906740fe071391bce40a862b7be0b86fb5382beefecd968"},
+    {file = "black-22.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:fd57160949179ec517d32ac2ac898b5f20d68ed1a9c977346efbac9c2f1e779d"},
+    {file = "black-22.3.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:cc1e1de68c8e5444e8f94c3670bb48a2beef0e91dddfd4fcc29595ebd90bb9ce"},
+    {file = "black-22.3.0-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6d2fc92002d44746d3e7db7cf9313cf4452f43e9ea77a2c939defce3b10b5c82"},
+    {file = "black-22.3.0-cp36-cp36m-win_amd64.whl", hash = "sha256:a6342964b43a99dbc72f72812bf88cad8f0217ae9acb47c0d4f141a6416d2d7b"},
+    {file = "black-22.3.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:328efc0cc70ccb23429d6be184a15ce613f676bdfc85e5fe8ea2a9354b4e9015"},
+    {file = "black-22.3.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:06f9d8846f2340dfac80ceb20200ea5d1b3f181dd0556b47af4e8e0b24fa0a6b"},
+    {file = "black-22.3.0-cp37-cp37m-win_amd64.whl", hash = "sha256:ad4efa5fad66b903b4a5f96d91461d90b9507a812b3c5de657d544215bb7877a"},
+    {file = "black-22.3.0-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:e8477ec6bbfe0312c128e74644ac8a02ca06bcdb8982d4ee06f209be28cdf163"},
+    {file = "black-22.3.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:637a4014c63fbf42a692d22b55d8ad6968a946b4a6ebc385c5505d9625b6a464"},
+    {file = "black-22.3.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:863714200ada56cbc366dc9ae5291ceb936573155f8bf8e9de92aef51f3ad0f0"},
+    {file = "black-22.3.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:10dbe6e6d2988049b4655b2b739f98785a884d4d6b85bc35133a8fb9a2233176"},
+    {file = "black-22.3.0-cp38-cp38-win_amd64.whl", hash = "sha256:cee3e11161dde1b2a33a904b850b0899e0424cc331b7295f2a9698e79f9a69a0"},
+    {file = "black-22.3.0-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:5891ef8abc06576985de8fa88e95ab70641de6c1fca97e2a15820a9b69e51b20"},
+    {file = "black-22.3.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:30d78ba6bf080eeaf0b7b875d924b15cd46fec5fd044ddfbad38c8ea9171043a"},
+    {file = "black-22.3.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:ee8f1f7228cce7dffc2b464f07ce769f478968bfb3dd1254a4c2eeed84928aad"},
+    {file = "black-22.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6ee227b696ca60dd1c507be80a6bc849a5a6ab57ac7352aad1ffec9e8b805f21"},
+    {file = "black-22.3.0-cp39-cp39-win_amd64.whl", hash = "sha256:9b542ced1ec0ceeff5b37d69838106a6348e60db7b8fdd245294dc1d26136265"},
+    {file = "black-22.3.0-py3-none-any.whl", hash = "sha256:bc58025940a896d7e5356952228b68f793cf5fcb342be703c3a2669a1488cb72"},
+    {file = "black-22.3.0.tar.gz", hash = "sha256:35020b8886c022ced9282b51b5a875b6d1ab0c387b31a065b84db7c33085ca79"},
 ]
 
 [package.dependencies]
@@ -79,7 +90,7 @@ click = ">=8.0.0"
 mypy-extensions = ">=0.4.3"
 pathspec = ">=0.9.0"
 platformdirs = ">=2"
-tomli = {version = ">=1.1.0", markers = "python_full_version < \"3.11.0a7\""}
+tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 typing-extensions = {version = ">=3.10.0.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
@@ -1605,40 +1616,67 @@ files = [
 
 [[package]]
 name = "pyopengl"
-version = "3.1.6"
+version = "3.1.7"
 description = "Standard OpenGL bindings for Python"
 category = "main"
 optional = true
 python-versions = "*"
 files = [
-    {file = "PyOpenGL-3.1.6-py2-none-any.whl", hash = "sha256:57c597d989178e1413002df6b923619f6d29807501dece1c60cc6f12c0c8e8a7"},
-    {file = "PyOpenGL-3.1.6-py3-none-any.whl", hash = "sha256:a7139bc3e15d656feae1f7e3ef68c799941ed43fadc78177a23db7e946c20738"},
-    {file = "PyOpenGL-3.1.6.tar.gz", hash = "sha256:8ea6c8773927eda7405bffc6f5bb93be81569a7b05c8cac50cd94e969dce5e27"},
+    {file = "PyOpenGL-3.1.7-py3-none-any.whl", hash = "sha256:a6ab19cf290df6101aaf7470843a9c46207789855746399d0af92521a0a92b7a"},
+    {file = "PyOpenGL-3.1.7.tar.gz", hash = "sha256:eef31a3888e6984fd4d8e6c9961b184c9813ca82604d37fe3da80eb000a76c86"},
 ]
 
 [[package]]
 name = "pyopengl-accelerate"
-version = "3.1.6"
+version = "3.1.7"
 description = "Acceleration code for PyOpenGL"
 category = "main"
 optional = true
 python-versions = "*"
 files = [
-    {file = "PyOpenGL-accelerate-3.1.6.tar.gz", hash = "sha256:ad8a300256eca25228261de16f741e51a30f34f1e1b1cf68359f5c62dbcdcdc3"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp27-cp27m-win32.whl", hash = "sha256:bf2ab411f5a8b60be82b950e173732ecc90d68cfb1f96fe514a0137ae2f5c014"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp27-cp27m-win_amd64.whl", hash = "sha256:bb05c5700e6e7dc47e04c7cf0b7ca917029d61968b9b3ea0702870cea831908f"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp310-cp310-win32.whl", hash = "sha256:02625dc72a5813bc4ecfc95d8d6d8f47668d29e03a469af376cabe8c9a41efda"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp310-cp310-win_amd64.whl", hash = "sha256:3f178eddf12f4b248469d363ae2c4f1cc0ea0335f9a6703da2fb4c44e21a88b4"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp35-cp35m-win32.whl", hash = "sha256:f05628ea4c2425c0dcaabfb54747e209becdc8a6322d192c78ea5df7e1360d4a"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp35-cp35m-win_amd64.whl", hash = "sha256:c531775131936e8d46bee4520fd938b89286aa8bb8f251b154dfd101e717ffc4"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp36-cp36m-win32.whl", hash = "sha256:7550f8049788c16f3a0ec3ffdc0c75ed0b6cf995661fa046cdec7753e34b202f"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp36-cp36m-win_amd64.whl", hash = "sha256:9311e0abfcca752bf94ba18c360f1d69b6bd3188fb946dd58fb84138bac038ba"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp37-cp37m-win32.whl", hash = "sha256:c070e40154b4bb472e55ac7b30e170f6224d525111872f9af01ea1f67089c5bc"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp37-cp37m-win_amd64.whl", hash = "sha256:7eda1eeda3782d6dab2a86145a6511fa9f08b56ba1c593fb480a74477c5d7361"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp38-cp38-win32.whl", hash = "sha256:16d74e60229e94b596d7c280577638d77f2900bd80a4dc325f6d1039376c82fe"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp38-cp38-win_amd64.whl", hash = "sha256:95346d10db577ba42587677f8071408258b16c55ee7c1cc549ae8ecdf3d893dd"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp39-cp39-win32.whl", hash = "sha256:1011841fed437d6d4b8ed77dde62eb2a0dc0b1cf6feb9805bb2a2481b1017384"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp39-cp39-win_amd64.whl", hash = "sha256:2c6d5bbff45d76125ff684b9231442668f9d7101175568bd1da1d54c8ade725f"},
+    {file = "PyOpenGL-accelerate-3.1.7.tar.gz", hash = "sha256:2b123621273a939f7fd2ec227541e399f9b5d4e815d69ae0bdb1b6c70a293680"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:f2143cf1073c1377111873ec53b67cb9a75a546a101d8292670d0ffe40eca50d"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8a5c76bfe6dead3ee79619e2ba143650a70c462ffcff150bbefc29e792410f58"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b055975515fed03e9b84a348950cad3cba0441d5a5dcd264877d58e0d239019c"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:ccb73afacc8e0ed4fc68ff9ab3042e4c6bce3ce0587ec9d34dee18c4f032575e"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:cf4ef5135069add79345bc954b12da1a4c3708ed99e3fd4c9b512cf5dc5767a0"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-win32.whl", hash = "sha256:c2636803fcbcb0767b1febd28153fd169a732577430cc9d2ab60ce322aaa1097"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp310-cp310-win_amd64.whl", hash = "sha256:ab8b7c7b4bab48b8fbd52481b2618ae382ea66952008c2a0e8908dfca5caa61d"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:ad8e2d186878946e5c4896d1c241af6b5f8cd87433e46741d29c3fdea6eba2c5"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6c1b2b93d25e9ec8475416ed18c27a0231f29dffe0b524d827276802534a3cde"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ed4efe15eedc79415ee192a9ca8bec04f19c7e313444ac50e50ea26c80606ce2"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:e8b41f94a185c71d4c2658e9ee1a6f14e555e8b83bd4e18e6367d66da6a39242"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:71b8a862ab85e02b7f88d935045be25ebc4104c3676263f0b90a91a520b66bd5"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-win32.whl", hash = "sha256:67b9f9d86ed5a928ebf93ace86dd8a4959388e04e89e115075575bbbe72c6546"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp311-cp311-win_amd64.whl", hash = "sha256:d3678b03e2cb41f87c84411313c441466497b7b829678ad5801944820f986cb7"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:3e14d8075804c97c42ce2fa1f7e3805d2d02a74253b523350e715b01f222e065"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8f3392dc5874756f6cb03b406960cf48d5956fa31dcfb65614ee24c094a73791"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8e1f8a351aa8d8b95dab9ec374162384a3e8b2fc76ba7792adb17eb183963605"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-musllinux_1_1_i686.whl", hash = "sha256:8eba741abba05ce711060f2c745fd3195314d78d362c0c6d9bd6ffdde1ad377b"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-musllinux_1_1_x86_64.whl", hash = "sha256:ce4ff263a8f1e698160286c1a97882885c7066294ec153666df6e36b791ea31c"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-win32.whl", hash = "sha256:be9d14277c356d53196f591879d47a20295a35ae3abb7c2a1667241af6bc6274"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp36-cp36m-win_amd64.whl", hash = "sha256:8c6ae12feb8b94e2110ad75cea10c337af5ed4c12f23c566fea89135fc013284"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:a104f8ee52cc042a06b642bae3b2deb819afdfa641b15ee63f9fe7b4e654df46"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a36b59f40b5c50c29e877933f512cdd3e3f92095f075e90ed14515eb5c064f71"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0114d80fa8c5879b297b53cf53ebce5a889553b582b3dae10639e5e79a19cde2"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:4e9bfad17305c4854941b06f435dfa84cc1840baf8278aba47269766b8b1ff2d"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:08e332636e041444a0935a01c392afdde4c57b139acb10265c30c74e1fa0ee8d"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-win32.whl", hash = "sha256:6547d45b7498bc5801cd2bb98b98590203be7026c87188be9de33182a7f87138"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp37-cp37m-win_amd64.whl", hash = "sha256:f8f92c9df088b43870b81d322b2288f23a50bd9937077c12dcf5d6e48b172c76"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:1a3b5c6254a1a68e66f4294da931c5ca116705fd0933e36545a7c6f6a355398c"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8fecc1aebc33c011a8445aedd1c3c951a15e2075343300045b62ea5d543041fd"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0cdba75f4b70e32afe2d402a48abcf7cdf97429b13d83d3cfe2f045160f4f8a7"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:caa2e7c3234340302620b4455472ca81c6fbf0dfa2e27ff3139dafcf921f21b6"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:6f6530afd087fe7b2e98f97c3dcf7853086afe59e777778b40d5e8e2c72d8d48"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-win32.whl", hash = "sha256:02e2ca1e6daa14e7e87c005087e48749f13a767f881d4f16139fcc92ea2faebe"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp38-cp38-win_amd64.whl", hash = "sha256:158c52ef9342d70867d3cc5e2309c5de118ed2313e9f8b3c637b190a8a0d3d9e"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:f7fcc0fb7a59082ecfde3bab9306c4f3153dcbf457a91d264e759178cea9ab97"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6ea0f3cdcec32ebd2a8abfd81bcb30a126ebe1a645ddffaa61366474e993a19d"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dbd24c2830780912aebcfc2cb886ac68a669cfe2889074c5a0299f2d0dd78587"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:3468783d40906ef933ebd3516be4ee3636d474e4d31c40bd33ca504669ba5f6f"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:eb3e737d364476379db8919375fe3eb9c284beaaa5aeb62f0f343286a5ecaff9"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-win32.whl", hash = "sha256:3cdbaf28f6da023b1ddd85894088a525bc1088680782ab973a322d8701bfd685"},
+    {file = "PyOpenGL_accelerate-3.1.7-cp39-cp39-win_amd64.whl", hash = "sha256:948bef39594f1142f38e21cf985d4f41a530dac65f07e3c6f04f02c94c3f15a8"},
 ]
 
 [[package]]
@@ -2164,14 +2202,14 @@ telegram = ["requests"]
 
 [[package]]
 name = "typing-extensions"
-version = "4.5.0"
+version = "4.6.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.5.0-py3-none-any.whl", hash = "sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4"},
-    {file = "typing_extensions-4.5.0.tar.gz", hash = "sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb"},
+    {file = "typing_extensions-4.6.1-py3-none-any.whl", hash = "sha256:6bac751f4789b135c43228e72de18637e9a6c29d12777023a703fd1a6858469f"},
+    {file = "typing_extensions-4.6.1.tar.gz", hash = "sha256:558bc0c4145f01e6405f4a5fdbd82050bd221b119f4bf72a961a1cfd471349d6"},
 ]
 
 [[package]]
@@ -2260,4 +2298,4 @@ sb3 = ["stable-baselines3"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "e33a756c0e4f5fdd2311ea9b5a8858d24cdca55e19cf9988e630ccb6bab7f35e"
+content-hash = "62e321c1b97b911a7414e8cb62d74e321c586af224589fba0d03ee09d9084326"

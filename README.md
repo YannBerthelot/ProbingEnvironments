@@ -8,21 +8,31 @@ The goal of this library is either :
 Functionnalities :
 - Simple environments (in the gym framework) allowing to identify the part of your actor-critic algorithm that seems to be faulty.
 - Premade tests/checks that wraps the enviroments and your agent to easily use those environments by hand or in your unit tests.
-- Premade connectors to connect your agent to the tests (to adapt to the way you coded your agent without requiring refactoring) and a template to create yours.
+- Premade adaptors to connect your agent to the tests (to adapt to the way you coded your agent without requiring refactoring) and a template to create yours.
 
 
 # Installation 
 ```bash
 pip install git+https://github.com/YannBerthelot/ProbingEnvironments
+# if you need extras don't forget to install them in your virtualenv, e.g.
+pip install stable-baselines3
 ```
 OR
 ```bash
 poetry add git+https://github.com/YannBerthelot/ProbingEnvironments
+# OR, if you need extras (i.e. you are going to use your own adaptors) add @<version>[<extra_name>] e.g. for rlberry
+poetry add "git+https://github.com/YannBerthelot/ProbingEnvironments@0.1.0[rlberry]"
 ```
 
+Installation from PyPi is WIP.
+
+
+# Extras list
+- rlberry : rlberry
+- sb3 : stable-baselines3
 
 # How-to
-- Install this library
+- Install this library (with the required exgtras if the adaptators for your Agent are already provided)
 - Create a unit test file in your project.
 - Import pytest and the checks from ProbingEnvironments :
 ```python
@@ -35,9 +45,9 @@ from probing_environments.checks import (
     check_reward_discounting,
 )
 ```
-- Import the connectors for your library OR write them yourself (see template in premade_utils):
+- Import the adaptors for your library OR write them yourself (see template in adaptors/template.py):
 ```python
-from probing_environments.premade_utils.sb3 import (
+from probing_environments.adaptors.sb3 import (
     get_gamma,
     get_policy,
     get_value,
@@ -80,11 +90,11 @@ def test_check_advantage_policy():
     check_advantage_policy(AGENT, init_agent, train_agent, get_policy, discrete=False)
 
 
-def test_check_batching_process():
+def test_check_actor_and_critic_coupling():
     """
-    Test that check_batching_process works on failproof sb3.
+    Test that test_check_actor_and_critic_coupling works on failproof sb3.
     """
-    check_batching_process(
+    check_actor_and_critic_coupling(
         AGENT, init_agent, train_agent, get_policy, get_value, discrete=False
     )
 ```
@@ -104,3 +114,5 @@ The idea for this library comes from this presentation from Andy L Jones : https
 - [ ] Fix the no-direct dependency issue when building for PyPi
 - [ ] Release on Test-PyPi
 - [ ] Init changelog and version automation
+- [ ] Rework message codes so they are not cutoff on screen
+- [ ] Rework the setup part of readme with extras for reproducibility

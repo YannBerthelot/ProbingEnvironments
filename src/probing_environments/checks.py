@@ -2,7 +2,7 @@
 Premade tests including the initialization of the agent, the training and the
 parameter tests.
 """
-from typing import Any, Callable, List
+from typing import Callable, List
 
 import gym
 import numpy as np
@@ -10,17 +10,58 @@ import pytest
 from mypy_extensions import DefaultNamedArg
 
 from probing_environments.envs import (
-    ProbeEnv1,
-    ProbeEnv2,
-    ProbeEnv3,
-    ProbeEnv4,
-    ProbeEnv5,
+    AdvantagePolicyLossPolicyUpdateEnv,
+    PolicyAndValueEnv,
+    RewardDiscountingEnv,
+    ValueBackpropEnv,
+    ValueLossOrOptimizerEnv,
 )
+from probing_environments.utils.type_hints import AgentType
 
 EPS = 1e-1
 GAMMA = 0.5
 
-AgentType = Any
+
+def assert_predicted_value_isclose_expected_value(
+    expected_value: float, predicted_value: float, err_msg: str
+):
+    """
+    Check that the predicted value is close enough to the expected_value and return\
+          an appropriate error message if it's not the case
+
+    Args:
+        expected_value (float): The expected value
+        predicted_value (float): The value predicted by critic.
+        err_msg (str): The error message pointing to where the cause may be if the\
+              assertion fails in the specific test.
+    """
+    assert (
+        pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
+    ), f"{err_msg}. Expected a value of {expected_value}, got {predicted_value}"
+
+
+def assert_action_proba_is_larger_than_threshold(
+    expected_proba: float,
+    expected_action: int,
+    actions_probas: List[float],
+    err_msg: str,
+):
+    """
+    Check that the predicted probability for the expected_action is larger than a given\
+          threshold and if not return a message to pinpoint where the bug most likely\
+            originates from if possible.
+    Args:
+        expected_proba (float): The proability threhsold to be beaten.
+        expected_action (int): The action for which we want to check probability.
+        actions_probas (List[float]): The action probabilities to consider
+        err_msg (str): The error message to pinpoint the probable source of the\
+              potential problem
+    """
+    action_proba = actions_probas[expected_action]
+    assert action_proba > expected_proba, (
+        f"{err_msg}. Expected a probability larger than {expected_proba*100}% for"
+        f" action {expected_action}, got {action_proba}"
+    )
 
 
 def check_loss_or_optimizer_value_net(
@@ -33,8 +74,8 @@ def check_loss_or_optimizer_value_net(
     discrete: bool = True,
 ):
     """
-    Train and test your agent on ProbeEnv1 : Check for problems in the loss calculation\
-          or optimizer of the value network.
+    Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
+          loss calculation or optimizer of the value network.
 
     Args:
         agent (AgentType) : The agent to be used
@@ -47,16 +88,15 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ProbeEnv1(discrete)
+    env = ValueLossOrOptimizerEnv(discrete)
     agent = init_agent(agent, env)
     agent = train_agent(agent, int(1e3))
-    expected_value = 1
-    predicted_value = get_value(agent, env.reset())
-    err_msg = (
+    assert_predicted_value_isclose_expected_value(
+        1,
+        get_value(agent, env.reset()),
         "There's most likely a problem with the value loss calculation or the"
-        f" optimizer. Expected {expected_value} and got {predicted_value}"
+        " optimizer",
     )
-    assert pytest.approx(expected_value, abs=EPS) == predicted_value, err_msg
 
 
 def check_backprop_value_net(
@@ -69,8 +109,8 @@ def check_backprop_value_net(
     discrete: bool = True,
 ):
     """
-    Train and test your agent on ProbeEnv2 : Check for problems in the backprop of your\
-          value net.
+    Train and test your agent on ValueBackpropEnv : Check for problems in the \
+        backprop of your value net.
 
     Args:
         agent (AgentType) : The agent to be used
@@ -83,49 +123,19 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, ProbeEnv2(discrete))
+    agent = init_agent(agent, ValueBackpropEnv(discrete))
     agent = train_agent(agent, int(1e3))
-
-    if discrete:
-        expected_value = 0
-        predicted_value = get_value(agent, np.array(0))
-        err_msg = (
-            "There is most lilely a problem with the backprop in your value network."
-            f" Expected a value of {expected_value}, got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
-
-        predicted_value = get_value(agent, np.array(1))
-        expected_value = 1
-        err_msg = (
-            "There is most lilely a problem with the backprop in your value network."
-            f" Expected a value of {expected_value}, got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
-    else:
-        expected_value = 0
-        predicted_value = get_value(agent, np.array([0, 0, 0]))
-        err_msg = (
-            "There is most lilely a problem with the backprop in your value network."
-            f" Expected a value of {expected_value}, got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
-
-        expected_value = 1
-        predicted_value = get_value(agent, np.array([1, 1, 1]))
-        err_msg = (
-            "There is most lilely a problem with the backprop in your value network."
-            f" Expected a value of {expected_value}, got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
+    err_msg = "There is most lilely a problem with the backprop in your value network."
+    assert_predicted_value_isclose_expected_value(
+        0,
+        get_value(agent, np.array(0) if discrete else np.array([0, 0, 0])),
+        err_msg,
+    )
+    assert_predicted_value_isclose_expected_value(
+        1,
+        get_value(agent, np.array(1) if discrete else np.array([1, 1, 1])),
+        err_msg,
+    )
 
 
 def check_reward_discounting(
@@ -139,8 +149,8 @@ def check_reward_discounting(
     discrete: bool = True,
 ):
     """
-    Train and test yout agent on ProbeEnv3: Check problems in the reward discounting\
-          computation
+    Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
+          discounting computation.
 
     Args:
         agent (AgentType) : The agent to be used
@@ -155,46 +165,23 @@ def check_reward_discounting(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, ProbeEnv3(discrete), gamma=0.5)
+    agent = init_agent(agent, RewardDiscountingEnv(discrete), gamma=0.5)
     agent = train_agent(agent, int(1e3))
-    expected_value = get_gamma(agent)
-    if discrete:
-        predicted_value = get_value(agent, np.array([0]))
-        err_msg = (
-            "There is most likely a problem with your reward discounting. Expected a"
-            f" value of {expected_value} but got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
-    else:
-        predicted_value = get_value(agent, np.array([0, 0, 0]))
-        err_msg = (
-            "There is most likely a problem with your reward discounting. Expected a"
-            f" value of {expected_value} but got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
-    expected_value = 1
-    if discrete:
-        predicted_value = get_value(agent, np.array([1]))
-        err_msg = (
-            "There is most likely a problem with your reward discounting. Expected a"
-            f" value of {expected_value} but got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
-    else:
-        predicted_value = get_value(agent, np.array([1, 1, 1]))
-        err_msg = (
-            "There is most likely a problem with your reward discounting. Expected a"
-            f" value of {expected_value} but got {predicted_value}"
-        )
-        assert (
-            pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
-        ), err_msg
+    err_msg = "There is most likely a problem with your reward discounting."
+    assert_predicted_value_isclose_expected_value(
+        expected_value=get_gamma(agent),
+        predicted_value=get_value(
+            agent, np.array(0) if discrete else np.array([0, 0, 0])
+        ),
+        err_msg=err_msg,
+    )
+    assert_predicted_value_isclose_expected_value(
+        expected_value=1,
+        predicted_value=get_value(
+            agent, np.array(1) if discrete else np.array([1, 1, 1])
+        ),
+        err_msg=err_msg,
+    )
 
 
 def check_advantage_policy(
@@ -207,8 +194,8 @@ def check_advantage_policy(
     discrete: bool = True,
 ):
     """
-    Train and test your agent on ProbeEnv4: Check problems in the advantage computation\
-        , the policy update or the policy loss.
+    Train and test your agent on AdvantagePolicyLossPolicyUpdateEnv: Check problems in\
+          the advantage computation , the policy update or the policy loss.
 
     Args:
         agent (AgentType): The agent to be used
@@ -216,26 +203,27 @@ def check_advantage_policy(
               a given Env and gamma/discount factor. See template.
         train_agent (Callable[[AgentType, float], AgentType]): Train your agent for a \
             given budget. See template.
-        get_action (Callable[[AgentType, np.ndarray], np.ndarray]): Get action for a \
+        get_policy (Callable[[AgentType, np.ndarray], List[float]]): Get action for a \
             given obs using your actor. See template.
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ProbeEnv4(discrete)
+    env = AdvantagePolicyLossPolicyUpdateEnv(discrete)
     agent = init_agent(agent, env, gamma=0.5)
     agent = train_agent(agent, int(1e3))
-    excepted_action = 0
-    action_probabilities = get_policy(agent, env.reset())
     err_msg = (
         "There is most likely a problem with your reward advantage computing or your"
-        " policy loss or your policy update. Expected the actor to select"
-        f" {excepted_action} with at least 90% chance but got"
-        f" {action_probabilities[0]*100}%"
+        " policy loss or your policy update "
     )
-    assert action_probabilities[0] > 0.90, err_msg
+    assert_action_proba_is_larger_than_threshold(
+        expected_proba=0.90,
+        expected_action=0,
+        actions_probas=get_policy(agent, env.reset()),
+        err_msg=err_msg,
+    )
 
 
-def check_batching_process(
+def check_actor_and_critic_coupling(
     agent: AgentType,
     init_agent: Callable[
         [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
@@ -246,8 +234,8 @@ def check_batching_process(
     discrete: bool = True,
 ):
     """
-    Train and test your agent on ProbeEnv4: Check problems in the advantage computation\
-        , the policy update or the policy loss.
+    Train and test your agent on PolicyAndValueEnv: Check problems in the coupling of\
+          actor and critic (possibly batching process for example).
 
     Args:
         agent (AgentType): The agent to be used
@@ -255,54 +243,43 @@ def check_batching_process(
               a given Env and gamma/discount factor. See template.
         train_agent (Callable[[AgentType, float], AgentType]): Train your agent for a \
             given budget. See template.
-        get_action (Callable[[AgentType, np.ndarray], np.ndarray]): Get action for a \
+        get_policy (Callable[[AgentType, np.ndarray], List[float]]): Get action for a \
             given obs using your actor. See template.
         get_value (Callable[[AgentType, np.ndarray], np.ndarray]): Get value for a \
             given obs using your critic. See template.
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ProbeEnv5(discrete)
+    env = PolicyAndValueEnv(discrete)
     agent = init_agent(agent, env)
     agent = train_agent(agent, int(1e3))
-
-    if discrete:
-        action_probabilities = get_policy(agent, np.array([0]))
-        assert action_probabilities[0] > 0.9, (
-            "Expected action 0 to have at least 90% probability, got"
-            f" {action_probabilities[0]*100}%"
-        )
-        action_probabilities = get_policy(agent, np.array([1]))
-        assert action_probabilities[1] > 0.9, (
-            "Expected action 1 to have at least 90% probability, got"
-            f" {action_probabilities[1]*100}%"
-        )
-
-        predicted_value = get_value(agent, np.array([0]))
-        assert predicted_value == pytest.approx(
-            1, abs=EPS
-        ), f"Expected value of 1, got {predicted_value}"
-        predicted_value = get_value(agent, np.array([1]))
-        assert predicted_value == pytest.approx(
-            1, abs=EPS
-        ), f"Expected value of 1, got {predicted_value}"
-
-    else:
-        action_probabilities = get_policy(agent, np.array([0, 0, 0]))
-        assert action_probabilities[0] > 0.9, (
-            "Expected action 0 to have at least 90% probability, got"
-            f" {action_probabilities[0]*100}%"
-        )
-        action_probabilities = get_policy(agent, np.array([1, 1, 1]))
-        assert action_probabilities[1] > 0.9, (
-            "Expected action 1 to have at least 90% probability, got"
-            f" {action_probabilities[1]*100}%"
-        )
-        predicted_value = get_value(agent, np.array([0, 0, 0]))
-        assert predicted_value == pytest.approx(
-            1, abs=EPS
-        ), f"Expected value of 1, got {predicted_value}"
-        predicted_value = get_value(agent, np.array([1, 1, 1]))
-        assert predicted_value == pytest.approx(
-            1, abs=EPS
-        ), f"Expected value of 1, got {predicted_value}"
+    assert_action_proba_is_larger_than_threshold(
+        expected_proba=0.90,
+        expected_action=0,
+        actions_probas=get_policy(
+            agent, np.array([0]) if discrete else np.array([0, 0, 0])
+        ),
+        err_msg="",
+    )
+    assert_predicted_value_isclose_expected_value(
+        expected_value=1,
+        predicted_value=get_value(
+            agent, np.array(0) if discrete else np.array([0, 0, 0])
+        ),
+        err_msg="",
+    )
+    assert_action_proba_is_larger_than_threshold(
+        expected_proba=0.90,
+        expected_action=1,
+        actions_probas=get_policy(
+            agent, np.array([1]) if discrete else np.array([1, 1, 1])
+        ),
+        err_msg="",
+    )
+    assert_predicted_value_isclose_expected_value(
+        expected_value=1,
+        predicted_value=get_value(
+            agent, np.array(1) if discrete else np.array([1, 1, 1])
+        ),
+        err_msg="",
+    )
