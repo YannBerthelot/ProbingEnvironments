@@ -10,7 +10,10 @@ from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
 
 
 def init_agent(
-    agent: OnPolicyAlgorithm, env: gym.Env, gamma: Optional[float] = 0.5
+    agent: OnPolicyAlgorithm,
+    env: gym.Env,
+    gamma: Optional[float] = 0.5,
+    learning_rate: Optional[float] = 1e-3,
 ) -> OnPolicyAlgorithm:
     """
     Initialize your agent on a given env while also setting the discount factor.
@@ -27,7 +30,7 @@ def init_agent(
     Returns:
         AgentType: Your agent with the right settings.
     """
-    return agent("MlpPolicy", env, gamma=gamma)
+    return agent("MlpPolicy", env, gamma=gamma, learning_rate=learning_rate)
 
 
 def train_agent(
