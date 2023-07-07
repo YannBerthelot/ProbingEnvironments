@@ -4,7 +4,7 @@ parameter tests.
 """
 from typing import Callable, List
 
-import gym
+import gymnasium as gym
 import numpy as np
 import pytest
 from mypy_extensions import DefaultNamedArg
@@ -93,7 +93,7 @@ def check_loss_or_optimizer_value_net(
     agent = train_agent(agent, int(1e3))
     assert_predicted_value_isclose_expected_value(
         1,
-        get_value(agent, env.reset()),
+        get_value(agent, env.reset()[0]),
         "There's most likely a problem with the value loss calculation or the"
         " optimizer",
     )
@@ -218,7 +218,7 @@ def check_advantage_policy(
     assert_action_proba_is_larger_than_threshold(
         expected_proba=0.90,
         expected_action=0,
-        actions_probas=get_policy(agent, env.reset()),
+        actions_probas=get_policy(agent, env.reset()[0]),
         err_msg=err_msg,
     )
 

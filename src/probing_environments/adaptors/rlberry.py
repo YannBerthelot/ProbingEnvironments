@@ -3,7 +3,7 @@ Premade connectors for rlberry
 """
 from typing import List, Optional
 
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 

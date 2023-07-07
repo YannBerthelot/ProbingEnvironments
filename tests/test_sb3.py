@@ -27,41 +27,50 @@ def test_check_loss_or_optimizer_value_net():
     """
     Test that check_loss_or_optimizer_value_net works on failproof sb3.
     """
-    check_loss_or_optimizer_value_net(
-        AGENT, init_agent, train_agent, get_value, discrete=True
-    )
+    for discrete in (True, False):
+        check_loss_or_optimizer_value_net(
+            AGENT, init_agent, train_agent, get_value, discrete=discrete
+        )
 
 
 def test_check_backprop_value_net():
     """
     Test that check_backprop_value_net works on failproof sb3.
     """
-    check_backprop_value_net(AGENT, init_agent, train_agent, get_value, discrete=True)
+    for discrete in (True, False):
+        check_backprop_value_net(
+            AGENT, init_agent, train_agent, get_value, discrete=discrete
+        )
 
 
 def test_check_reward_discounting():
     """
     Test that check_reward_discounting works on failproof sb3.
     """
-    check_reward_discounting(
-        AGENT, init_agent, train_agent, get_value, get_gamma, discrete=True
-    )
+    for discrete in (True, False):
+        check_reward_discounting(
+            AGENT, init_agent, train_agent, get_value, get_gamma, discrete=discrete
+        )
 
 
 def test_check_advantage_policy():
     """
     Test that check_advantage_policy works on failproof sb3.
     """
-    check_advantage_policy(AGENT, init_agent, train_agent, get_policy, discrete=True)
+    for discrete in (True, False):
+        check_advantage_policy(
+            AGENT, init_agent, train_agent, get_policy, discrete=discrete
+        )
 
 
 def test_check_actor_and_critic_coupling():
     """
     Test that check_actor_and_critic_coupling works on failproof sb3.
     """
-    check_actor_and_critic_coupling(
-        AGENT, init_agent, train_agent, get_policy, get_value, discrete=True
-    )
+    for discrete in (True, False):
+        check_actor_and_critic_coupling(
+            AGENT, init_agent, train_agent, get_policy, get_value, discrete=discrete
+        )
 
 
 def test_errors():
