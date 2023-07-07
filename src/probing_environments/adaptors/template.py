@@ -10,7 +10,10 @@ from probing_environments.utils.type_hints import AgentType
 
 
 def init_agent(
-    agent: AgentType, env: gym.Env, gamma: Optional[float] = 0.5
+    agent: AgentType,
+    env: gym.Env,
+    gamma: Optional[float] = 0.5,
+    learning_rate: Optional[float] = 1e-3,
 ) -> AgentType:
     """
     Initialize your agent on a given env while also setting the discount factor.

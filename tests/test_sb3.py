@@ -21,6 +21,8 @@ from probing_environments.checks import (
 
 AgentType = Any
 AGENT = A2C
+LEARNING_RATE = 1e-3
+BUDGET = 2e3
 
 
 def test_check_loss_or_optimizer_value_net():
@@ -29,7 +31,13 @@ def test_check_loss_or_optimizer_value_net():
     """
     for discrete in (True, False):
         check_loss_or_optimizer_value_net(
-            AGENT, init_agent, train_agent, get_value, discrete=discrete
+            AGENT,
+            init_agent,
+            train_agent,
+            get_value,
+            discrete=discrete,
+            learning_rate=LEARNING_RATE,
+            budget=BUDGET,
         )
 
 
@@ -39,7 +47,13 @@ def test_check_backprop_value_net():
     """
     for discrete in (True, False):
         check_backprop_value_net(
-            AGENT, init_agent, train_agent, get_value, discrete=discrete
+            AGENT,
+            init_agent,
+            train_agent,
+            get_value,
+            discrete=discrete,
+            learning_rate=LEARNING_RATE,
+            budget=BUDGET,
         )
 
 
@@ -49,7 +63,14 @@ def test_check_reward_discounting():
     """
     for discrete in (True, False):
         check_reward_discounting(
-            AGENT, init_agent, train_agent, get_value, get_gamma, discrete=discrete
+            AGENT,
+            init_agent,
+            train_agent,
+            get_value,
+            get_gamma,
+            discrete=discrete,
+            learning_rate=LEARNING_RATE,
+            budget=BUDGET,
         )
 
 
@@ -59,7 +80,13 @@ def test_check_advantage_policy():
     """
     for discrete in (True, False):
         check_advantage_policy(
-            AGENT, init_agent, train_agent, get_policy, discrete=discrete
+            AGENT,
+            init_agent,
+            train_agent,
+            get_policy,
+            discrete=discrete,
+            learning_rate=LEARNING_RATE,
+            budget=BUDGET,
         )
 
 
@@ -69,7 +96,14 @@ def test_check_actor_and_critic_coupling():
     """
     for discrete in (True, False):
         check_actor_and_critic_coupling(
-            AGENT, init_agent, train_agent, get_policy, get_value, discrete=discrete
+            AGENT,
+            init_agent,
+            train_agent,
+            get_policy,
+            get_value,
+            discrete=discrete,
+            learning_rate=LEARNING_RATE,
+            budget=BUDGET,
         )
 
 

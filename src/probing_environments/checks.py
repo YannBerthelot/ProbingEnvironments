@@ -2,12 +2,12 @@
 Premade tests including the initialization of the agent, the training and the
 parameter tests.
 """
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 import gymnasium as gym
 import numpy as np
 import pytest
-from mypy_extensions import DefaultNamedArg
+from mypy_extensions import DefaultNamedArg, NamedArg
 
 from probing_environments.envs import (
     AdvantagePolicyLossPolicyUpdateEnv,
@@ -20,6 +20,15 @@ from probing_environments.utils.type_hints import AgentType
 
 EPS = 1e-1
 GAMMA = 0.5
+InitAgentType = Callable[
+    [
+        AgentType,
+        gym.Env,
+        NamedArg(float, "learning_rate"),
+        DefaultNamedArg(float, "gamma"),
+    ],
+    AgentType,
+]
 
 
 def assert_predicted_value_isclose_expected_value(
@@ -66,12 +75,12 @@ def assert_action_proba_is_larger_than_threshold(
 
 def check_loss_or_optimizer_value_net(
     agent: AgentType,
-    init_agent: Callable[
-        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
-    ],
+    init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     discrete: bool = True,
+    budget: Optional[int] = int(1e3),
+    learning_rate: Optional[float] = 1e-3,
 ):
     """
     Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
@@ -89,8 +98,8 @@ def check_loss_or_optimizer_value_net(
             Defaults to True.
     """
     env = ValueLossOrOptimizerEnv(discrete)
-    agent = init_agent(agent, env)
-    agent = train_agent(agent, int(1e3))
+    agent = init_agent(agent, env, learning_rate=learning_rate)
+    agent = train_agent(agent, budget)
     assert_predicted_value_isclose_expected_value(
         1,
         get_value(agent, env.reset()[0]),
@@ -101,12 +110,12 @@ def check_loss_or_optimizer_value_net(
 
 def check_backprop_value_net(
     agent: AgentType,
-    init_agent: Callable[
-        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
-    ],
+    init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     discrete: bool = True,
+    budget: Optional[float] = int(2e3),
+    learning_rate: Optional[float] = 1e-3,
 ):
     """
     Train and test your agent on ValueBackpropEnv : Check for problems in the \
@@ -123,8 +132,8 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, ValueBackpropEnv(discrete))
-    agent = train_agent(agent, int(1e3))
+    agent = init_agent(agent, ValueBackpropEnv(discrete), learning_rate=learning_rate)
+    agent = train_agent(agent, budget)
     err_msg = "There is most lilely a problem with the backprop in your value network."
     assert_predicted_value_isclose_expected_value(
         0,
@@ -140,13 +149,13 @@ def check_backprop_value_net(
 
 def check_reward_discounting(
     agent: AgentType,
-    init_agent: Callable[
-        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
-    ],
+    init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     get_gamma: Callable[[AgentType], float],
     discrete: bool = True,
+    budget: Optional[float] = int(2e3),
+    learning_rate: Optional[float] = 1e-3,
 ):
     """
     Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
@@ -165,8 +174,10 @@ def check_reward_discounting(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, RewardDiscountingEnv(discrete), gamma=0.5)
-    agent = train_agent(agent, int(1e3))
+    agent = init_agent(
+        agent, RewardDiscountingEnv(discrete), gamma=0.5, learning_rate=learning_rate
+    )
+    agent = train_agent(agent, budget)
     err_msg = "There is most likely a problem with your reward discounting."
     assert_predicted_value_isclose_expected_value(
         expected_value=get_gamma(agent),
@@ -186,12 +197,12 @@ def check_reward_discounting(
 
 def check_advantage_policy(
     agent: AgentType,
-    init_agent: Callable[
-        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
-    ],
+    init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_policy: Callable[[AgentType, np.ndarray], np.ndarray],
     discrete: bool = True,
+    budget: Optional[float] = int(2e3),
+    learning_rate: Optional[float] = 1e-3,
 ):
     """
     Train and test your agent on AdvantagePolicyLossPolicyUpdateEnv: Check problems in\
@@ -209,8 +220,8 @@ def check_advantage_policy(
             Defaults to True.
     """
     env = AdvantagePolicyLossPolicyUpdateEnv(discrete)
-    agent = init_agent(agent, env, gamma=0.5)
-    agent = train_agent(agent, int(1e3))
+    agent = init_agent(agent, env, gamma=0.5, learning_rate=learning_rate)
+    agent = train_agent(agent, budget)
     err_msg = (
         "There is most likely a problem with your reward advantage computing or your"
         " policy loss or your policy update "
@@ -225,13 +236,13 @@ def check_advantage_policy(
 
 def check_actor_and_critic_coupling(
     agent: AgentType,
-    init_agent: Callable[
-        [AgentType, gym.Env, DefaultNamedArg(float, "gamma")], AgentType
-    ],
+    init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_policy: Callable[[AgentType, np.ndarray], List[float]],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     discrete: bool = True,
+    budget: Optional[float] = int(2e3),
+    learning_rate: Optional[float] = 1e-3,
 ):
     """
     Train and test your agent on PolicyAndValueEnv: Check problems in the coupling of\
@@ -251,8 +262,8 @@ def check_actor_and_critic_coupling(
             Defaults to True.
     """
     env = PolicyAndValueEnv(discrete)
-    agent = init_agent(agent, env)
-    agent = train_agent(agent, int(1e3))
+    agent = init_agent(agent, env, learning_rate=learning_rate)
+    agent = train_agent(agent, budget)
     assert_action_proba_is_larger_than_threshold(
         expected_proba=0.90,
         expected_action=0,
