@@ -8,6 +8,7 @@ import numpy as np
 import torch
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
+from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.vec_env import DummyVecEnv
 
 
@@ -18,6 +19,7 @@ def init_agent(
     gamma: Optional[float] = 0.5,
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = None,
+    seed: Optional[int] = 42,
 ) -> OnPolicyAlgorithm:
     """
     Initialize your agent on a given env while also setting the discount factor.
@@ -38,14 +40,15 @@ def init_agent(
     def make_env():
         return env(num_envs)
 
+    set_random_seed(seed=seed)
     if num_envs is not None and num_envs > 1:
         vec_env = make_vec_env(make_env, n_envs=num_envs, vec_env_cls=DummyVecEnv)
         return agent(
-            "MlpPolicy", vec_env, gamma=gamma, learning_rate=learning_rate, seed=42
+            "MlpPolicy", vec_env, gamma=gamma, learning_rate=learning_rate, seed=seed
         )
     else:
         return agent(
-            "MlpPolicy", env(), gamma=gamma, learning_rate=learning_rate, seed=42
+            "MlpPolicy", env(), gamma=gamma, learning_rate=learning_rate, seed=seed
         )
 
 
