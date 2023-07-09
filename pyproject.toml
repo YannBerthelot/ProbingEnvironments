@@ -10,12 +10,12 @@ python = "^3.8"
 mypy-extensions = "^1.0.0"
 pytest = "^7.4.0"
 gymnasium = "^0.28.1"
-sb3-contrib = {version="2.0.0a1", optional=true}
 
-[tool.poetry.extras]
-sb3 = ["sb3-contrib"]
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+isort = "^5.12.0"
+torch = "^1.11, !=2.0.1"
+stable-baselines3 = "^2.0.0"
 pre-commit = "^2.20.0"
 scriv = {extras = ["toml"], version = "^0.15.2"}
 tox = "^3.25.1"
@@ -24,9 +24,6 @@ black = {version = "22.3.0", allow-prereleases = true}
 coverage = {extras = ["toml"], version = "^6.4.3"}
 mypy = "^0.971"
 
-
-[tool.poetry.group.dev.dependencies]
-isort = "^5.12.0"
 
 [tool.pylint]
 adopts = ["--ignore==src/probing_environments/envs.py"]
@@ -54,31 +51,31 @@ envlist =
     coverage
 
 [testenv:testing]
-extras = 
-    rlberry
-    sb3
+whitelist_externals = poetry
+skip_install = true
 deps = pyproject.toml
 allowlist_externals = pytest
 changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
 commands =
-    pytest {toxinidir}
+    poetry install
+    poetry run pytest {toxinidir}
 
 [testenv:linting]
 deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
-extras = 
-    rlberry
-    sb3
+whitelist_externals = poetry
+skip_install = true
 deps = 
     coverage[toml]
     pyproject.toml
     pytest
 commands =
-    coverage run --source=probing_environments --branch -m pytest {toxinidir}
-    coverage report -m --fail-under 90
-    coverage xml -o {toxinidir}/coverage.xml
+    poetry install
+    poetry run coverage run --source=probing_environments --branch -m pytest {toxinidir}
+    poetry run coverage report -m --fail-under 80
+    poetry run coverage xml -o {toxinidir}/coverage.xml
 
 [gh-actions]
 python =

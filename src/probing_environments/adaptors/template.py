@@ -12,6 +12,7 @@ from probing_environments.utils.type_hints import AgentType
 def init_agent(
     agent: AgentType,
     env: gym.Env,
+    run_name: str,
     gamma: Optional[float] = 0.5,
     learning_rate: Optional[float] = 1e-3,
 ) -> AgentType:

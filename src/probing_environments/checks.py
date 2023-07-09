@@ -22,10 +22,12 @@ EPS = 1e-1
 GAMMA = 0.5
 InitAgentType = Callable[
     [
-        AgentType,
-        gym.Env,
+        NamedArg(AgentType, "agent"),
+        NamedArg(gym.Env, "env"),
+        NamedArg(str, "run_name"),
         NamedArg(float, "learning_rate"),
         DefaultNamedArg(float, "gamma"),
+        NamedArg(int, "num_envs"),
     ],
     AgentType,
 ]
@@ -69,7 +71,7 @@ def assert_action_proba_is_larger_than_threshold(
     action_proba = actions_probas[expected_action]
     assert action_proba > expected_proba, (
         f"{err_msg}. Expected a probability larger than {expected_proba*100}% for"
-        f" action {expected_action}, got {action_proba}"
+        f" action {expected_action}, got {action_proba*100}%"
     )
 
 
@@ -78,9 +80,9 @@ def check_loss_or_optimizer_value_net(
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
-    discrete: bool = True,
     budget: Optional[int] = int(1e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
@@ -97,12 +99,18 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ValueLossOrOptimizerEnv(discrete)
-    agent = init_agent(agent, env, learning_rate=learning_rate)
+    env = ValueLossOrOptimizerEnv
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        run_name="check_loss_or_optimizer_value_net",
+        learning_rate=learning_rate,
+        num_envs=num_envs,
+    )
     agent = train_agent(agent, budget)
     assert_predicted_value_isclose_expected_value(
         1,
-        get_value(agent, env.reset()[0]),
+        get_value(agent, env().reset()[0]),
         "There's most likely a problem with the value loss calculation or the"
         " optimizer",
     )
@@ -113,9 +121,9 @@ def check_backprop_value_net(
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
-    discrete: bool = True,
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test your agent on ValueBackpropEnv : Check for problems in the \
@@ -132,17 +140,24 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    agent = init_agent(agent, ValueBackpropEnv(discrete), learning_rate=learning_rate)
+    env = ValueBackpropEnv
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        num_envs=num_envs,
+        run_name="check_backprop_value_net",
+        learning_rate=learning_rate,
+    )
     agent = train_agent(agent, budget)
     err_msg = "There is most lilely a problem with the backprop in your value network."
     assert_predicted_value_isclose_expected_value(
         0,
-        get_value(agent, np.array(0) if discrete else np.array([0, 0, 0])),
+        get_value(agent, np.array([0])),
         err_msg,
     )
     assert_predicted_value_isclose_expected_value(
         1,
-        get_value(agent, np.array(1) if discrete else np.array([1, 1, 1])),
+        get_value(agent, np.array([1])),
         err_msg,
     )
 
@@ -153,9 +168,9 @@ def check_reward_discounting(
     train_agent: Callable[[AgentType, float], AgentType],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     get_gamma: Callable[[AgentType], float],
-    discrete: bool = True,
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
@@ -175,22 +190,23 @@ def check_reward_discounting(
             Defaults to True.
     """
     agent = init_agent(
-        agent, RewardDiscountingEnv(discrete), gamma=0.5, learning_rate=learning_rate
+        agent=agent,
+        env=RewardDiscountingEnv,
+        run_name="check_reward_discounting",
+        num_envs=num_envs,
+        gamma=0.5,
+        learning_rate=learning_rate,
     )
     agent = train_agent(agent, budget)
     err_msg = "There is most likely a problem with your reward discounting."
     assert_predicted_value_isclose_expected_value(
         expected_value=get_gamma(agent),
-        predicted_value=get_value(
-            agent, np.array(0) if discrete else np.array([0, 0, 0])
-        ),
+        predicted_value=get_value(agent, np.array([0])),
         err_msg=err_msg,
     )
     assert_predicted_value_isclose_expected_value(
         expected_value=1,
-        predicted_value=get_value(
-            agent, np.array(1) if discrete else np.array([1, 1, 1])
-        ),
+        predicted_value=get_value(agent, np.array([1])),
         err_msg=err_msg,
     )
 
@@ -200,9 +216,9 @@ def check_advantage_policy(
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_policy: Callable[[AgentType, np.ndarray], np.ndarray],
-    discrete: bool = True,
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test your agent on AdvantagePolicyLossPolicyUpdateEnv: Check problems in\
@@ -219,8 +235,15 @@ def check_advantage_policy(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = AdvantagePolicyLossPolicyUpdateEnv(discrete)
-    agent = init_agent(agent, env, gamma=0.5, learning_rate=learning_rate)
+    env = AdvantagePolicyLossPolicyUpdateEnv
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        run_name="check_advantage_policy",
+        gamma=0.5,
+        learning_rate=learning_rate,
+        num_envs=num_envs,
+    )
     agent = train_agent(agent, budget)
     err_msg = (
         "There is most likely a problem with your reward advantage computing or your"
@@ -229,7 +252,7 @@ def check_advantage_policy(
     assert_action_proba_is_larger_than_threshold(
         expected_proba=0.90,
         expected_action=0,
-        actions_probas=get_policy(agent, env.reset()[0]),
+        actions_probas=get_policy(agent, env().reset()[0]),
         err_msg=err_msg,
     )
 
@@ -240,9 +263,9 @@ def check_actor_and_critic_coupling(
     train_agent: Callable[[AgentType, float], AgentType],
     get_policy: Callable[[AgentType, np.ndarray], List[float]],
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
-    discrete: bool = True,
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test your agent on PolicyAndValueEnv: Check problems in the coupling of\
@@ -261,36 +284,34 @@ def check_actor_and_critic_coupling(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = PolicyAndValueEnv(discrete)
-    agent = init_agent(agent, env, learning_rate=learning_rate)
+    env = PolicyAndValueEnv
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        num_envs=num_envs,
+        run_name="check_actor_and_critic_coupling",
+        learning_rate=learning_rate,
+    )
     agent = train_agent(agent, budget)
     assert_action_proba_is_larger_than_threshold(
         expected_proba=0.90,
         expected_action=0,
-        actions_probas=get_policy(
-            agent, np.array([0]) if discrete else np.array([0, 0, 0])
-        ),
+        actions_probas=get_policy(agent, np.array([0])),
         err_msg="",
     )
     assert_predicted_value_isclose_expected_value(
         expected_value=1,
-        predicted_value=get_value(
-            agent, np.array(0) if discrete else np.array([0, 0, 0])
-        ),
+        predicted_value=get_value(agent, np.array([0])),
         err_msg="",
     )
     assert_action_proba_is_larger_than_threshold(
         expected_proba=0.90,
         expected_action=1,
-        actions_probas=get_policy(
-            agent, np.array([1]) if discrete else np.array([1, 1, 1])
-        ),
+        actions_probas=get_policy(agent, np.array([1])),
         err_msg="",
     )
     assert_predicted_value_isclose_expected_value(
         expected_value=1,
-        predicted_value=get_value(
-            agent, np.array(1) if discrete else np.array([1, 1, 1])
-        ),
+        predicted_value=get_value(agent, np.array([1])),
         err_msg="",
     )
