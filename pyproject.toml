@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "probing_environments"
-version = "0.3.0"
+version = "0.4.0"
 description = "Probing environments for RL/DeepRL algorithms debugging"
 authors = ["Yann Berthelot <yannberthelot1@gmail.com>"]
 readme = "README.md"
