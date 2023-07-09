@@ -1,4 +1,4 @@
-import random
+from collections import deque
 
 import gymnasium as gym
 import numpy as np
@@ -15,30 +15,21 @@ class ValueLossOrOptimizerEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, discrete=True):
+    def __init__(self):
         super().__init__()
         self.action_space = spaces.Discrete(1)
-        self.discrete = discrete
-        if discrete:
-            self.observation_space = spaces.Discrete(1)
-        else:
-            self.observation_space = spaces.Box(0, 1, shape=(3,))
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
 
     def step(self, action):
-        if self.discrete:
-            return np.array((0)), 1, True, False, {}
-        else:
-            return np.array((0, 0, 0)), 1, True, False, {}
+        return np.array([0]), 1, True, False, {}
 
     def reset(self, seed=None):
-        if self.discrete:
-            return np.array((0)), {}
-        else:
-            return np.array((0, 0, 0)), {}
+        np.random.seed(seed)
+        return np.array([0]), {}
 
 
 def get_random_obs():
-    return random.choice([0, 1])
+    return np.random.choice([0, 1])
 
 
 class ValueBackpropEnv(gym.Env):
@@ -51,37 +42,21 @@ class ValueBackpropEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, discrete=True):
+    def __init__(self, num_envs: int = 1):
         super().__init__()
-        self.discrete = discrete
         self.action_space = spaces.Discrete(1)
-        if discrete:
-            self.observation_space = spaces.Discrete(2)
-        else:
-            self.observation_space = spaces.Box(0, 1, shape=(3,))
-        self.random_obs = get_random_obs()
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
+        self.obs_stack = deque([None for i in range(num_envs)], maxlen=num_envs)
 
     def step(self, action):
-        random_obs = get_random_obs()
-        if self.discrete:
-            return np.array(random_obs), self.random_obs, True, False, {}
-        else:
-            return (
-                np.array([random_obs for i in range(3)]),
-                self.random_obs,
-                True,
-                False,
-                {},
-            )
+        reward = self.obs_stack.popleft()
+        return np.array([1]), reward, True, False, {}
 
     def reset(self, seed=None):
-        # Reset the state of the environment to an initial state
         np.random.seed(seed)
-        self.random_obs = get_random_obs()
-        if self.discrete:
-            return np.array(self.random_obs), {}
-        else:
-            return np.array([self.random_obs for i in range(3)]), {}
+        random_obs = np.copy(get_random_obs())
+        self.obs_stack.append(random_obs)
+        return np.array([random_obs]), {}
 
 
 class RewardDiscountingEnv(gym.Env):
@@ -93,36 +68,25 @@ class RewardDiscountingEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, discrete=True):
+    def __init__(self, num_envs: int = 1):
         super().__init__()
-        self.discrete = discrete
         self.action_space = spaces.Discrete(1)
-        if discrete:
-            self.observation_space = spaces.Discrete(2)
-        else:
-            self.observation_space = spaces.Box(0, 1, shape=(3,))
-        self.t = 0
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
+        self.obs_stack = deque([0 for i in range(num_envs)], maxlen=num_envs)
 
     def step(self, action):
-        self.t += 1
-        if self.discrete:
-            return np.array([self.t]), int(self.t == 2), self.t == 2, False, {}
+        t = self.obs_stack.popleft()
+
+        is_done = t == 2
+        if is_done:
+            self.obs_stack.append(1)
         else:
-            return (
-                np.array([self.t for i in range(3)]),
-                int(self.t == 2),
-                self.t == 2,
-                False,
-                {},
-            )
+            self.obs_stack.append(t + 1)
+        return np.array([t]), int(is_done), is_done, False, {}
 
     def reset(self, seed=None):
-        self.t = 0
-        # Reset the state of the environment to an initial state
-        if self.discrete:
-            return np.array([self.t]), {}
-        else:
-            return np.array([self.t for i in range(3)]), {}
+        np.random.seed(seed)
+        return np.array([0]), {}
 
 
 class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
@@ -137,26 +101,17 @@ class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, discrete):
+    def __init__(self):
         super().__init__()
-        self.discrete = discrete
         self.action_space = spaces.Discrete(2)
-        if discrete:
-            self.observation_space = spaces.Discrete(1)
-        else:
-            self.observation_space = spaces.Box(0, 1, shape=(3,))
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
 
     def step(self, action):
-        if self.discrete:
-            return np.array([0]), 1 if action == 0 else -1, True, False, {}
-        else:
-            return np.array([0, 0, 0]), 1 if action == 0 else -1, True, False, {}
+        return np.array([0]), 1 if action == 0 else -1, True, False, {}
 
     def reset(self, seed=None):
-        if self.discrete:
-            return np.array([0]), {}
-        else:
-            return np.array([0, 0, 0]), {}
+        np.random.seed(seed)
+        return np.array([0]), {}
 
 
 class PolicyAndValueEnv(gym.Env):
@@ -173,40 +128,23 @@ class PolicyAndValueEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, discrete):
+    def __init__(self, num_envs: int = 1):
         super().__init__()
-        self.discrete = discrete
         self.action_space = spaces.Discrete(2)
-        if discrete:
-            self.observation_space = spaces.Discrete(2)
-        else:
-            self.observation_space = spaces.Box(0, 1, shape=(3,))
-        self.random_obs = get_random_obs()
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
+        self.obs_stack = deque([None for i in range(num_envs)], maxlen=num_envs)
 
     def step(self, action):
+        random_obs = self.obs_stack.popleft()
         reward = (
             1
-            if (
-                (self.random_obs == 0 and action == 0)
-                or (self.random_obs == 1 and action == 1)
-            )
-            else 0
+            if ((random_obs == 0 and action == 0) or (random_obs == 1 and action == 1))
+            else -1
         )
-        if self.discrete:
-            return np.array([self.random_obs]), reward, True, False, {}
-        else:
-            return (
-                np.array([self.random_obs for i in range(3)]),
-                reward,
-                True,
-                False,
-                {},
-            )
+        return np.array([random_obs]), reward, True, False, {}
 
     def reset(self, seed=None):
         np.random.seed(seed)
-        self.random_obs = get_random_obs()
-        if self.discrete:
-            return np.array([self.random_obs]), {}
-        else:
-            return np.array([self.random_obs for i in range(3)]), {}
+        random_obs = np.copy(get_random_obs())
+        self.obs_stack.append(random_obs)
+        return np.array([random_obs]), {}

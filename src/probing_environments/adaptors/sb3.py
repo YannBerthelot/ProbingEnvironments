@@ -12,6 +12,7 @@ from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
 def init_agent(
     agent: OnPolicyAlgorithm,
     env: gym.Env,
+    run_name: str,  # pylint: disable=W0613
     gamma: Optional[float] = 0.5,
     learning_rate: Optional[float] = 1e-3,
 ) -> OnPolicyAlgorithm:
