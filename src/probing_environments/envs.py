@@ -1,4 +1,5 @@
 from collections import deque
+from copy import deepcopy
 
 import gymnasium as gym
 import numpy as np
@@ -15,7 +16,7 @@ class ValueLossOrOptimizerEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Box(0, 1, shape=(1,))
@@ -24,7 +25,7 @@ class ValueLossOrOptimizerEnv(gym.Env):
         return np.array([0]), 1, True, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
+
         return np.array([0]), {}
 
 
@@ -42,11 +43,20 @@ class ValueBackpropEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, num_envs: int = 1):
+    def __init__(self, num_envs: int = 1, sequential=False):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
         super().__init__()
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Box(0, 1, shape=(1,))
-        self.obs_stack = deque([None for i in range(num_envs)], maxlen=num_envs)
+        if sequential:
+            self.obs_stack = deque([None for _ in range(num_envs)], maxlen=num_envs)
+        else:
+            self.obs_stack = deque([], maxlen=num_envs)
 
     def step(self, action):
         reward = self.obs_stack.popleft()
@@ -68,24 +78,35 @@ class RewardDiscountingEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, num_envs: int = 1):
+    def __init__(self, num_envs: int = 1, sequential=False):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
         super().__init__()
         self.action_space = spaces.Discrete(1)
         self.observation_space = spaces.Box(0, 1, shape=(1,))
-        self.obs_stack = deque([0 for i in range(num_envs)], maxlen=num_envs)
+        if sequential:
+            self.obs_stack = deque([0 for _ in range(num_envs)], maxlen=num_envs)
+        else:
+            self.obs_stack = deque([0], maxlen=num_envs)
 
     def step(self, action):
         t = self.obs_stack.popleft()
-
         is_done = t == 2
         if is_done:
             self.obs_stack.append(1)
+            obs_stack = deepcopy(self.obs_stack)
+            assert obs_stack.pop() == 1
         else:
             self.obs_stack.append(t + 1)
+            obs_stack = deepcopy(self.obs_stack)
+            assert obs_stack.pop() == t + 1
         return np.array([t]), int(is_done), is_done, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
         return np.array([0]), {}
 
 
@@ -101,7 +122,13 @@ class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
         super().__init__()
         self.action_space = spaces.Discrete(2)
         self.observation_space = spaces.Box(0, 1, shape=(1,))
@@ -128,11 +155,20 @@ class PolicyAndValueEnv(gym.Env):
 
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, num_envs: int = 1):
+    def __init__(self, num_envs: int = 1, sequential=False):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
         super().__init__()
         self.action_space = spaces.Discrete(2)
         self.observation_space = spaces.Box(0, 1, shape=(1,))
-        self.obs_stack = deque([None for i in range(num_envs)], maxlen=num_envs)
+        if sequential:
+            self.obs_stack = deque([None for _ in range(num_envs)], maxlen=num_envs)
+        else:
+            self.obs_stack = deque([], maxlen=num_envs)
 
     def step(self, action):
         random_obs = self.obs_stack.popleft()

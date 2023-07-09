@@ -27,6 +27,7 @@ InitAgentType = Callable[
         NamedArg(str, "run_name"),
         NamedArg(float, "learning_rate"),
         DefaultNamedArg(float, "gamma"),
+        NamedArg(int, "num_envs"),
     ],
     AgentType,
 ]
@@ -70,7 +71,7 @@ def assert_action_proba_is_larger_than_threshold(
     action_proba = actions_probas[expected_action]
     assert action_proba > expected_proba, (
         f"{err_msg}. Expected a probability larger than {expected_proba*100}% for"
-        f" action {expected_action}, got {action_proba}"
+        f" action {expected_action}, got {action_proba*100}%"
     )
 
 
@@ -81,6 +82,7 @@ def check_loss_or_optimizer_value_net(
     get_value: Callable[[AgentType, np.ndarray], np.ndarray],
     budget: Optional[int] = int(1e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
@@ -97,17 +99,18 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ValueLossOrOptimizerEnv()
+    env = ValueLossOrOptimizerEnv
     agent = init_agent(
         agent=agent,
         env=env,
         run_name="check_loss_or_optimizer_value_net",
         learning_rate=learning_rate,
+        num_envs=num_envs,
     )
     agent = train_agent(agent, budget)
     assert_predicted_value_isclose_expected_value(
         1,
-        get_value(agent, env.reset()[0]),
+        get_value(agent, env().reset()[0]),
         "There's most likely a problem with the value loss calculation or the"
         " optimizer",
     )
@@ -137,10 +140,11 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ValueBackpropEnv(num_envs)
+    env = ValueBackpropEnv
     agent = init_agent(
         agent=agent,
         env=env,
+        num_envs=num_envs,
         run_name="check_backprop_value_net",
         learning_rate=learning_rate,
     )
@@ -187,8 +191,9 @@ def check_reward_discounting(
     """
     agent = init_agent(
         agent=agent,
-        env=RewardDiscountingEnv(num_envs),
+        env=RewardDiscountingEnv,
         run_name="check_reward_discounting",
+        num_envs=num_envs,
         gamma=0.5,
         learning_rate=learning_rate,
     )
@@ -213,6 +218,7 @@ def check_advantage_policy(
     get_policy: Callable[[AgentType, np.ndarray], np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
 ):
     """
     Train and test your agent on AdvantagePolicyLossPolicyUpdateEnv: Check problems in\
@@ -229,13 +235,14 @@ def check_advantage_policy(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = AdvantagePolicyLossPolicyUpdateEnv()
+    env = AdvantagePolicyLossPolicyUpdateEnv
     agent = init_agent(
         agent=agent,
         env=env,
         run_name="check_advantage_policy",
         gamma=0.5,
         learning_rate=learning_rate,
+        num_envs=num_envs,
     )
     agent = train_agent(agent, budget)
     err_msg = (
@@ -245,7 +252,7 @@ def check_advantage_policy(
     assert_action_proba_is_larger_than_threshold(
         expected_proba=0.90,
         expected_action=0,
-        actions_probas=get_policy(agent, env.reset()[0]),
+        actions_probas=get_policy(agent, env().reset()[0]),
         err_msg=err_msg,
     )
 
@@ -277,10 +284,11 @@ def check_actor_and_critic_coupling(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = PolicyAndValueEnv(num_envs)
+    env = PolicyAndValueEnv
     agent = init_agent(
         agent=agent,
         env=env,
+        num_envs=num_envs,
         run_name="check_actor_and_critic_coupling",
         learning_rate=learning_rate,
     )

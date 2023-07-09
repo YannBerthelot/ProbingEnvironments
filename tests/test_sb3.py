@@ -39,11 +39,10 @@ def test_check_loss_or_optimizer_value_net():
     )
 
 
-def test_check_backprop_value_net():
+def test_check_backprop_value_net_1_env():
     """
     Test that check_backprop_value_net works on failproof sb3.
     """
-
     check_backprop_value_net(
         AGENT,
         init_agent,
@@ -55,7 +54,22 @@ def test_check_backprop_value_net():
     )
 
 
-def test_check_reward_discounting():
+def test_check_backprop_value_net_2_env():
+    """
+    Test that check_backprop_value_net works on failproof sb3.
+    """
+    check_backprop_value_net(
+        AGENT,
+        init_agent,
+        train_agent,
+        get_value,
+        num_envs=2,
+        learning_rate=LEARNING_RATE,
+        budget=BUDGET,
+    )
+
+
+def test_check_reward_discounting_1_env():
     """
     Test that check_reward_discounting works on failproof sb3.
     """
@@ -66,6 +80,22 @@ def test_check_reward_discounting():
         get_value,
         get_gamma,
         num_envs=1,
+        learning_rate=LEARNING_RATE,
+        budget=BUDGET,
+    )
+
+
+def test_check_reward_discounting_2_envs():
+    """
+    Test that check_reward_discounting works on failproof sb3.
+    """
+    check_reward_discounting(
+        AGENT,
+        init_agent,
+        train_agent,
+        get_value,
+        get_gamma,
+        num_envs=2,
         learning_rate=LEARNING_RATE,
         budget=BUDGET,
     )
@@ -85,7 +115,7 @@ def test_check_advantage_policy():
     )
 
 
-def test_check_actor_and_critic_coupling():
+def test_check_actor_and_critic_coupling_1_env():
     """
     Test that check_actor_and_critic_coupling works on failproof sb3.
     """
@@ -98,6 +128,22 @@ def test_check_actor_and_critic_coupling():
         num_envs=1,
         learning_rate=LEARNING_RATE,
         budget=BUDGET,
+    )
+
+
+def test_check_actor_and_critic_coupling_2_envs():
+    """
+    Test that check_actor_and_critic_coupling works on failproof sb3.
+    """
+    check_actor_and_critic_coupling(
+        AGENT,
+        init_agent,
+        train_agent,
+        get_policy,
+        get_value,
+        num_envs=2,
+        learning_rate=LEARNING_RATE,
+        budget=BUDGET * 2,
     )
 
 
