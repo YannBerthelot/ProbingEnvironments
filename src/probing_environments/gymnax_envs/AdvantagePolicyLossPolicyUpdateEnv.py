@@ -48,7 +48,7 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         """Performs step transitions in the environment."""
-        reward = action
+        reward = 1 - action  # action 0 is better
         done = self.is_terminal(state, params)
 
         return (

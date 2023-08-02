@@ -53,7 +53,7 @@ class PolicyAndValueEnv(environment.Environment):
         """Performs step transitions in the environment."""
         done = self.is_terminal(state, params)
         reward = jax.lax.cond(
-            (jnp.array_equal(jnp.array([action]), state.x)), lambda: 1.0, lambda: 0.0
+            (jnp.array_equal(jnp.array(action), state.x)), lambda: 1.0, lambda: 0.0
         )
 
         return (
