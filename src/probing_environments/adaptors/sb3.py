@@ -16,10 +16,10 @@ def init_agent(
     agent: OnPolicyAlgorithm,
     env: gym.Env,
     run_name: str,  # pylint: disable=W0613
-    gamma: Optional[float] = 0.5,
-    learning_rate: Optional[float] = 1e-3,
+    gamma: float = 0.5,
+    learning_rate: float = 1e-3,
     num_envs: Optional[int] = None,
-    seed: Optional[int] = 42,
+    seed: int = 1,
 ) -> OnPolicyAlgorithm:
     """
     Initialize your agent on a given env while also setting the discount factor.
@@ -44,11 +44,21 @@ def init_agent(
     if num_envs is not None and num_envs > 1:
         vec_env = make_vec_env(make_env, n_envs=num_envs, vec_env_cls=DummyVecEnv)
         return agent(
-            "MlpPolicy", vec_env, gamma=gamma, learning_rate=learning_rate, seed=seed
+            "MlpPolicy",
+            vec_env,
+            gamma=gamma,
+            learning_rate=learning_rate,
+            seed=seed,
+            use_rms_prop=False,
         )
     else:
         return agent(
-            "MlpPolicy", env(), gamma=gamma, learning_rate=learning_rate, seed=seed
+            "MlpPolicy",
+            env(),
+            gamma=gamma,
+            learning_rate=learning_rate,
+            seed=seed,
+            use_rms_prop=False,
         )
 
 
