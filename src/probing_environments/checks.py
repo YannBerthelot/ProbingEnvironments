@@ -16,6 +16,17 @@ from probing_environments.envs import (
     ValueBackpropEnv,
     ValueLossOrOptimizerEnv,
 )
+from probing_environments.gymnax_envs import (
+    AdvantagePolicyLossPolicyUpdateEnv as AdvantagePolicyLossPolicyUpdateEnv_gx,
+)
+from probing_environments.gymnax_envs import PolicyAndValueEnv as PolicyAndValueEnv_gx
+from probing_environments.gymnax_envs import (
+    RewardDiscountingEnv as RewardDiscountingEnv_gx,
+)
+from probing_environments.gymnax_envs import ValueBackpropEnv as ValueBackpropEnv_gx
+from probing_environments.gymnax_envs import (
+    ValueLossOrOptimizerEnv as ValueLossOrOptimizerEnv_gx,
+)
 from probing_environments.utils.type_hints import AgentType
 
 EPS = 1e-1
@@ -83,6 +94,7 @@ def check_loss_or_optimizer_value_net(
     budget: Optional[int] = int(1e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
+    gymnax: bool = False,
 ):
     """
     Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
@@ -99,7 +111,10 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ValueLossOrOptimizerEnv
+    if gymnax:
+        env = ValueLossOrOptimizerEnv_gx
+    else:
+        env = ValueLossOrOptimizerEnv
     agent = init_agent(
         agent=agent,
         env=env,
@@ -124,6 +139,7 @@ def check_backprop_value_net(
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
+    gymnax: bool = False,
 ):
     """
     Train and test your agent on ValueBackpropEnv : Check for problems in the \
@@ -140,7 +156,10 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = ValueBackpropEnv
+    if gymnax:
+        env = ValueBackpropEnv_gx
+    else:
+        env = ValueBackpropEnv
     agent = init_agent(
         agent=agent,
         env=env,
@@ -171,6 +190,7 @@ def check_reward_discounting(
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
+    gymnax: bool = False,
 ):
     """
     Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
@@ -189,9 +209,13 @@ def check_reward_discounting(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
+    if gymnax:
+        env = RewardDiscountingEnv_gx
+    else:
+        env = RewardDiscountingEnv
     agent = init_agent(
         agent=agent,
-        env=RewardDiscountingEnv,
+        env=env,
         run_name="check_reward_discounting",
         num_envs=num_envs,
         gamma=0.5,
@@ -219,6 +243,7 @@ def check_advantage_policy(
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
+    gymnax: bool = False,
 ):
     """
     Train and test your agent on AdvantagePolicyLossPolicyUpdateEnv: Check problems in\
@@ -235,7 +260,10 @@ def check_advantage_policy(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = AdvantagePolicyLossPolicyUpdateEnv
+    if gymnax:
+        env = AdvantagePolicyLossPolicyUpdateEnv_gx
+    else:
+        env = AdvantagePolicyLossPolicyUpdateEnv
     agent = init_agent(
         agent=agent,
         env=env,
@@ -266,6 +294,7 @@ def check_actor_and_critic_coupling(
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
+    gymnax: bool = False,
 ):
     """
     Train and test your agent on PolicyAndValueEnv: Check problems in the coupling of\
@@ -284,7 +313,10 @@ def check_actor_and_critic_coupling(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    env = PolicyAndValueEnv
+    if gymnax:
+        env = PolicyAndValueEnv_gx
+    else:
+        env = PolicyAndValueEnv
     agent = init_agent(
         agent=agent,
         env=env,
