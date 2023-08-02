@@ -126,12 +126,11 @@ def test_PolicyAndValueEnv_works():
     # Perform the step transition.
 
     for action in (0, 1):
-        action_jax = jax.numpy.array([action])
         rewards = 0
         for _ in range(10):
             key_reset, _rng = jax.random.split(key_reset)
             obs, state = env.reset(_rng, _)
-            _, state, reward, done, _ = env.step(key_step, state, action_jax, _)
+            _, state, reward, done, _ = env.step(key_step, state, action, _)
             rewards += reward
             assert done
             obs = int(obs)

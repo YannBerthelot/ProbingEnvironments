@@ -62,7 +62,7 @@ class ValueBackpropEnv(environment.Environment):
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
-        obs = jax.random.randint(key, (1,), jnp.array(0), jnp.array(2))
+        obs = jax.random.choice(key, jnp.array([0.0, 1.0]))
         state = EnvState(x=obs)  # type: ignore
         return self.get_obs(state), state
 
