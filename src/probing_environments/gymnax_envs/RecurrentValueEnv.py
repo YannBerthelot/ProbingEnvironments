@@ -26,7 +26,7 @@ class EnvParams:
     unused: Optional[Any] = None
 
 
-class ReccurentValueEnv(environment.Environment):
+class RecurrentValueEnv(environment.Environment):
     """Single action. 0 or 1 initial observation. two timesteps long. +1 reward at\
           the end if the initial observation was 1. If the agent can learn values\
          in non-recurrent env but not in this one, it should be that it lacks memory."""
