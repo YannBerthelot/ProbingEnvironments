@@ -5,6 +5,7 @@ parameter tests.
 from typing import Callable, List, Optional
 
 import gymnasium as gym
+import jax.numpy as jnp
 import numpy as np
 import pytest
 from mypy_extensions import DefaultNamedArg, NamedArg
@@ -20,6 +21,7 @@ from probing_environments.gymnax_envs import (
     AdvantagePolicyLossPolicyUpdateEnv as AdvantagePolicyLossPolicyUpdateEnv_gx,
 )
 from probing_environments.gymnax_envs import PolicyAndValueEnv as PolicyAndValueEnv_gx
+from probing_environments.gymnax_envs import RecurrentValueEnv as RecurrentValueEnv_gx
 from probing_environments.gymnax_envs import (
     RewardDiscountingEnv as RewardDiscountingEnv_gx,
 )
@@ -126,8 +128,10 @@ def check_loss_or_optimizer_value_net(
     assert_predicted_value_isclose_expected_value(
         1,
         get_value(agent, np.array([0])),
-        "There's most likely a problem with the value loss calculation or the"
-        " optimizer",
+        (
+            "There's most likely a problem with the value loss calculation or the"
+            " optimizer"
+        ),
     )
 
 
@@ -346,4 +350,69 @@ def check_actor_and_critic_coupling(
         expected_value=1,
         predicted_value=get_value(agent, np.array([1])),
         err_msg="",
+    )
+
+
+def check_recurrent_agent(
+    agent: AgentType,
+    init_agent: InitAgentType,
+    train_agent: Callable[[AgentType, float], AgentType],
+    get_value_recurrent: Callable[[AgentType, np.ndarray], np.ndarray],
+    init_hidden_state: Callable[..., np.ndarray],
+    compute_next_critic_hidden: Callable[
+        [AgentType, np.ndarray, np.ndarray], np.ndarray
+    ],
+    budget: Optional[float] = int(2e3),
+    learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
+    gymnax: bool = False,
+):
+    """
+    Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
+          discounting computation.
+
+    Args:
+        agent (AgentType) : The agent to be used
+        init_agent (Callable[[gym.Env, float]]): Init your agent on a given Env and \
+            gamma/discount factor. See template.
+        train_agent (Callable[[float], AgentType]): Train your agent for a given budget\
+              See template.
+        get_value (Callable[[AgentType, np.ndarray], np.ndarray]): Get value for a \
+            given obs using your critic. See template.
+        get_gamma (Callable[[AgentType], float]): Get the current value of \
+            gamma/discount factor or your agent. See template.
+        discrete (bool, optional): Wether or not to handle state as discrete. \
+            Defaults to True.
+    """
+    if gymnax:
+        env = RecurrentValueEnv_gx
+    else:
+        env = None  # TODO : add gym version of the env
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        run_name="check_recurrent_env",
+        num_envs=num_envs,
+        gamma=0.5,
+        learning_rate=learning_rate,
+    )
+    agent = train_agent(agent, budget)
+    err_msg = "There is most likely a problem with your reward discounting."
+
+    hidden = init_hidden_state()
+    obs = jnp.array([0.0])
+    next_hidden = compute_next_critic_hidden(agent, obs, hidden)
+    assert_predicted_value_isclose_expected_value(
+        expected_value=0.0,
+        predicted_value=get_value_recurrent(agent, np.array([2.0], next_hidden)),
+        err_msg=err_msg,
+    )
+
+    hidden = init_hidden_state()
+    obs = jnp.array([1.0])
+    next_hidden = compute_next_critic_hidden(agent, obs, hidden)
+    assert_predicted_value_isclose_expected_value(
+        expected_value=1.0,
+        predicted_value=get_value_recurrent(agent, np.array([2.0], next_hidden)),
+        err_msg=err_msg,
     )
