@@ -401,7 +401,7 @@ def check_recurrent_agent(
 
     hidden = init_hidden_state()
     obs = jnp.array([0.0])
-    next_hidden = compute_next_critic_hidden(agent, obs, hidden)
+    next_hidden = compute_next_critic_hidden(agent, obs, False, hidden)
     assert_predicted_value_isclose_expected_value(
         expected_value=0.0,
         predicted_value=get_value_recurrent(agent, np.array([2.0], next_hidden)),
@@ -410,7 +410,7 @@ def check_recurrent_agent(
 
     hidden = init_hidden_state()
     obs = jnp.array([1.0])
-    next_hidden = compute_next_critic_hidden(agent, obs, hidden)
+    next_hidden = compute_next_critic_hidden(agent, obs, False, hidden)
     assert_predicted_value_isclose_expected_value(
         expected_value=1.0,
         predicted_value=get_value_recurrent(agent, np.array([2.0], next_hidden)),

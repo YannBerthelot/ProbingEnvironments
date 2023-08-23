@@ -9,6 +9,9 @@ from probing_environments.gymnax_envs.ValueBackpropEnv import ValueBackpropEnv
 from probing_environments.gymnax_envs.ValueLossOrOptimizerEnv import (
     ValueLossOrOptimizerEnv,
 )
+from probing_environments.gymnax_envs.RecurrentValueEnv import (
+    RecurrentValueEnv,
+)
 
 env_list = [  # pylint: disable=F401
     AdvantagePolicyLossPolicyUpdateEnv,
@@ -16,4 +19,5 @@ env_list = [  # pylint: disable=F401
     RewardDiscountingEnv,
     ValueBackpropEnv,
     ValueLossOrOptimizerEnv,
+    RecurrentValueEnv,
 ]
