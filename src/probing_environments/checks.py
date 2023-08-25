@@ -128,10 +128,8 @@ def check_loss_or_optimizer_value_net(
     assert_predicted_value_isclose_expected_value(
         1,
         get_value(agent, np.array([0])),
-        (
-            "There's most likely a problem with the value loss calculation or the"
-            " optimizer"
-        ),
+        "There's most likely a problem with the value loss calculation or the"
+        " optimizer",
     )
 
 
@@ -357,10 +355,12 @@ def check_recurrent_agent(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_value_recurrent: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_value_recurrent: Callable[
+        [AgentType, np.ndarray, bool, np.ndarray], np.ndarray
+    ],
     init_hidden_state: Callable[..., np.ndarray],
     compute_next_critic_hidden: Callable[
-        [AgentType, np.ndarray, np.ndarray], np.ndarray
+        [AgentType, np.ndarray, bool, np.ndarray], np.ndarray
     ],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
@@ -404,15 +404,14 @@ def check_recurrent_agent(
     next_hidden = compute_next_critic_hidden(agent, obs, False, hidden)
     assert_predicted_value_isclose_expected_value(
         expected_value=0.0,
-        predicted_value=get_value_recurrent(agent, np.array([2.0], next_hidden)),
+        predicted_value=get_value_recurrent(agent, np.array([2.0]), False, next_hidden),
         err_msg=err_msg,
     )
-
     hidden = init_hidden_state()
     obs = jnp.array([1.0])
     next_hidden = compute_next_critic_hidden(agent, obs, False, hidden)
     assert_predicted_value_isclose_expected_value(
         expected_value=1.0,
-        predicted_value=get_value_recurrent(agent, np.array([2.0], next_hidden)),
+        predicted_value=get_value_recurrent(agent, np.array([2.0]), False, next_hidden),
         err_msg=err_msg,
     )

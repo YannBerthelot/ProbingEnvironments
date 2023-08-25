@@ -25,7 +25,6 @@ class ValueLossOrOptimizerEnv(gym.Env):
         return np.array([0]), 1, True, False, {}
 
     def reset(self, seed=None):
-
         return np.array([0]), {}
 
 
