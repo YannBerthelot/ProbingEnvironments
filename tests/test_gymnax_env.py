@@ -11,7 +11,7 @@ from probing_environments.gymnax_envs import (
 
 
 def test_ValueLossOrOptimizerEnv_works():
-    """Check that this environment yields the expected resutls (see env docstring)"""
+    """Check that this environment yields the expected results (see env docstring)"""
     rng = jax.random.PRNGKey(0)
     rng, key_reset, key_act, key_step = jax.random.split(rng, 4)
 

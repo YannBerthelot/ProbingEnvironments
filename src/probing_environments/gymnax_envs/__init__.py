@@ -4,13 +4,11 @@ from probing_environments.gymnax_envs.AdvantagePolicyLossPolicyUpdateEnv import 
     AdvantagePolicyLossPolicyUpdateEnv,
 )
 from probing_environments.gymnax_envs.PolicyAndValueEnv import PolicyAndValueEnv
+from probing_environments.gymnax_envs.RecurrentValueEnv import RecurrentValueEnv
 from probing_environments.gymnax_envs.RewardDiscountingEnv import RewardDiscountingEnv
 from probing_environments.gymnax_envs.ValueBackpropEnv import ValueBackpropEnv
 from probing_environments.gymnax_envs.ValueLossOrOptimizerEnv import (
     ValueLossOrOptimizerEnv,
-)
-from probing_environments.gymnax_envs.RecurrentValueEnv import (
-    RecurrentValueEnv,
 )
 
 env_list = [  # pylint: disable=F401

@@ -128,6 +128,26 @@ def get_policy(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
     return probs_np[0]
 
 
+def get_action(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
+    """
+    Predict the probability of actions of a given obs (in numpy array format)\
+          using your current policy net.
+
+    Args:
+        agent (AgentType): Your agent to make the prediction.
+        obs (np.ndarray): The observation to make the prediction on.
+
+    Raises:
+        NotImplementedError: While you haven't implemented your own functions or picked\
+              from the existing ones
+
+    Returns:
+        List[float]: The probability of taking every action.
+    """
+    action = agent.predict(torch.tensor(np.array([obs])))
+    return action[0][0]
+
+
 def get_gamma(agent: OnPolicyAlgorithm) -> float:
     """
     Fetch the gamma/discount factor value from your agent (to use it in tests)

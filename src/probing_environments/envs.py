@@ -140,6 +140,37 @@ class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
         return np.array([0]), {}
 
 
+class AdvantagePolicyLossPolicyUpdateEnvContinuous(gym.Env):
+    """
+    Two actions, zero observation, one timestep long, action-dependent +1/-1\
+    reward: The first env to exercise the policy! If my agent can't learn \
+    to pick the better action, there's something wrong with either my \
+    advantage calculations, my policy loss or my policy update. That's three \
+    things, but it's easy to work out by hand the expected values for each one \
+    and check that the values produced by your actual code line up with them.
+    """
+
+    metadata = {"render.modes": ["human"]}
+
+    def __init__(self, *args, **kwargs):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
+        super().__init__()
+        self.action_space = spaces.Box(0, 1, shape=(1,))
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
+
+    def step(self, action):
+        return np.array([0]), action, True, False, {}
+
+    def reset(self, seed=None):
+        np.random.seed(seed)
+        return np.array([0]), {}
+
+
 class PolicyAndValueEnv(gym.Env):
     """
     Two actions, random +1/-1 observation, one timestep long, action-and-obs \
@@ -174,6 +205,54 @@ class PolicyAndValueEnv(gym.Env):
         reward = (
             1
             if ((random_obs == 0 and action == 0) or (random_obs == 1 and action == 1))
+            else -1
+        )
+        return np.array([random_obs]), reward, True, False, {}
+
+    def reset(self, seed=None):
+        np.random.seed(seed)
+        random_obs = np.copy(get_random_obs())
+        self.obs_stack.append(random_obs)
+        return np.array([random_obs]), {}
+
+
+class PolicyAndValueEnvContinuous(gym.Env):
+    """
+    Two actions, random +1/-1 observation, one timestep long, action-and-obs \
+    dependent +1/-1 reward: Now we've got a dependence on both obs and action.\
+    The policy and value networks interact here, so there's a couple of things \
+    to verify: that the policy network learns to pick the right action in each \
+    of the two states, and that the value network learns that the value of \
+    each state is +1. If everything's worked up until now, then if - for \
+    example - the value network fails to learn here, it likely means your \
+    batching process is feeding the value network stale experience.
+    """
+
+    metadata = {"render.modes": ["human"]}
+
+    def __init__(self, num_envs: int = 1, sequential=False):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
+        super().__init__()
+        self.action_space = spaces.Box(0, 1, shape=(1,))
+        self.observation_space = spaces.Box(0, 1, shape=(1,))
+        if sequential:
+            self.obs_stack = deque([None for _ in range(num_envs)], maxlen=num_envs)
+        else:
+            self.obs_stack = deque([], maxlen=num_envs)
+
+    def step(self, action):
+        random_obs = self.obs_stack.popleft()
+        reward = (
+            1
+            if (
+                (random_obs == 0 and action > 0.5)
+                or (random_obs == 1 and action <= 0.5)
+            )
             else -1
         )
         return np.array([random_obs]), reward, True, False, {}
