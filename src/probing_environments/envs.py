@@ -250,8 +250,8 @@ class PolicyAndValueEnvContinuous(gym.Env):
         reward = (
             1
             if (
-                (random_obs == 0 and action > 0.5)
-                or (random_obs == 1 and action <= 0.5)
+                (random_obs == 1 and action > 0.5)
+                or (random_obs == 0 and action <= 0.5)
             )
             else -1
         )

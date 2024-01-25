@@ -49,7 +49,8 @@ def init_agent(
             gamma=gamma,
             learning_rate=learning_rate,
             seed=seed,
-            use_rms_prop=False,
+            n_steps=32,
+            # use_rms_prop=False,
         )
     else:
         return agent(
@@ -58,7 +59,8 @@ def init_agent(
             gamma=gamma,
             learning_rate=learning_rate,
             seed=seed,
-            use_rms_prop=False,
+            n_steps=32,
+            # use_rms_prop=False,
         )
 
 

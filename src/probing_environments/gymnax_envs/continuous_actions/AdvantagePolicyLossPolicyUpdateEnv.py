@@ -50,7 +50,6 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         """Performs step transitions in the environment."""
         reward = action  # the higher the action, the better
         done = self.is_terminal(state, params)
-
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
@@ -63,7 +62,7 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
-        obs = 0
+        obs = 1.0
         state = EnvState(x=obs)  # type: ignore
         return self.get_obs(state), state
 
@@ -97,6 +96,6 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         """State space of the environment."""
         return spaces.Dict(
             {
-                "x": spaces.Box(0, 0, (), jnp.float32),
+                "x": spaces.Box(0, 1, (), jnp.float32),
             }
         )

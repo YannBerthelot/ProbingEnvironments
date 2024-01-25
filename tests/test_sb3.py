@@ -2,7 +2,7 @@
 from typing import Any
 
 import pytest
-from stable_baselines3.a2c import A2C
+from stable_baselines3 import PPO
 
 from probing_environments.adaptors.sb3 import (
     get_action,
@@ -23,7 +23,7 @@ from probing_environments.checks import (
 )
 
 AgentType = Any
-AGENT = A2C
+AGENT = PPO
 LEARNING_RATE = 1e-3
 BUDGET = 2e3
 

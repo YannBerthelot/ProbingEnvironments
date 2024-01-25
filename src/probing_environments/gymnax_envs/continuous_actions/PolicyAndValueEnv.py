@@ -53,13 +53,15 @@ class PolicyAndValueEnv(environment.Environment):
         """Performs step transitions in the environment."""
         done = self.is_terminal(state, params)
         case_state_greater_05 = jax.lax.cond(
-            (jnp.greater(action, 0.5)), lambda: 1.0, lambda: 0.0
+            jnp.greater(action.squeeze(), 0.0),
+            lambda: 1.0,
+            lambda: -1.0,  # TODO : Squeeze is a temporary fix that works for 1 env.
         )
         case_state_lesser_05 = jax.lax.cond(
-            (jnp.less_equal(action, 0.5)), lambda: 1.0, lambda: 0.0
+            jnp.less_equal(action.squeeze(), 0.0), lambda: 1.0, lambda: -1.0
         )
         reward = jax.lax.cond(
-            (jnp.greater(state.x, 0.5)),
+            jnp.greater(state.x, jnp.zeros_like(state.x)),
             lambda: case_state_greater_05,
             lambda: case_state_lesser_05,
         )
@@ -75,7 +77,7 @@ class PolicyAndValueEnv(environment.Environment):
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
-        obs = jax.random.choice(key, jnp.array([0.0, 1.0]))
+        obs = jax.random.choice(key, jnp.array([-1.0, 1.0]))
         state = EnvState(x=obs)  # type: ignore
         return self.get_obs(state), state
 
@@ -109,6 +111,6 @@ class PolicyAndValueEnv(environment.Environment):
         """State space of the environment."""
         return spaces.Dict(
             {
-                "x": spaces.Box(0, 0, (), jnp.float32),
+                "x": spaces.Box(0, 1, (), jnp.float32),
             }
         )

@@ -2,7 +2,7 @@
 Premade tests including the initialization of the agent, the training and the
 parameter tests.
 """
-from typing import Callable, List, Optional
+from typing import Any, Callable, List, Optional
 
 import gymnasium as gym
 import jax.numpy as jnp
@@ -300,10 +300,11 @@ def check_advantage_policy_continuous(
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_action: Callable[[AgentType, np.ndarray], np.ndarray],
-    budget: Optional[float] = int(2e3),
+    budget: float = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    key: Optional[Any] = None,
 ):
     """
     Train and test your agent on AdvantagePolicyLossPolicyUpdateEnv: Check problems in\
@@ -331,13 +332,14 @@ def check_advantage_policy_continuous(
         gamma=0.5,
         learning_rate=learning_rate,
         num_envs=num_envs,
+        budget=budget,
     )
     agent = train_agent(agent, budget)
     err_msg = (
         "There is most likely a problem with your reward advantage computing or your"
         " policy loss or your policy update "
     )
-    action = get_action(agent, np.array([0]))
+    action = get_action(agent, np.array([1.0]), key)
     assert action >= 0.90, (
         err_msg + f"Expected action to be at least 0.9, got {action=}"
     )
@@ -417,6 +419,7 @@ def check_actor_and_critic_coupling_continuous(
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    key: Optional[Any] = None,
 ):
     """
     Train and test your agent on PolicyAndValueEnv: Check problems in the coupling of\
@@ -447,20 +450,20 @@ def check_actor_and_critic_coupling_continuous(
         learning_rate=learning_rate,
     )
     agent = train_agent(agent, budget)
-    action = get_action(agent, np.array([0]))
+    action = get_action(agent, np.array([1]), key)
     assert action > 0.50, f"Expected action to be at least 0.5, got {action=}"
     assert_predicted_value_isclose_expected_value(
         expected_value=1,
-        predicted_value=get_value(agent, np.array([0])),
+        predicted_value=get_value(agent, np.array([1])),
         err_msg="",
     )
-    action = get_action(agent, np.array([1]))
+    action = get_action(agent, np.array([-1]), key)
     assert (
         action <= 0.50
     ), f"Expected action to be less than or equal to 0.5, got {action=}"
     assert_predicted_value_isclose_expected_value(
         expected_value=1,
-        predicted_value=get_value(agent, np.array([1])),
+        predicted_value=get_value(agent, np.array([-1])),
         err_msg="",
     )
 
