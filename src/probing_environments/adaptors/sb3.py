@@ -20,6 +20,7 @@ def init_agent(
     learning_rate: float = 1e-3,
     num_envs: Optional[int] = None,
     seed: int = 1,
+    budget: Optional[int] = None,
 ) -> OnPolicyAlgorithm:
     """
     Initialize your agent on a given env while also setting the discount factor.
@@ -146,7 +147,7 @@ def get_action(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
     Returns:
         List[float]: The probability of taking every action.
     """
-    action = agent.predict(torch.tensor(np.array([obs])))
+    action = agent.predict(torch.tensor(np.array([obs])), deterministic=True)
     return action[0][0]
 
 

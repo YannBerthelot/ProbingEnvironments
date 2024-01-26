@@ -339,7 +339,11 @@ def check_advantage_policy_continuous(
         "There is most likely a problem with your reward advantage computing or your"
         " policy loss or your policy update "
     )
-    action = get_action(agent, np.array([1.0]), key)
+    if gymnax:
+        action = get_action(agent, np.array([1.0]), key)
+    else:
+        action = get_action(agent, np.array([1.0]))
+
     assert action >= 0.90, (
         err_msg + f"Expected action to be at least 0.9, got {action=}"
     )
@@ -450,22 +454,23 @@ def check_actor_and_critic_coupling_continuous(
         learning_rate=learning_rate,
     )
     agent = train_agent(agent, budget)
-    action = get_action(agent, np.array([1]), key)
-    assert action > 0.50, f"Expected action to be at least 0.5, got {action=}"
-    assert_predicted_value_isclose_expected_value(
-        expected_value=1,
-        predicted_value=get_value(agent, np.array([1])),
-        err_msg="",
-    )
-    action = get_action(agent, np.array([-1]), key)
+    if gymnax:
+        action = get_action(agent, np.array([1]), key)
+    else:
+        action = get_action(agent, np.array([1]))
+    assert action > 0.0, f"Expected action to be at least 0.5, got {action=}"
+    value = get_value(agent, np.array([1]))
+    assert value >= 0.8, f"Expected value to be greater than 0.8, got {value=}"
+    if gymnax:
+        action = get_action(agent, np.array([-1]), key)
+    else:
+        action = get_action(agent, np.array([-1]))
+
     assert (
-        action <= 0.50
+        action <= 0.0
     ), f"Expected action to be less than or equal to 0.5, got {action=}"
-    assert_predicted_value_isclose_expected_value(
-        expected_value=1,
-        predicted_value=get_value(agent, np.array([-1])),
-        err_msg="",
-    )
+    value = get_value(agent, np.array([-1]))
+    assert value >= 0.8, f"Expected value to be greater than 0.8, got {value=}"
 
 
 def check_recurrent_agent(

@@ -160,7 +160,7 @@ def test_check_actor_and_critic_coupling_continuous():
         get_value,
         num_envs=1,
         learning_rate=LEARNING_RATE,
-        budget=BUDGET,
+        budget=BUDGET * 10,
     )
 
 

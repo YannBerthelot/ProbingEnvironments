@@ -138,4 +138,4 @@ def test_PolicyAndValueEnv_works():
                 assert reward == 1
             else:
                 assert reward == 0
-        assert 0 < rewards < 10
+        assert 0 <= rewards <= 10

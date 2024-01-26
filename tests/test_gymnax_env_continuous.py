@@ -19,7 +19,7 @@ def test_AdvantagePolicyLossPolicyUpdateEnv_works():
 
     obs, state = env.reset(key_reset, _)
     assert obs.shape == (1,)
-    assert obs == 0
+    assert obs == 1
     # Sample a random action.
     for _ in range(10):
         key_act, _rng = jax.random.split(key_act)
@@ -46,15 +46,15 @@ def test_PolicyAndValueEnv_works():
     for _ in range(10):
         key_act, _rng = jax.random.split(key_reset)
         obs, state = env.reset(_rng, _)
-        assert obs in (0, 1)
+        assert obs in (-1, 1)
     # Sample a random action.
     for _ in range(10):
         key_act, _rng = jax.random.split(key_act)
         action = env.action_space(_).sample(_rng)
-        assert 0 < action[0].item() < 1
+        assert -1 < action[0].item() < 1
     # Perform the step transition.
 
-    for action in (0, 1):
+    for action in (-1, 1):
         rewards = 0
         for _ in range(10):
             key_reset, _rng = jax.random.split(key_reset)
@@ -62,9 +62,8 @@ def test_PolicyAndValueEnv_works():
             _, state, reward, done, _ = env.step(key_step, state, action, _)
             rewards += reward
             assert done
-            obs = int(obs)
-            if (obs > 0.5 and action > 0.5) or (obs <= 0.5 and action <= 0.5):
+            if (obs > 0.0 and action > 0.0) or (obs <= 0.0 and action <= 0.0):
                 assert reward == 1
             else:
-                assert reward == 0
-        assert 0 < rewards < 10
+                assert reward == -1
+        assert -10 <= rewards <= 10
