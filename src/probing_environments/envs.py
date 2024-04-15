@@ -262,3 +262,60 @@ class PolicyAndValueEnvContinuous(gym.Env):
         random_obs = np.copy(get_random_obs())
         self.obs_stack.append(random_obs)
         return np.array([random_obs]), {}
+
+
+class TwoChoiceMDP(gym.Env):
+    """
+    TODO : Write this
+    """
+
+    metadata = {"render.modes": ["human"]}
+
+    def __init__(self, num_envs: int = 1, sequential=False, time_limit: int = 1000):
+        """
+        Args:
+            num_envs (int, optional): Number of vectorized environments. Defaults to 1.
+            sequential (bool, optional): Are the vectorized environments processed \
+                sequentially (True) or in parralel (False). Defaults to False.
+        """
+        super().__init__()
+        self.action_space = spaces.Discrete(2)
+        self.observation_space = spaces.Discrete(9)
+        self.TIME_LIMIT = time_limit
+        if sequential:
+            self.obs_stack = deque([None for _ in range(num_envs)], maxlen=num_envs)
+            self.time_stack = deque([None for _ in range(num_envs)], maxlen=num_envs)
+        else:
+            self.obs_stack = deque([], maxlen=num_envs)
+            self.time_stack = deque([], maxlen=num_envs)
+
+    def step(self, action):
+        last_obs = self.obs_stack.popleft()
+        time = self.time_stack.popleft()
+        if last_obs == 0:
+            if action == 0:
+                obs = 1
+            else:
+                obs = 5
+        elif last_obs == 4 or last_obs == 8:
+            obs = 0
+        else:
+            obs = last_obs + 1
+        if obs == 1:
+            reward = 1
+        elif obs == 8:
+            reward = 2
+        else:
+            reward = 0
+        time += 1
+        self.obs_stack.append(obs)
+        self.time_stack.append(time)
+        return obs, reward, time >= self.TIME_LIMIT, False, {}
+
+    def reset(self, seed=None):
+        np.random.seed(seed)
+        obs = 0
+        time = 0
+        self.obs_stack.append(obs)
+        self.time_stack.append(time)
+        return obs, {}

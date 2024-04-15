@@ -86,7 +86,9 @@ def train_agent(
     return agent.learn(budget)
 
 
-def get_value(agent: OnPolicyAlgorithm, obs: np.ndarray) -> np.ndarray:
+def get_value(
+    agent: OnPolicyAlgorithm, obs: np.ndarray, time_limit: int = 1
+) -> np.ndarray:
     """
     Predict the value of a given obs (in numpy array format) using your current value \
         net.
@@ -106,7 +108,7 @@ def get_value(agent: OnPolicyAlgorithm, obs: np.ndarray) -> np.ndarray:
         agent.policy.predict_values(torch.tensor(np.array([obs])))
         .detach()
         .numpy()[0][0]
-    )
+    ) / time_limit
 
 
 def get_policy(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:

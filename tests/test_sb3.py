@@ -17,6 +17,7 @@ from probing_environments.checks import (
     check_actor_and_critic_coupling_continuous,
     check_advantage_policy,
     check_advantage_policy_continuous,
+    check_average_reward,
     check_backprop_value_net,
     check_loss_or_optimizer_value_net,
     check_reward_discounting,
@@ -220,3 +221,20 @@ def test_errors():
             get_value=lambda x, y: -1,
             num_envs=1,
         )
+
+
+def test_check_average_reward_setting():
+    """
+    Test that check_actor_and_critic_coupling works on failproof sb3.
+    """
+    init_agent_high_gamma = partial(init_agent, gamma=0.999)
+    check_average_reward(
+        AGENT,
+        init_agent_high_gamma,
+        train_agent,
+        get_action,
+        get_value,
+        num_envs=1,
+        learning_rate=LEARNING_RATE,
+        budget=BUDGET * 10,
+    )

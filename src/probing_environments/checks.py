@@ -16,6 +16,7 @@ from probing_environments.envs import (
     PolicyAndValueEnv,
     PolicyAndValueEnvContinuous,
     RewardDiscountingEnv,
+    TwoChoiceMDP,
     ValueBackpropEnv,
     ValueLossOrOptimizerEnv,
 )
@@ -30,6 +31,9 @@ from probing_environments.gymnax_envs import (
 from probing_environments.gymnax_envs import ValueBackpropEnv as ValueBackpropEnv_gx
 from probing_environments.gymnax_envs import (
     ValueLossOrOptimizerEnv as ValueLossOrOptimizerEnv_gx,
+)
+from probing_environments.gymnax_envs.average_reward.two_choice_MDP import (
+    TwoChoiceMDP as TwoChoiceMDP_gx,
 )
 from probing_environments.gymnax_envs.continuous_actions import (
     AdvantagePolicyLossPolicyUpdateEnv as AdvantagePolicyLossPolicyUpdateEnv_continuous_gx,
@@ -537,3 +541,41 @@ def check_recurrent_agent(
         predicted_value=get_value_recurrent(agent, np.array([2.0]), False, next_hidden),
         err_msg=err_msg,
     )
+
+
+def check_average_reward(
+    agent: AgentType,
+    init_agent: InitAgentType,
+    train_agent: Callable[[AgentType, float], AgentType],
+    get_action: Callable[[AgentType, np.ndarray], float],
+    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    budget: Optional[float] = int(2e3),
+    learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
+    gymnax: bool = False,
+    key: Optional[Any] = None,
+):
+    """
+    TODO : Do this
+    """
+    if gymnax:
+        env = TwoChoiceMDP_gx
+    else:
+        env = TwoChoiceMDP
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        num_envs=num_envs,
+        run_name="check_average_reward",
+        learning_rate=learning_rate,
+    )
+    agent = train_agent(agent, budget)
+    if gymnax:
+        action = get_action(agent, 0, key)
+    else:
+        action = get_action(agent, 0)
+    assert action == 1, f"Expected action to be 1, got {action=}"
+    value = get_value(agent, 0, env().TIME_LIMIT)
+    assert value == pytest.approx(
+        2 / 5, rel=0.5
+    ), f"Expected value to be close to {value/env().TIME_LIMIT}, got {value=}"
