@@ -16,10 +16,11 @@ def init_agent(
     agent: OnPolicyAlgorithm,
     env: gym.Env,
     run_name: str,  # pylint: disable=W0613
-    gamma: Optional[float] = 0.5,
-    learning_rate: Optional[float] = 1e-3,
+    gamma: float = 0.5,
+    learning_rate: float = 1e-3,
     num_envs: Optional[int] = None,
-    seed: Optional[int] = 42,
+    seed: int = 1,
+    budget: Optional[int] = None,
 ) -> OnPolicyAlgorithm:
     """
     Initialize your agent on a given env while also setting the discount factor.
@@ -44,11 +45,23 @@ def init_agent(
     if num_envs is not None and num_envs > 1:
         vec_env = make_vec_env(make_env, n_envs=num_envs, vec_env_cls=DummyVecEnv)
         return agent(
-            "MlpPolicy", vec_env, gamma=gamma, learning_rate=learning_rate, seed=seed
+            "MlpPolicy",
+            vec_env,
+            gamma=gamma,
+            learning_rate=learning_rate,
+            seed=seed,
+            n_steps=32,
+            # use_rms_prop=False,
         )
     else:
         return agent(
-            "MlpPolicy", env(), gamma=gamma, learning_rate=learning_rate, seed=seed
+            "MlpPolicy",
+            env(),
+            gamma=gamma,
+            learning_rate=learning_rate,
+            seed=seed,
+            n_steps=32,
+            # use_rms_prop=False,
         )
 
 
@@ -73,7 +86,9 @@ def train_agent(
     return agent.learn(budget)
 
 
-def get_value(agent: OnPolicyAlgorithm, obs: np.ndarray) -> np.ndarray:
+def get_value(
+    agent: OnPolicyAlgorithm, obs: np.ndarray, time_limit: int = 1
+) -> np.ndarray:
     """
     Predict the value of a given obs (in numpy array format) using your current value \
         net.
@@ -93,7 +108,7 @@ def get_value(agent: OnPolicyAlgorithm, obs: np.ndarray) -> np.ndarray:
         agent.policy.predict_values(torch.tensor(np.array([obs])))
         .detach()
         .numpy()[0][0]
-    )
+    ) / time_limit
 
 
 def get_policy(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
@@ -116,6 +131,26 @@ def get_policy(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
     probs = dis.distribution.probs
     probs_np = probs.detach().numpy()
     return probs_np[0]
+
+
+def get_action(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
+    """
+    Predict the probability of actions of a given obs (in numpy array format)\
+          using your current policy net.
+
+    Args:
+        agent (AgentType): Your agent to make the prediction.
+        obs (np.ndarray): The observation to make the prediction on.
+
+    Raises:
+        NotImplementedError: While you haven't implemented your own functions or picked\
+              from the existing ones
+
+    Returns:
+        List[float]: The probability of taking every action.
+    """
+    action = agent.predict(torch.tensor(np.array([obs])), deterministic=True)
+    return action[0][0]
 
 
 def get_gamma(agent: OnPolicyAlgorithm) -> float:
