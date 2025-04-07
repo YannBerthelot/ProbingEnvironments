@@ -133,7 +133,7 @@ def test_PolicyAndValueEnv_works():
             _, state, reward, done, _ = env.step(key_step, state, action, _)
             rewards += reward
             assert done
-            obs = int(obs)
+            obs = obs.astype(int)
             if action == obs:
                 assert reward == 1
             else:
