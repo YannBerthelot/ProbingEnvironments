@@ -51,6 +51,7 @@ def init_agent(
             learning_rate=learning_rate,
             seed=seed,
             n_steps=32,
+            device="cpu"
             # use_rms_prop=False,
         )
     else:
@@ -61,6 +62,7 @@ def init_agent(
             learning_rate=learning_rate,
             seed=seed,
             n_steps=32,
+            device="cpu"
             # use_rms_prop=False,
         )
 

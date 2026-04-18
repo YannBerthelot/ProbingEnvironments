@@ -12,45 +12,49 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.10"]
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        id: setup-python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
+          version: 1.8.3
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
-      
+
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: |
-          poetry install --no-interaction --no-root --all-extras
-          sudo apt-get install nvidia-cuda-toolkit nvidia-cuda-toolkit-gcc
+        run: poetry install --no-interaction --no-root --all-extras
+
       - name: Install project
         run: poetry install --no-interaction --all-extras
+
       - name: Run tox
         run: |
           source .venv/bin/activate
-          tox  
+          tox
+
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
-          version: "v0.1.15"
+          fail_ci_if_error: true
+          verbose: true
           files: ./coverage.xml

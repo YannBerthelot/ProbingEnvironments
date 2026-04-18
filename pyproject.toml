@@ -48,7 +48,7 @@ legacy_tox_ini = """
 [tox]
 isolated_build = True
 envlist =
-    py38
+    py310
     linting
     coverage
 
@@ -81,7 +81,7 @@ commands =
 
 [gh-actions]
 python =
-    3.8: py38, coverage, linting
+    3.10: py310, coverage, linting
 """
 
 [build-system]
