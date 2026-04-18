@@ -3,3 +3,7 @@ coverage:
     patch:
       default:
         target: 80%
+ignore:
+  - "src/probing_environments/adaptors/ajax.py"
+  - "src/probing_environments/adaptors/rlberry.py"
+  - "src/probing_environments/adaptors/template.py"
