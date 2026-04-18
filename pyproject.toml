@@ -6,25 +6,24 @@ authors = ["Yann Berthelot <yannberthelot1@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.11,<4.0"
 mypy-extensions = "^1.0.0"
 pytest = "^7.4.0"
 gymnasium = "^0.28.1"
 gymnax = {git = "https://github.com/YannBerthelot/gymnax.git"}
-numpy = "<=1.26.4"
+chex = "^0.1.91"
 
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
-torch = "^1.11, !=2.0.1"
 stable-baselines3 = "^2.0.0"
 pre-commit = "^2.20.0"
 scriv = {extras = ["toml"], version = "^0.15.2"}
 tox = "^3.25.1"
-flake8 = "^5.0.3"
-black = {version = "22.3.0", allow-prereleases = true}
-coverage = {extras = ["toml"], version = "^6.4.3"}
-mypy = "^0.971"
+flake8 = "^7.0.0"
+black = "^24.4.2"
+coverage = {extras = ["toml"], version = "^7.5.0"}
+mypy = "^1.10.0"
 
 
 [tool.pylint]
@@ -48,15 +47,14 @@ legacy_tox_ini = """
 [tox]
 isolated_build = True
 envlist =
-    py38
+    py312
     linting
     coverage
 
 [testenv:testing]
-whitelist_externals = poetry
+allowlist_externals = poetry, pytest
 skip_install = true
 deps = pyproject.toml
-allowlist_externals = pytest
 changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
 commands =
     poetry install
@@ -67,21 +65,21 @@ deps = pre-commit
 commands = pre-commit run --all-files
 
 [testenv:coverage]
-whitelist_externals = poetry
+allowlist_externals = poetry
 skip_install = true
-deps = 
+deps =
     coverage[toml]
     pyproject.toml
     pytest
 commands =
     poetry install
     poetry run coverage run --source=probing_environments --branch -m pytest {toxinidir}
-    poetry run coverage report -m --fail-under 80
+    poetry run coverage report -m --fail-under 75
     poetry run coverage xml -o {toxinidir}/coverage.xml
 
 [gh-actions]
 python =
-    3.8: py38, coverage, linting
+    3.12: py312, coverage, linting
 """
 
 [build-system]

@@ -1,5 +1,6 @@
 """AdvantagePolicyLossPolicyUpdateEnv"""
-from typing import Any, Optional, Tuple
+
+from typing import Optional, Tuple
 
 import chex
 import jax.numpy as jnp
@@ -14,13 +15,14 @@ class EnvState:
     """Represents the state of the env in gymnax format"""
 
     x: float
+    time: int = 0
 
 
 @struct.dataclass
 class EnvParams:
-    """Environment parameters (unused here)"""
+    """Environment parameters"""
 
-    unused: Optional[Any] = None
+    max_steps_in_episode: int = 1000
 
 
 class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
@@ -45,10 +47,15 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         return EnvParams()
 
     def step_env(
-        self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
-    ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
+        self,
+        key: chex.PRNGKey,
+        state: EnvState,
+        action: chex.Array,
+        params: EnvParams,
+    ) -> Tuple[chex.Array, EnvState, chex.Array, bool, dict]:
         """Performs step transitions in the environment."""
-        reward = action  # the higher the action, the better
+        reward = jnp.squeeze(action)  # the higher the action, the better
+        state = EnvState(x=state.x, time=state.time + 1)  # type: ignore
         done = self.is_terminal(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
@@ -63,7 +70,7 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
         obs = 1.0
-        state = EnvState(x=obs)  # type: ignore
+        state = EnvState(x=obs, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:

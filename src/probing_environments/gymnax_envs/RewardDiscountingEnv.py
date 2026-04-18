@@ -1,5 +1,6 @@
 """RewardDiscountingEnv"""
-from typing import Any, Optional, Tuple
+
+from typing import Optional, Tuple
 
 import chex
 import jax
@@ -15,14 +16,14 @@ class EnvState:
     """Represents the state of the env in gymnax format"""
 
     x: float
-    t: int
+    time: int = 0
 
 
 @struct.dataclass
 class EnvParams:
-    """Environment parameters (unused here)"""
+    """Environment parameters"""
 
-    unused: Optional[Any] = None
+    max_steps_in_episode: int = 2
 
 
 class RewardDiscountingEnv(environment.Environment):
@@ -47,9 +48,8 @@ class RewardDiscountingEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         """Performs step transitions in the environment."""
-        t = state.t
-        t += 1
-        state = EnvState(x=t, t=t)  # type: ignore
+        t = state.time + 1
+        state = EnvState(x=t, time=t)  # type: ignore
         done = self.is_terminal(state, params)
         reward = jax.lax.cond(done, lambda: 1, lambda: 0)
 
@@ -65,7 +65,7 @@ class RewardDiscountingEnv(environment.Environment):
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
-        state = EnvState(x=0, t=0)  # type: ignore
+        state = EnvState(x=0, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:
@@ -84,7 +84,7 @@ class RewardDiscountingEnv(environment.Environment):
 
     def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
-        return state.t == 2
+        return state.time == 2
 
     def action_space(self, params: Optional[EnvParams] = None) -> spaces.Discrete:
         """Action space of the environment."""

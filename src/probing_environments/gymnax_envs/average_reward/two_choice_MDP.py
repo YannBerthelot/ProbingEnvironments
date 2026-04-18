@@ -1,4 +1,5 @@
 """AdvantagePolicyLossPolicyUpdateEnv"""
+
 from typing import Optional, Tuple
 
 import chex
@@ -64,7 +65,7 @@ class TwoChoiceMDP(environment.Environment):
             ),  # If not in state 0, if state is 4 or 8, move to 0, else move to state + 1
         )
         time = state.time + 1
-        state = EnvState(x=next_x, time=time)
+        state = EnvState(x=next_x, time=time)  # type: ignore
         reward = lax.cond(
             jnp.array_equal(state.x, 1),
             lambda: 1,

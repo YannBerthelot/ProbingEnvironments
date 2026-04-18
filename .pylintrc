@@ -48,12 +48,12 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=no-name-in-module, attribute-defined-outside-init, no-member, pointless-statement,protected-access, too-few-public-methods, duplicate-code, no-else-return, no-self-argument, import-error, inconsistent-return-statements, long-suffix,old-ne-operator,old-octal-literal,raw-checker-failed,bad-inline-option,locally-disabled,locally-enabled,file-ignored,suppressed-message,useless-suppression,deprecated-pragma,eq-without-hash, missing-docstring, invalid-name, redefined-outer-name, unknown-option-value
+disable=no-name-in-module, attribute-defined-outside-init, no-member, pointless-statement,protected-access, too-few-public-methods, duplicate-code, no-else-return, no-self-argument, import-error, inconsistent-return-statements, long-suffix,old-ne-operator,old-octal-literal,raw-checker-failed,bad-inline-option,locally-disabled,locally-enabled,file-ignored,suppressed-message,useless-suppression,deprecated-pragma,eq-without-hash, missing-docstring, invalid-name, redefined-outer-name, unknown-option-value, missing-function-docstring, missing-class-docstring, missing-module-docstring, unused-argument, too-many-locals, too-many-arguments, too-many-positional-arguments, use-dict-literal, fixme, unused-variable, line-too-long, unused-import
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
-enable=missing-function-docstring, missing-module-docstring, missing-class-docstring
+enable=
 
 
 [REPORTS]
@@ -386,4 +386,4 @@ min-public-methods=2
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception

@@ -1,4 +1,9 @@
-"""ValueBackpropEnv"""
+"""ValueBackpropEnv — continuous action version.
+
+One continuous action, random 0/1 observation, one timestep long,
+obs-dependent reward. Tests that backpropagation through the value network
+works.
+"""
 
 from typing import Optional, Tuple
 
@@ -10,49 +15,35 @@ from gymnax.environments import environment, spaces
 from jax import lax
 
 
-# pylint: disable=W0613
 @struct.dataclass
 class EnvState:
-    """Represents the state of the env in gymnax format"""
-
-    x: float
+    x: chex.Array
     time: int = 0
 
 
 @struct.dataclass
 class EnvParams:
-    """Environment parameters"""
-
-    max_steps_in_episode: int = 1
+    max_steps_in_episode: int = 1000
 
 
 class ValueBackpropEnv(environment.Environment):
-    """
-    One action, random +1/-1 observation, one timestep long, obs-dependent \
-    +1/-1 reward every time: If my agent can learn the value in ProbeEnv1 but not \
-    this one - meaning it can learn a constant reward but not a \
-    predictable one! - it must be that backpropagation through my network is broken.
-    """
+    """Continuous-action version: reward = obs value."""
 
     def __init__(self):
-        """Define the spaces shape"""
         super().__init__()
         self.obs_shape = (1,)
         self.action_shape = (1,)
 
     @property
     def default_params(self) -> EnvParams:
-        """Get default params for the env"""
         return EnvParams()
 
     def step_env(
-        self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
+        self, key: chex.PRNGKey, state: EnvState, action, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
-        """Performs step transitions in the environment."""
         reward = state.x
         state = EnvState(x=state.x, time=state.time + 1)  # type: ignore
         done = self.is_terminal(state, params)
-
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
@@ -64,41 +55,25 @@ class ValueBackpropEnv(environment.Environment):
     def reset_env(
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
-        """Performs resetting of environment."""
         obs = jax.random.choice(key, jnp.array([0.0, 1.0]))
         state = EnvState(x=obs, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:
-        """Applies observation function to state."""
         return jnp.array([state.x])
 
     @property
-    def name(self) -> str:
-        """Environment name."""
-        return "ValueLossOrOptimizerEnv"
-
-    @property
     def num_actions(self) -> int:
-        """Number of actions possible in environment."""
         return 1
 
     def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
-        """Check whether state is terminal."""
         return True
 
-    def action_space(self, params: Optional[EnvParams] = None) -> spaces.Discrete:
-        """Action space of the environment."""
-        return spaces.Discrete(1)
+    def action_space(self, params: Optional[EnvParams] = None) -> spaces.Box:
+        return spaces.Box(-1.0, 1.0, (1,), dtype=jnp.float32)
 
     def observation_space(self, params: EnvParams) -> spaces.Box:
-        """Observation space of the environment."""
         return spaces.Box(0, 1, (1,), dtype=jnp.float32)
 
     def state_space(self, params: EnvParams) -> spaces.Dict:
-        """State space of the environment."""
-        return spaces.Dict(
-            {
-                "x": spaces.Box(0, 0, (), jnp.float32),
-            }
-        )
+        return spaces.Dict({"x": spaces.Box(0, 0, (), jnp.float32)})

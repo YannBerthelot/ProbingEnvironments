@@ -164,7 +164,7 @@ class AdvantagePolicyLossPolicyUpdateEnvContinuous(gym.Env):
         self.observation_space = spaces.Box(0, 1, shape=(1,))
 
     def step(self, action):
-        return np.array([0]), action, True, False, {}
+        return np.array([0]), float(np.asarray(action).item()), True, False, {}
 
     def reset(self, seed=None):
         np.random.seed(seed)

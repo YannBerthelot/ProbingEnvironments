@@ -2,7 +2,8 @@
 Premade tests including the initialization of the agent, the training and the
 parameter tests.
 """
-from typing import Any, Callable, List, Optional
+
+from typing import Any, Callable, List, Optional, Sequence, Union
 
 import gymnasium as gym
 import jax.numpy as jnp
@@ -41,7 +42,19 @@ from probing_environments.gymnax_envs.continuous_actions import (
 from probing_environments.gymnax_envs.continuous_actions import (
     PolicyAndValueEnv as PolicyAndValueEnv_continuous_gx,
 )
+from probing_environments.gymnax_envs.continuous_actions import (
+    RewardDiscountingEnv as RewardDiscountingEnv_continuous_gx,
+)
+from probing_environments.gymnax_envs.continuous_actions import (
+    ValueBackpropEnv as ValueBackpropEnv_continuous_gx,
+)
+from probing_environments.gymnax_envs.continuous_actions import (
+    ValueLossOrOptimizerEnv as ValueLossOrOptimizerEnv_continuous_gx,
+)
 from probing_environments.utils.type_hints import AgentType
+
+Scalar = Union[float, np.ndarray, jnp.ndarray]
+ProbaLike = Union[Sequence[float], np.ndarray, jnp.ndarray]
 
 EPS = 1e-1
 GAMMA = 0.5
@@ -53,13 +66,14 @@ InitAgentType = Callable[
         NamedArg(float, "learning_rate"),
         DefaultNamedArg(float, "gamma"),
         NamedArg(int, "num_envs"),
+        DefaultNamedArg(float, "budget"),
     ],
     AgentType,
 ]
 
 
 def assert_predicted_value_isclose_expected_value(
-    expected_value: float, predicted_value: float, err_msg: str
+    expected_value: Scalar, predicted_value: Scalar, err_msg: str
 ):
     """
     Check that the predicted value is close enough to the expected_value and return\
@@ -79,7 +93,7 @@ def assert_predicted_value_isclose_expected_value(
 def assert_action_proba_is_larger_than_threshold(
     expected_proba: float,
     expected_action: int,
-    actions_probas: List[float],
+    actions_probas: ProbaLike,
     err_msg: str,
 ):
     """
@@ -95,8 +109,8 @@ def assert_action_proba_is_larger_than_threshold(
     """
     action_proba = actions_probas[expected_action]
     assert action_proba > expected_proba, (
-        f"{err_msg}. Expected a probability larger than {expected_proba*100}% for"
-        f" action {expected_action}, got {action_proba*100}%"
+        f"{err_msg}. Expected a probability larger than {expected_proba * 100}% for"
+        f" action {expected_action}, got {action_proba * 100}%"
     )
 
 
@@ -104,11 +118,12 @@ def check_loss_or_optimizer_value_net(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_value: Callable[..., np.ndarray],
     budget: Optional[int] = int(1e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    continuous: bool = False,
 ):
     """
     Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
@@ -125,7 +140,9 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    if gymnax:
+    if gymnax and continuous:
+        env = ValueLossOrOptimizerEnv_continuous_gx
+    elif gymnax:
         env = ValueLossOrOptimizerEnv_gx
     else:
         env = ValueLossOrOptimizerEnv
@@ -149,11 +166,12 @@ def check_backprop_value_net(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_value: Callable[..., np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    continuous: bool = False,
 ):
     """
     Train and test your agent on ValueBackpropEnv : Check for problems in the \
@@ -170,7 +188,9 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    if gymnax:
+    if gymnax and continuous:
+        env = ValueBackpropEnv_continuous_gx
+    elif gymnax:
         env = ValueBackpropEnv_gx
     else:
         env = ValueBackpropEnv
@@ -199,12 +219,13 @@ def check_reward_discounting(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_value: Callable[..., np.ndarray],
     get_gamma: Callable[[AgentType], float],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    continuous: bool = False,
 ):
     """
     Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
@@ -223,7 +244,9 @@ def check_reward_discounting(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    if gymnax:
+    if gymnax and continuous:
+        env = RewardDiscountingEnv_continuous_gx
+    elif gymnax:
         env = RewardDiscountingEnv_gx
     else:
         env = RewardDiscountingEnv
@@ -253,7 +276,7 @@ def check_advantage_policy(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_policy: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_policy: Callable[..., np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
@@ -303,7 +326,7 @@ def check_advantage_policy_continuous(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_action: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_action: Callable[..., np.ndarray],
     budget: float = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
@@ -358,7 +381,7 @@ def check_actor_and_critic_coupling(
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
     get_policy: Callable[[AgentType, np.ndarray], List[float]],
-    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_value: Callable[..., np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
@@ -421,8 +444,8 @@ def check_actor_and_critic_coupling_continuous(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_action: Callable[[AgentType, np.ndarray], float],
-    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_action: Callable[..., float],
+    get_value: Callable[..., np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
@@ -481,13 +504,9 @@ def check_recurrent_agent(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_value_recurrent: Callable[
-        [AgentType, np.ndarray, bool, np.ndarray], np.ndarray
-    ],
+    get_value_recurrent: Callable[..., np.ndarray],
     init_hidden_state: Callable[..., np.ndarray],
-    compute_next_critic_hidden: Callable[
-        [AgentType, np.ndarray, bool, np.ndarray], np.ndarray
-    ],
+    compute_next_critic_hidden: Callable[..., np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
@@ -547,8 +566,8 @@ def check_average_reward(
     agent: AgentType,
     init_agent: InitAgentType,
     train_agent: Callable[[AgentType, float], AgentType],
-    get_action: Callable[[AgentType, np.ndarray], float],
-    get_value: Callable[[AgentType, np.ndarray], np.ndarray],
+    get_action: Callable[..., float],
+    get_value: Callable[..., np.ndarray],
     budget: Optional[float] = int(2e3),
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
@@ -578,4 +597,4 @@ def check_average_reward(
     value = get_value(agent, 0, env().TIME_LIMIT)
     assert value == pytest.approx(
         2 / 5, rel=0.5
-    ), f"Expected value to be close to {value/env().TIME_LIMIT}, got {value=}"
+    ), f"Expected value to be close to {value / env().TIME_LIMIT}, got {value=}"
