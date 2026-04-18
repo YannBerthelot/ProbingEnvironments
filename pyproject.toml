@@ -6,17 +6,16 @@ authors = ["Yann Berthelot <yannberthelot1@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.11,<4.0"
 mypy-extensions = "^1.0.0"
 pytest = "^7.4.0"
 gymnasium = "^0.28.1"
 gymnax = {git = "https://github.com/YannBerthelot/gymnax.git"}
-numpy = "<=1.26.4"
+chex = "^0.1.91"
 
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.12.0"
-torch = "^1.11, !=2.0.1"
 stable-baselines3 = "^2.0.0"
 pre-commit = "^2.20.0"
 scriv = {extras = ["toml"], version = "^0.15.2"}
