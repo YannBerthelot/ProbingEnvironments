@@ -15,13 +15,14 @@ class EnvState:
     """Represents the state of the env in gymnax format"""
 
     x: float
+    time: int = 0
 
 
 @struct.dataclass
 class EnvParams:
-    """Environment parameters (unused here)"""
+    """Environment parameters"""
 
-    unused: Optional[Any] = None
+    max_steps_in_episode: int = 1
 
 
 class ValueLossOrOptimizerEnv(environment.Environment):
@@ -48,7 +49,7 @@ class ValueLossOrOptimizerEnv(environment.Environment):
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         """Performs step transitions in the environment."""
         reward = 1.0
-        state = EnvState(x=0)  # type: ignore
+        state = EnvState(x=0, time=state.time + 1)  # type: ignore
         done = self.is_terminal(state, params)
 
         return (
@@ -63,7 +64,7 @@ class ValueLossOrOptimizerEnv(environment.Environment):
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
-        state = EnvState(x=0)  # type: ignore
+        state = EnvState(x=0, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:

@@ -15,13 +15,14 @@ class EnvState:
     """Represents the state of the env in gymnax format"""
 
     x: float
+    time: int = 0
 
 
 @struct.dataclass
 class EnvParams:
-    """Environment parameters (unused here)"""
+    """Environment parameters"""
 
-    unused: Optional[Any] = None
+    max_steps_in_episode: int = 1
 
 
 class PolicyAndValueEnv(environment.Environment):
@@ -51,10 +52,11 @@ class PolicyAndValueEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         """Performs step transitions in the environment."""
-        done = self.is_terminal(state, params)
         reward = jax.lax.cond(
             (jnp.array_equal(action, state.x)), lambda: 1.0, lambda: 0.0
         )
+        state = EnvState(x=state.x, time=state.time + 1)  # type: ignore
+        done = self.is_terminal(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
@@ -68,7 +70,7 @@ class PolicyAndValueEnv(environment.Environment):
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
         obs = jax.random.choice(key, jnp.array([0.0, 1.0]))
-        state = EnvState(x=obs)  # type: ignore
+        state = EnvState(x=obs, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:

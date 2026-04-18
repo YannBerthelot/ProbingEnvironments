@@ -41,6 +41,15 @@ from probing_environments.gymnax_envs.continuous_actions import (
 from probing_environments.gymnax_envs.continuous_actions import (
     PolicyAndValueEnv as PolicyAndValueEnv_continuous_gx,
 )
+from probing_environments.gymnax_envs.continuous_actions import (
+    RewardDiscountingEnv as RewardDiscountingEnv_continuous_gx,
+)
+from probing_environments.gymnax_envs.continuous_actions import (
+    ValueBackpropEnv as ValueBackpropEnv_continuous_gx,
+)
+from probing_environments.gymnax_envs.continuous_actions import (
+    ValueLossOrOptimizerEnv as ValueLossOrOptimizerEnv_continuous_gx,
+)
 from probing_environments.utils.type_hints import AgentType
 
 EPS = 1e-1
@@ -109,6 +118,7 @@ def check_loss_or_optimizer_value_net(
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    continuous: bool = False,
 ):
     """
     Train and test your agent on ValueLossOrOptimizerEnv : Check for problems in the\
@@ -125,7 +135,9 @@ def check_loss_or_optimizer_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    if gymnax:
+    if gymnax and continuous:
+        env = ValueLossOrOptimizerEnv_continuous_gx
+    elif gymnax:
         env = ValueLossOrOptimizerEnv_gx
     else:
         env = ValueLossOrOptimizerEnv
@@ -154,6 +166,7 @@ def check_backprop_value_net(
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    continuous: bool = False,
 ):
     """
     Train and test your agent on ValueBackpropEnv : Check for problems in the \
@@ -170,7 +183,9 @@ def check_backprop_value_net(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    if gymnax:
+    if gymnax and continuous:
+        env = ValueBackpropEnv_continuous_gx
+    elif gymnax:
         env = ValueBackpropEnv_gx
     else:
         env = ValueBackpropEnv
@@ -205,6 +220,7 @@ def check_reward_discounting(
     learning_rate: Optional[float] = 1e-3,
     num_envs: Optional[int] = 1,
     gymnax: bool = False,
+    continuous: bool = False,
 ):
     """
     Train and test yout agent on RewardDiscountingEnv: Check problems in the reward\
@@ -223,7 +239,9 @@ def check_reward_discounting(
         discrete (bool, optional): Wether or not to handle state as discrete. \
             Defaults to True.
     """
-    if gymnax:
+    if gymnax and continuous:
+        env = RewardDiscountingEnv_continuous_gx
+    elif gymnax:
         env = RewardDiscountingEnv_gx
     else:
         env = RewardDiscountingEnv

@@ -15,15 +15,15 @@ class EnvState:
     """Represents the state of the env in gymnax format"""
 
     x: float
-    t: int
-    original_state: float
+    time: int = 0
+    original_state: float = 0.0
 
 
 @struct.dataclass
 class EnvParams:
-    """Environment parameters (unused here)"""
+    """Environment parameters"""
 
-    unused: Optional[Any] = None
+    max_steps_in_episode: int = 2
 
 
 class RecurrentValueEnv(environment.Environment):
@@ -47,17 +47,16 @@ class RecurrentValueEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         """Performs step transitions in the environment."""
-        done = self.is_terminal(state, params)
-        t = state.t
-        t += 1
+        t = state.time + 1
         reward = jax.lax.cond(
             t == 1,
             lambda: 0.0,
             lambda: jax.lax.cond(state.original_state == 0.0, lambda: 0.0, lambda: 1.0),
         )
         state = EnvState(  # type: ignore
-            x=jnp.float32(t) + 1.0, t=t, original_state=state.original_state
+            x=jnp.float32(t) + 1.0, time=t, original_state=state.original_state
         )
+        done = self.is_terminal(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
@@ -71,7 +70,7 @@ class RecurrentValueEnv(environment.Environment):
     ) -> Tuple[chex.Array, EnvState]:
         """Performs resetting of environment."""
         obs = jax.random.choice(key, jnp.array([0.0, 1.0]))
-        state = EnvState(x=obs, t=0, original_state=obs)  # type: ignore
+        state = EnvState(x=obs, time=0, original_state=obs)  # type: ignore
         self.original_state = obs
         return self.get_obs(state), state
 
@@ -91,7 +90,7 @@ class RecurrentValueEnv(environment.Environment):
 
     def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
-        return state.t == 1
+        return state.time == 2
 
     def action_space(self, params: Optional[EnvParams] = None) -> spaces.Discrete:
         """Action space of the environment."""
