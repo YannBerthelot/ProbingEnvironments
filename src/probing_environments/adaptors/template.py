@@ -1,6 +1,7 @@
 """
 Premade connectors for stable-baselines3
 """
+
 from typing import List, Optional
 
 import gymnasium as gym

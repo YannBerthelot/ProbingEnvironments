@@ -1,4 +1,5 @@
 """Check that the continuous gymnax environments work as expected"""
+
 import jax
 
 from probing_environments.gymnax_envs.continuous_actions import (
@@ -25,9 +26,7 @@ def test_AdvantagePolicyLossPolicyUpdateEnv_works():
         key_act, _rng = jax.random.split(key_act)
         action = env.action_space(params).sample(_rng)
         obs, state = env.reset(key_reset, params)
-        n_obs, new_state, reward, done, info = env.step(
-            key_step, state, action, params
-        )
+        n_obs, new_state, reward, done, info = env.step(key_step, state, action, params)
         assert done
         assert action == reward
 

@@ -22,9 +22,7 @@ def test_TwoChoiceMDPWorks():
     for action in (0, 1):
         obs, state = env.reset(key_reset, params)
         for i in range(4):
-            n_obs, state, reward, done, info = env.step(
-                key_step, state, action, params
-            )
+            n_obs, state, reward, done, info = env.step(key_step, state, action, params)
             assert n_obs == expected_obs[action][i]
             if i == 0 and action == 0:
                 assert reward == 1
@@ -40,7 +38,5 @@ def test_TwoChoiceMDPWorks():
     env_params = EnvParams(max_steps_in_episode=max_steps)
     obs, state = env.reset(key_reset, env_params)
     for _ in range(max_steps):
-        n_obs, state, reward, done, info = env.step(
-            key_step, state, action, env_params
-        )
+        n_obs, state, reward, done, info = env.step(key_step, state, action, env_params)
     assert done

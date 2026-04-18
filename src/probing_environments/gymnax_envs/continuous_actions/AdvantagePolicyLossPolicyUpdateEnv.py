@@ -1,5 +1,6 @@
 """AdvantagePolicyLossPolicyUpdateEnv"""
-from typing import Any, Optional, Tuple
+
+from typing import Optional, Tuple
 
 import chex
 import jax.numpy as jnp
@@ -46,8 +47,12 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         return EnvParams()
 
     def step_env(
-        self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
-    ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
+        self,
+        key: chex.PRNGKey,
+        state: EnvState,
+        action: chex.Array,
+        params: EnvParams,
+    ) -> Tuple[chex.Array, EnvState, chex.Array, bool, dict]:
         """Performs step transitions in the environment."""
         reward = jnp.squeeze(action)  # the higher the action, the better
         state = EnvState(x=state.x, time=state.time + 1)  # type: ignore

@@ -1,7 +1,8 @@
 """
 Connectors template for your agent.
 """
-from typing import List, Optional
+
+from typing import Any, List, Optional, Type
 
 import gymnasium as gym
 import numpy as np
@@ -13,8 +14,8 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 
 
 def init_agent(
-    agent: OnPolicyAlgorithm,
-    env: gym.Env,
+    agent: Type[Any],
+    env: Type[gym.Env],
     run_name: str,  # pylint: disable=W0613
     gamma: float = 0.5,
     learning_rate: float = 1e-3,
@@ -51,7 +52,7 @@ def init_agent(
             learning_rate=learning_rate,
             seed=seed,
             n_steps=32,
-            device="cpu"
+            device="cpu",
             # use_rms_prop=False,
         )
     else:
@@ -62,7 +63,7 @@ def init_agent(
             learning_rate=learning_rate,
             seed=seed,
             n_steps=32,
-            device="cpu"
+            device="cpu",
             # use_rms_prop=False,
         )
 
@@ -151,7 +152,7 @@ def get_action(agent: OnPolicyAlgorithm, obs: np.ndarray) -> List[float]:
     Returns:
         List[float]: The probability of taking every action.
     """
-    action = agent.predict(torch.tensor(np.array([obs])), deterministic=True)
+    action = agent.predict(np.array([obs]), deterministic=True)
     return action[0][0]
 
 

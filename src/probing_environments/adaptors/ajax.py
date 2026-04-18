@@ -14,12 +14,12 @@ The "agent" flowing through the adaptor is a dict with:
     - "key": JAX PRNG key
     - "kind": "q" for Q-function agents, "v" for V-function agents
 """
+
 from typing import Any, List, Optional
 
 import jax
 import jax.numpy as jnp
 import numpy as np
-
 
 AgentDict = dict[str, Any]
 
@@ -167,7 +167,7 @@ def get_value(agent: AgentDict, obs: np.ndarray) -> float:
     else:
         # SAC/REDQ/AVG/ASAC: Q-function critic, compute V(s) = Q(s, pi(s))
         pi = state.actor_state.apply_fn(state.actor_state.params, obs_batched)
-        action = pi.mean() if hasattr(pi, 'mean') else pi.mode()
+        action = pi.mean() if hasattr(pi, "mean") else pi.mode()
         x = jnp.concatenate([obs_batched, action], axis=-1)
         q_values = state.critic_state.apply_fn(state.critic_state.params, x)
         if q_values.ndim > 1:
@@ -190,7 +190,6 @@ def get_policy(agent: AgentDict, obs: np.ndarray) -> List[float]:
     if n_actions <= 1:
         return [1.0]
 
-    actions = jnp.eye(n_actions)
     probs = []
     for i in range(n_actions):
         a = jnp.array([float(i)])
@@ -212,7 +211,7 @@ def get_action(agent: AgentDict, obs: np.ndarray, key=None) -> float:
     obs_batched = obs_jax[None] if obs_jax.ndim == 1 else obs_jax
 
     pi = state.actor_state.apply_fn(state.actor_state.params, obs_batched)
-    action = pi.mean() if hasattr(pi, 'mean') else pi.mode()
+    action = pi.mean() if hasattr(pi, "mean") else pi.mode()
     return float(action.squeeze())
 
 

@@ -1,4 +1,5 @@
 """Test that the recurrent env works properly."""
+
 import jax
 import jax.numpy as jnp
 
@@ -19,9 +20,7 @@ def test_recurrent_env():
 
     for init_obs in (0.0, 1.0):
         _, env_state = env.reset(key, params)
-        env_state = EnvState(
-            x=init_obs, time=0, original_state=init_obs
-        )
+        env_state = EnvState(x=init_obs, time=0, original_state=init_obs)
         # Step 1: time 0->1, reward=0, not terminal
         obs, env_state, reward, done, info = env.step(key, env_state, 0, params)
         assert not done

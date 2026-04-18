@@ -3,6 +3,7 @@
 One continuous action, zero-then-one observation, two timesteps long,
 +1 reward at the end. Tests reward discounting.
 """
+
 from typing import Optional, Tuple
 
 import chex
@@ -40,7 +41,7 @@ class RewardDiscountingEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         t = state.time + 1
-        state = EnvState(x=jnp.float32(t), time=t)
+        state = EnvState(x=jnp.float32(t), time=t)  # type: ignore
         done = self.is_terminal(state, params)
         reward = jax.lax.cond(done, lambda: 1.0, lambda: 0.0)
         return (
@@ -54,7 +55,7 @@ class RewardDiscountingEnv(environment.Environment):
     def reset_env(
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
-        state = EnvState(x=0.0, time=0)
+        state = EnvState(x=0.0, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:

@@ -1,4 +1,5 @@
 """Check that the gymnax environments work as expected"""
+
 import jax
 
 from probing_environments.gymnax_envs import (

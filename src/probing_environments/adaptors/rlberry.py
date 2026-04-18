@@ -1,6 +1,7 @@
 """
 Premade connectors for rlberry
 """
+
 from typing import List, Optional
 
 import gymnasium as gym

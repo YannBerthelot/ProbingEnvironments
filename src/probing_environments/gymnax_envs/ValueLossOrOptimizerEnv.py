@@ -1,5 +1,6 @@
 """ValueLossOrOptimizerEnv"""
-from typing import Any, Optional, Tuple
+
+from typing import Optional, Tuple
 
 import chex
 import jax.numpy as jnp

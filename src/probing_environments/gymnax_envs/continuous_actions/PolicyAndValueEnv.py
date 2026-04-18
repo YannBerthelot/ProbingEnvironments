@@ -1,5 +1,6 @@
 """PolicyAndValueEnv"""
-from typing import Any, Optional, Tuple
+
+from typing import Optional, Tuple
 
 import chex
 import jax
@@ -49,7 +50,11 @@ class PolicyAndValueEnv(environment.Environment):
         return EnvParams()
 
     def step_env(
-        self, key: chex.PRNGKey, state: EnvState, action: int, params: EnvParams
+        self,
+        key: chex.PRNGKey,
+        state: EnvState,
+        action: chex.Array,
+        params: EnvParams,
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         """Performs step transitions in the environment."""
         case_state_greater_05 = jax.lax.cond(

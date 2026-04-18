@@ -4,6 +4,7 @@ One continuous action, random 0/1 observation, one timestep long,
 obs-dependent reward. Tests that backpropagation through the value network
 works.
 """
+
 from typing import Optional, Tuple
 
 import chex
@@ -16,7 +17,7 @@ from jax import lax
 
 @struct.dataclass
 class EnvState:
-    x: float
+    x: chex.Array
     time: int = 0
 
 
@@ -41,7 +42,7 @@ class ValueBackpropEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         reward = state.x
-        state = EnvState(x=state.x, time=state.time + 1)
+        state = EnvState(x=state.x, time=state.time + 1)  # type: ignore
         done = self.is_terminal(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
@@ -55,7 +56,7 @@ class ValueBackpropEnv(environment.Environment):
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
         obs = jax.random.choice(key, jnp.array([0.0, 1.0]))
-        state = EnvState(x=obs, time=0)
+        state = EnvState(x=obs, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:

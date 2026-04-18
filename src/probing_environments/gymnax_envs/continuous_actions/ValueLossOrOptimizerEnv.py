@@ -3,6 +3,7 @@
 One continuous action, zero observation, one timestep long, +1 reward every
 timestep. Tests that the value network can learn a constant value.
 """
+
 from typing import Optional, Tuple
 
 import chex
@@ -39,7 +40,7 @@ class ValueLossOrOptimizerEnv(environment.Environment):
         self, key: chex.PRNGKey, state: EnvState, action, params: EnvParams
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         reward = 1.0
-        state = EnvState(x=0.0, time=state.time + 1)
+        state = EnvState(x=0.0, time=state.time + 1)  # type: ignore
         done = self.is_terminal(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
@@ -52,7 +53,7 @@ class ValueLossOrOptimizerEnv(environment.Environment):
     def reset_env(
         self, key: chex.PRNGKey, params: EnvParams
     ) -> Tuple[chex.Array, EnvState]:
-        state = EnvState(x=0.0, time=0)
+        state = EnvState(x=0.0, time=0)  # type: ignore
         return self.get_obs(state), state
 
     def get_obs(self, state: EnvState) -> chex.Array:
