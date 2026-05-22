@@ -25,8 +25,11 @@ AgentDict = dict[str, Any]
 
 # Agent classes that use V-function critics (PPO, APO)
 _V_FUNCTION_AGENTS = set()
-# Agent classes that use Q-function critics (SAC, REDQ, ASAC, AVG)
+# Agent classes that use Q(s, a)-function critics (SAC, REDQ, ASAC, AVG)
 _Q_FUNCTION_AGENTS = set()
+# Agent classes that use a Q(s)->R^{n_actions} network (DQN). These are
+# discrete-action and value-based: V(s) = max_a Q(s, a), policy = argmax.
+_DQN_AGENTS = set()
 # On-policy agents (no replay buffer)
 _ON_POLICY_AGENTS = set()
 # Average-reward agents (no gamma)
@@ -39,6 +42,8 @@ def _classify_agent(agent_cls):
     if name in ("PPO", "APO"):
         _V_FUNCTION_AGENTS.add(name)
         _ON_POLICY_AGENTS.add(name)
+    elif name == "DQN":
+        _DQN_AGENTS.add(name)
     else:
         _Q_FUNCTION_AGENTS.add(name)
     if name in ("ASAC", "APO", "AVG"):
@@ -65,6 +70,34 @@ def init_agent(
     # truncations. The envs' is_terminal logic still controls episode length;
     # this just prevents the time-based clause from firing first.
     env_params = env_params.replace(max_steps_in_episode=10_000)
+
+    if name in _DQN_AGENTS:
+        # DQN: single Q-network, discrete actions, replay buffer. Its
+        # __init__ takes `learning_rate` / `architecture` (one network),
+        # not the actor/critic-split kwargs the other agents use.
+        agent_instance = agent(
+            env_id=env_instance,
+            n_envs=num_envs or 1,
+            learning_rate=learning_rate,
+            architecture=("64", "relu", "64", "relu"),
+            env_params=env_params,
+            gamma=gamma,
+            learning_starts=100,
+            buffer_size=10_000,
+            batch_size=64,
+            target_update_interval=100,
+        )
+        return {
+            "agent_cls": agent,
+            "agent_instance": agent_instance,
+            "gamma": gamma,
+            "state": None,
+            "env": env_instance,
+            "env_params": env_params,
+            "key": jax.random.PRNGKey(seed),
+            "seed": seed,
+            "kind": "dqn",
+        }
 
     common_kwargs = dict(
         env_id=env_instance,
@@ -164,6 +197,11 @@ def get_value(agent: AgentDict, obs: np.ndarray) -> float:
         if value.ndim > 1:
             value = jnp.mean(value, axis=0)
         return float(value.squeeze())
+    elif agent["kind"] == "dqn":
+        # DQN: Q(s) -> R^{n_actions}; greedy state value is V(s) = max_a Q(s, a).
+        pi = state.actor_state.apply_fn(state.actor_state.params, obs_batched)
+        value = jnp.max(pi.q_values, axis=-1)
+        return float(value.squeeze())
     else:
         # SAC/REDQ/AVG/ASAC: Q-function critic, compute V(s) = Q(s, pi(s))
         pi = state.actor_state.apply_fn(state.actor_state.params, obs_batched)
@@ -186,9 +224,19 @@ def get_policy(agent: AgentDict, obs: np.ndarray) -> List[float]:
 
     pi = state.actor_state.apply_fn(state.actor_state.params, obs_jax)
 
-    n_actions = agent["env"].num_actions
+    # Read the action count from action_space rather than the env's
+    # `num_actions` property: several gymnax probing envs ship a buggy
+    # `num_actions` (returns 1 via a copy-paste from ValueLossOrOptimizerEnv)
+    # while their `action_space` correctly reports Discrete(2).
+    n_actions = int(agent["env"].action_space(agent["env_params"]).n)
     if n_actions <= 1:
         return [1.0]
+
+    if agent["kind"] == "dqn":
+        # DQN's policy is greedy over Q; report it as a one-hot over the
+        # argmax action (exploration is a collection-time concern only).
+        best = int(jnp.argmax(pi.q_values, axis=-1).squeeze())
+        return [1.0 if i == best else 0.0 for i in range(n_actions)]
 
     probs = []
     for i in range(n_actions):
