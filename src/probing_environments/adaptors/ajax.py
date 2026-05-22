@@ -224,11 +224,7 @@ def get_policy(agent: AgentDict, obs: np.ndarray) -> List[float]:
 
     pi = state.actor_state.apply_fn(state.actor_state.params, obs_jax)
 
-    # Read the action count from action_space rather than the env's
-    # `num_actions` property: several gymnax probing envs ship a buggy
-    # `num_actions` (returns 1 via a copy-paste from ValueLossOrOptimizerEnv)
-    # while their `action_space` correctly reports Discrete(2).
-    n_actions = int(agent["env"].action_space(agent["env_params"]).n)
+    n_actions = int(agent["env"].num_actions)
     if n_actions <= 1:
         return [1.0]
 

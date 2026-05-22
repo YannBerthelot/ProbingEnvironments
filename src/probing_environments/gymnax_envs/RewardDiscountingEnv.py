@@ -80,7 +80,8 @@ class RewardDiscountingEnv(environment.Environment):
     @property
     def num_actions(self) -> int:
         """Number of actions possible in environment."""
-        return 1
+        # Derive from action_space so the two can never disagree.
+        return int(self.action_space().n)
 
     def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
