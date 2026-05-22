@@ -27,8 +27,10 @@ AgentDict = dict[str, Any]
 _V_FUNCTION_AGENTS = set()
 # Agent classes that use Q(s, a)-function critics (SAC, REDQ, ASAC, AVG)
 _Q_FUNCTION_AGENTS = set()
-# Agent classes that use a Q(s)->R^{n_actions} network (DQN). These are
-# discrete-action and value-based: V(s) = max_a Q(s, a), policy = argmax.
+# Agent classes that use a Q(s)->R^{n_actions} network (DQN, PQN). These
+# are discrete-action and value-based: V(s) = max_a Q(s, a), policy =
+# argmax. They share the get_value / get_policy logic; only their
+# constructor kwargs differ (handled per-name in init_agent).
 _DQN_AGENTS = set()
 # On-policy agents (no replay buffer)
 _ON_POLICY_AGENTS = set()
@@ -42,7 +44,7 @@ def _classify_agent(agent_cls):
     if name in ("PPO", "APO"):
         _V_FUNCTION_AGENTS.add(name)
         _ON_POLICY_AGENTS.add(name)
-    elif name == "DQN":
+    elif name in ("DQN", "PQN"):
         _DQN_AGENTS.add(name)
     else:
         _Q_FUNCTION_AGENTS.add(name)
@@ -70,6 +72,32 @@ def init_agent(
     # truncations. The envs' is_terminal logic still controls episode length;
     # this just prevents the time-based clause from firing first.
     env_params = env_params.replace(max_steps_in_episode=10_000)
+
+    if name == "PQN":
+        # PQN: single Q-network, discrete actions, on-policy (no replay
+        # buffer, no target network). Takes rollout kwargs instead.
+        agent_instance = agent(
+            env_id=env_instance,
+            n_envs=num_envs or 1,
+            learning_rate=learning_rate,
+            architecture=("64", "relu", "64", "relu"),
+            env_params=env_params,
+            gamma=gamma,
+            n_steps=16,
+            n_epochs=4,
+            num_minibatches=1,
+        )
+        return {
+            "agent_cls": agent,
+            "agent_instance": agent_instance,
+            "gamma": gamma,
+            "state": None,
+            "env": env_instance,
+            "env_params": env_params,
+            "key": jax.random.PRNGKey(seed),
+            "seed": seed,
+            "kind": "dqn",
+        }
 
     if name in _DQN_AGENTS:
         # DQN: single Q-network, discrete actions, replay buffer. Its
