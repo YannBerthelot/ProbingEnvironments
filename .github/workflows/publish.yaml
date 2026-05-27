@@ -3,7 +3,6 @@ name: Publish to PyPI
 on:
   release:
     types: [published]
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -12,23 +11,26 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: "3.12"
 
-      - name: Install poetry and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install poetry
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.8.3
 
       - name: Configure poetry
         env:
+          # ``poetry config pypi-token.pypi`` takes ONE argument: the
+          # token value. The "__token__" username is implicit when using
+          # an API token. Passing both as positional args fails with
+          # "Expected only one argument (token), got 2".
           pypi_token: ${{ secrets.PYPI_TOKEN }}
-        run: poetry config pypi-token.pypi __token__ $pypi_token
+        run: poetry config pypi-token.pypi "$pypi_token"
 
       - name: Build and publish
-        run: |
-          poetry publish --build
+        run: poetry publish --build --no-interaction --skip-existing
