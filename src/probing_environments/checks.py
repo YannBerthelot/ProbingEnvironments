@@ -598,3 +598,83 @@ def check_average_reward(
     assert value == pytest.approx(
         2 / 5, rel=0.5
     ), f"Expected value to be close to {value / env().TIME_LIMIT}, got {value=}"
+
+
+def check_boundary_action_saturation(
+    agent: AgentType,
+    init_agent: InitAgentType,
+    train_agent: Callable[[AgentType, float], AgentType],
+    get_action: Callable[..., np.ndarray],
+    budget: float = int(5e4),
+    learning_rate: Optional[float] = 1e-3,
+    num_envs: Optional[int] = 1,
+    gymnax: bool = False,
+    key: Optional[Any] = None,
+    threshold: float = 0.98,
+):
+    """Boundary-action saturation probe (catches log_prob recompute
+    instability for tanh-squashed Gaussian policies).
+
+    Uses ``AdvantagePolicyLossPolicyUpdateEnv``: 1-step env where
+    ``reward = action`` so the optimal policy is action = +1. For a
+    tanh-squashed Gaussian (SquashedNormal) actor, reaching action = +1
+    requires the policy mean to push to +∞ so that sampled pre-tanh
+    values land in the saturated region ``tanh(x) → ±1``. **This is
+    exactly the regime where on-policy agents (PPO, APO) that
+    recompute ``pi.log_prob(post_tanh_action)`` at update time hit
+    numerical instability**: distrax's ``Tanh.inverse_and_log_det``
+    calls ``arctanh(action)``, which is undefined at ``|action| = 1``
+    and numerically explosive nearby. The recomputed log_prob diverges
+    from the stored log_prob, the PPO ratio = ``exp(new − old)``
+    becomes huge or NaN, and the policy gets stuck around action ≈
+    0.95 instead of converging.
+
+    Contrast with the existing :func:`check_advantage_policy_continuous`,
+    which uses ``budget=2000`` and asserts ``action >= 0.90`` — too
+    permissive: a saturation-stalled PPO can pass that bar. This
+    stricter variant uses ``budget=50_000`` and asserts ``action >=
+    0.98``, which forces the policy through the saturation regime.
+
+    Fix on the agent side (Ajax PPO did this May 2026): store the
+    pre-tanh ``raw_action`` in the rollout buffer, and at update time
+    compute log_prob via ``base.log_prob(raw_action) -
+    forward_log_det_jacobian(raw_action)`` — never invert the tanh.
+    Brax PPO follows the same pattern.
+
+    Args:
+        threshold: Minimum acceptable action value. 0.98 by default
+            (corresponds to pre-tanh ``arctanh(0.98) ≈ 2.30`` — well
+            inside the unstable regime for distrax's inverse path).
+            Set to 0.95 for a softer check if needed.
+        budget: Training budget; 5e4 is enough for an unbroken PPO
+            to fully saturate on this trivial env, but starves a
+            saturation-stalled run.
+    """
+    if gymnax:
+        env = AdvantagePolicyLossPolicyUpdateEnv_continuous_gx
+    else:
+        env = AdvantagePolicyLossPolicyUpdateEnvContinuous
+    agent = init_agent(
+        agent=agent,
+        env=env,
+        run_name="check_boundary_action_saturation",
+        gamma=0.5,
+        learning_rate=learning_rate,
+        num_envs=num_envs,
+        budget=budget,
+    )
+    agent = train_agent(agent, budget)
+    if gymnax:
+        action = get_action(agent, np.array([1.0]), key)
+    else:
+        action = get_action(agent, np.array([1.0]))
+    err_msg = (
+        "Action did not saturate to the [-1, 1] boundary. This is the "
+        "diagnostic for ``pi.log_prob(post_tanh_action)`` recompute "
+        "instability in on-policy agents (PPO / APO). Fix: store the "
+        "pre-tanh raw_action in the rollout buffer and recompute "
+        "log_prob via base.log_prob(raw) - forward_log_det_jacobian(raw)."
+    )
+    assert action >= threshold, (
+        err_msg + f" Expected action >= {threshold}, got action={action}."
+    )
