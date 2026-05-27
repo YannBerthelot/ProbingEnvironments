@@ -12,16 +12,28 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
+        with:
+          # Full history + tags so poetry-dynamic-versioning can detect
+          # the release tag's version. ``fetch-depth: 0`` alone does NOT
+          # fetch tags in checkout@v4 (fetch-tags defaults to false).
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install Poetry
+      - name: Install Poetry (with dynamic-versioning plugin)
         uses: snok/install-poetry@v1
         with:
           version: 1.8.3
+          # Install poetry-dynamic-versioning as a Poetry plugin (not just
+          # the build-backend declared in pyproject.toml). Without the
+          # plugin, ``poetry build`` shows the placeholder version
+          # ("Building probing_environments (0.0.0)") and the publish step
+          # finds no matching files.
+          plugins: "poetry-dynamic-versioning[plugin]"
 
       - name: Configure poetry
         env:
@@ -33,4 +45,17 @@ jobs:
         run: poetry config pypi-token.pypi "$pypi_token"
 
       - name: Build and publish
-        run: poetry publish --build --no-interaction --skip-existing
+        env:
+          # Belt-and-suspenders: even with the plugin installed and tags
+          # fetched, force the version explicitly to the release tag
+          # (stripped of the leading "v"). Avoids any ambiguity from
+          # detached-HEAD checkouts.
+          POETRY_DYNAMIC_VERSIONING_BYPASS: ${{ github.event.release.tag_name }}
+        run: |
+          # Strip leading "v" prefix if present (PEP 440 expects "0.5.1"
+          # not "v0.5.1").
+          export POETRY_DYNAMIC_VERSIONING_BYPASS="${POETRY_DYNAMIC_VERSIONING_BYPASS#v}"
+          echo "Bypass version: $POETRY_DYNAMIC_VERSIONING_BYPASS"
+          poetry build
+          ls -la dist/
+          poetry publish --no-interaction --skip-existing

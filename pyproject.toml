@@ -1,16 +1,31 @@
 [tool.poetry]
 name = "probing_environments"
-version = "0.5.0"
+# Placeholder -- the real version is set at build time by
+# poetry-dynamic-versioning from the git tag (see [tool.poetry-dynamic-
+# versioning] below and the publish.yaml workflow). Edits to this
+# value here are ignored when the plugin is active.
+version = "0.0.0"
 description = "Probing environments for RL/DeepRL algorithms debugging"
 authors = ["Yann Berthelot <yannberthelot1@gmail.com>"]
 readme = "README.md"
+
+[tool.poetry-dynamic-versioning]
+enable = true
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
 mypy-extensions = "^1.0.0"
 pytest = "^7.4.0"
 gymnasium = ">=1.2"
-gymnax = {git = "https://github.com/YannBerthelot/gymnax.git"}
+# Upstream gymnax (PyPI). ProbingEnvironments only imports
+# ``gymnax.environments.{environment, spaces}`` -- the base
+# Environment class and the spaces module. It does NOT use the extra
+# ``info["truncated"]/["terminated"]/["obs_st"]/["state_st"]`` fields
+# that the YannBerthelot/gymnax fork adds (those are Ajax-side
+# termination-handling improvements). So upstream 0.0.9 is sufficient
+# and avoids PyPI's "no direct git deps" rejection (PEP 440) that
+# blocked the v0.5.1 release attempt.
+gymnax = "^0.0.9"
 chex = "^0.1.91"
 
 
@@ -83,5 +98,5 @@ python =
 """
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=2.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
