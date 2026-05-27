@@ -21,6 +21,7 @@ from probing_environments.checks import (
     check_advantage_policy_continuous,
     check_average_reward,
     check_backprop_value_net,
+    check_boundary_action_saturation,
     check_loss_or_optimizer_value_net,
     check_reward_discounting,
 )
@@ -132,6 +133,28 @@ def test_check_advantage_policy_continuous():
         get_action,
         learning_rate=LEARNING_RATE,
         budget=BUDGET,
+    )
+
+
+def test_check_boundary_action_saturation():
+    """Test that check_boundary_action_saturation works on failproof sb3.
+
+    SB3 PPO uses an unbounded Gaussian + action-space clipping (not
+    SquashedNormal), so it doesn't hit the arctanh saturation
+    instability the check is designed to catch. The check still
+    asserts the agent learns to push action to the boundary (>=
+    threshold), which an unbroken SB3 PPO does easily on this trivial
+    1-step env. Larger budget than BUDGET (default 2e3) because the
+    threshold is 0.98 instead of 0.90 -- the looser
+    ``check_advantage_policy_continuous`` already passes at 2e3.
+    """
+    check_boundary_action_saturation(
+        AGENT,
+        init_agent,
+        train_agent,
+        get_action,
+        learning_rate=LEARNING_RATE,
+        budget=int(2e4),
     )
 
 
