@@ -42,13 +42,13 @@ class RewardDiscountingEnv(environment.Environment):
     ) -> Tuple[chex.Array, EnvState, float, bool, dict]:
         t = state.time + 1
         state = EnvState(x=jnp.float32(t), time=t)  # type: ignore
-        done = self.is_terminal(state, params)
-        reward = jax.lax.cond(done, lambda: 1.0, lambda: 0.0)
+        terminated = self.is_terminated(state, params)
+        reward = jax.lax.cond(terminated, lambda: 1.0, lambda: 0.0)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -65,7 +65,7 @@ class RewardDiscountingEnv(environment.Environment):
     def num_actions(self) -> int:
         return 1
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
         return state.time == 2
 
     def action_space(self, params: Optional[EnvParams] = None) -> spaces.Box:

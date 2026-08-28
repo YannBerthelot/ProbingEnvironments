@@ -57,12 +57,12 @@ class RecurrentValueEnv(environment.Environment):
         state = EnvState(  # type: ignore
             x=jnp.float32(t) + 1.0, time=t, original_state=state.original_state
         )
-        done = self.is_terminal(state, params)
+        terminated = self.is_terminated(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -90,7 +90,7 @@ class RecurrentValueEnv(environment.Environment):
         # Derive from action_space so the two can never disagree.
         return int(self.action_space().n)
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
         return state.time == 2
 

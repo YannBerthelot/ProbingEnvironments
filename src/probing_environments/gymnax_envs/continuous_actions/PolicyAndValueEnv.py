@@ -71,12 +71,12 @@ class PolicyAndValueEnv(environment.Environment):
             lambda: case_state_lesser_05,
         )
         state = EnvState(x=state.x, time=state.time + 1)  # type: ignore
-        done = self.is_terminal(state, params)
+        terminated = self.is_terminated(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -102,7 +102,7 @@ class PolicyAndValueEnv(environment.Environment):
         """Number of actions possible in environment."""
         return 1
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
         return True
 

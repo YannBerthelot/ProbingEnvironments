@@ -29,7 +29,10 @@ def test_AdvantagePolicyLossPolicyUpdateEnv_works():
         key_act, _rng = jax.random.split(key_act)
         action = env.action_space(params).sample(_rng)
         obs, state = env.reset(key_reset, params)
-        n_obs, new_state, reward, done, info = env.step(key_step, state, action, params)
+        n_obs, new_state, reward, terminated, truncated, info = env.step(
+            key_step, state, action, params
+        )
+        done = terminated | truncated
         assert done
         assert action == reward
 
@@ -55,9 +58,10 @@ def test_PolicyAndValueEnv_works():
         for _ in range(10):
             key_reset, _rng = jax.random.split(key_reset)
             obs, state = env.reset(_rng, params)
-            n_obs, new_state, reward, done, info = env.step(
+            n_obs, new_state, reward, terminated, truncated, info = env.step(
                 key_step, state, action, params
             )
+            done = terminated | truncated
             rewards += reward
             assert done
             if (obs > 0.0 and action > 0.0) or (obs <= 0.0 and action <= 0.0):
@@ -77,7 +81,10 @@ def test_ValueLossOrOptimizerEnv_continuous_works():
     obs, state = env.reset(key_reset, params)
     assert obs == 0
     action = env.action_space(params).sample(key_act)
-    n_obs, new_state, reward, done, info = env.step(key_step, state, action, params)
+    n_obs, new_state, reward, terminated, truncated, info = env.step(
+        key_step, state, action, params
+    )
+    done = terminated | truncated
     assert done
     assert n_obs == 0
     assert reward == 1
@@ -95,7 +102,10 @@ def test_ValueBackpropEnv_continuous_works():
         obs, state = env.reset(_rng, params)
         assert obs in (0, 1)
         action = env.action_space(params).sample(key_act)
-        n_obs, new_state, reward, done, info = env.step(key_step, state, action, params)
+        n_obs, new_state, reward, terminated, truncated, info = env.step(
+            key_step, state, action, params
+        )
+        done = terminated | truncated
         assert done
         assert reward == obs
 
@@ -110,7 +120,10 @@ def test_RewardDiscountingEnv_continuous_works():
     obs, state = env.reset(key_reset, params)
     for t in range(1, 3):
         action = env.action_space(params).sample(key_act)
-        n_obs, state, reward, done, info = env.step(key_step, state, action, params)
+        n_obs, state, reward, terminated, truncated, info = env.step(
+            key_step, state, action, params
+        )
+        done = terminated | truncated
         if t == 2:
             assert done
             assert reward == 1

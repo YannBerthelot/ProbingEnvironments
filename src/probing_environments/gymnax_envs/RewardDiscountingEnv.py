@@ -50,14 +50,14 @@ class RewardDiscountingEnv(environment.Environment):
         """Performs step transitions in the environment."""
         t = state.time + 1
         state = EnvState(x=t, time=t)  # type: ignore
-        done = self.is_terminal(state, params)
-        reward = jax.lax.cond(done, lambda: 1, lambda: 0)
+        terminated = self.is_terminated(state, params)
+        reward = jax.lax.cond(terminated, lambda: 1, lambda: 0)
 
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -83,7 +83,7 @@ class RewardDiscountingEnv(environment.Environment):
         # Derive from action_space so the two can never disagree.
         return int(self.action_space().n)
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
         return state.time == 2
 

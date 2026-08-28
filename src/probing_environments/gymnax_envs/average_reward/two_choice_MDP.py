@@ -71,12 +71,12 @@ class TwoChoiceMDP(environment.Environment):
             lambda: 1,
             lambda: lax.cond(jnp.array_equal(state.x, 8), lambda: 2, lambda: 0),
         )
-        done = self.is_terminal(state, params)
+        terminated = self.is_terminated(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -101,9 +101,16 @@ class TwoChoiceMDP(environment.Environment):
         """Number of actions possible in environment."""
         return 1
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
-        """Check whether state is terminal."""
-        return state.time >= params.max_steps_in_episode
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
+        """This MDP is continuing: it has no natural terminal state.
+
+        The episode still ends at ``params.max_steps_in_episode``, but that is
+        a time limit, which gymnax >= 1.0 reports as ``truncated`` through the
+        inherited ``is_truncated`` (same formula this method used to hold).
+        Reporting it as a termination instead would zero the bootstrap at the
+        cut-off and bias the average-reward estimate this env exists to probe.
+        """
+        return jnp.zeros((), dtype=bool)
 
     def action_space(self, params: Optional[EnvParams] = None) -> spaces.Discrete:
         """Action space of the environment."""

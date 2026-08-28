@@ -51,13 +51,13 @@ class ValueLossOrOptimizerEnv(environment.Environment):
         """Performs step transitions in the environment."""
         reward = 1.0
         state = EnvState(x=0, time=state.time + 1)  # type: ignore
-        done = self.is_terminal(state, params)
+        terminated = self.is_terminated(state, params)
 
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -83,7 +83,7 @@ class ValueLossOrOptimizerEnv(environment.Environment):
         # Derive from action_space so the two can never disagree.
         return int(self.action_space().n)
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
         return True
 
