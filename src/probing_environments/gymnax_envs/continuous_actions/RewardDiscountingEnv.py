@@ -58,7 +58,12 @@ class RewardDiscountingEnv(environment.Environment):
         state = EnvState(x=0.0, time=0)  # type: ignore
         return self.get_obs(state), state
 
-    def get_obs(self, state: EnvState) -> chex.Array:
+    def get_obs(
+        self,
+        state: EnvState,
+        params: Optional[EnvParams] = None,
+        key: Optional[chex.PRNGKey] = None,
+    ) -> chex.Array:
         return jnp.array([state.x])
 
     @property

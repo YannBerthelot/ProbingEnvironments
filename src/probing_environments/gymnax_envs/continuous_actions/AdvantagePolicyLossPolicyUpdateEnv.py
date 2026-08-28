@@ -73,7 +73,12 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         state = EnvState(x=obs, time=0)  # type: ignore
         return self.get_obs(state), state
 
-    def get_obs(self, state: EnvState) -> chex.Array:
+    def get_obs(
+        self,
+        state: EnvState,
+        params: Optional[EnvParams] = None,
+        key: Optional[chex.PRNGKey] = None,
+    ) -> chex.Array:
         """Applies observation function to state."""
         return jnp.array([state.x])
 
