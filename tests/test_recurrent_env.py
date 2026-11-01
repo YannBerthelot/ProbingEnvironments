@@ -22,13 +22,21 @@ def test_recurrent_env():
         _, env_state = env.reset(key, params)
         env_state = EnvState(x=init_obs, time=0, original_state=init_obs)
         # Step 1: time 0->1, reward=0, not terminal
-        obs, env_state, reward, done, info = env.step(key, env_state, 0, params)
+        obs, env_state, reward, terminated, truncated, info = env.step(
+            key, env_state, 0, params
+        )
+        done = terminated | truncated
         assert not done
         assert reward == 0.0
-        assert info["obs_st"] == jnp.array([2.0])
+        # gymnax >= 1.0 publishes the pre-reset observation as
+        # "final_observation" (the fork's "obs_st").
+        assert info["final_observation"] == jnp.array([2.0])
 
         # Step 2: time 1->2, terminal, reward depends on original_state
-        obs, env_state, reward, done, info = env.step(key, env_state, 0, params)
+        obs, env_state, reward, terminated, truncated, info = env.step(
+            key, env_state, 0, params
+        )
+        done = terminated | truncated
         assert done
         if init_obs == 0.0:
             assert reward == 0.0

@@ -56,12 +56,12 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         """Performs step transitions in the environment."""
         reward = jnp.squeeze(action)  # the higher the action, the better
         state = EnvState(x=state.x, time=state.time + 1)  # type: ignore
-        done = self.is_terminal(state, params)
+        terminated = self.is_terminated(state, params)
         return (
             lax.stop_gradient(self.get_obs(state)),
             lax.stop_gradient(state),
             reward,
-            done,
+            terminated,
             {"discount": self.discount(state, params)},
         )
 
@@ -73,7 +73,12 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         state = EnvState(x=obs, time=0)  # type: ignore
         return self.get_obs(state), state
 
-    def get_obs(self, state: EnvState) -> chex.Array:
+    def get_obs(
+        self,
+        state: EnvState,
+        params: Optional[EnvParams] = None,
+        key: Optional[chex.PRNGKey] = None,
+    ) -> chex.Array:
         """Applies observation function to state."""
         return jnp.array([state.x])
 
@@ -87,7 +92,7 @@ class AdvantagePolicyLossPolicyUpdateEnv(environment.Environment):
         """Number of actions possible in environment."""
         return 1
 
-    def is_terminal(self, state: EnvState, params: EnvParams) -> bool:
+    def is_terminated(self, state: EnvState, params: EnvParams) -> bool:
         """Check whether state is terminal."""
         return True
 

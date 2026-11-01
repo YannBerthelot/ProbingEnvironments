@@ -8,7 +8,6 @@ from typing import Any, Callable, List, Optional, Sequence, Union
 import gymnasium as gym
 import jax.numpy as jnp
 import numpy as np
-import pytest
 from mypy_extensions import DefaultNamedArg, NamedArg
 
 from probing_environments.envs import (
@@ -72,6 +71,16 @@ InitAgentType = Callable[
 ]
 
 
+def _isclose(expected: Scalar, predicted: Scalar, abs_tol: float, rel_tol: float):
+    """Whether every entry of predicted is within max(abs_tol, rel_tol * |expected|)
+    of expected: pytest.approx's rule, without making pytest a runtime dependency.
+    """
+    expected_arr = np.asarray(expected, dtype=float)
+    tolerance = np.maximum(abs_tol, rel_tol * np.abs(expected_arr))
+    distance = np.abs(np.asarray(predicted, dtype=float) - expected_arr)
+    return bool(np.all(distance <= tolerance))
+
+
 def assert_predicted_value_isclose_expected_value(
     expected_value: Scalar, predicted_value: Scalar, err_msg: str
 ):
@@ -85,8 +94,8 @@ def assert_predicted_value_isclose_expected_value(
         err_msg (str): The error message pointing to where the cause may be if the\
               assertion fails in the specific test.
     """
-    assert (
-        pytest.approx(expected_value, abs=EPS, rel=EPS) == predicted_value
+    assert _isclose(
+        expected_value, predicted_value, abs_tol=EPS, rel_tol=EPS
     ), f"{err_msg}. Expected a value of {expected_value}, got {predicted_value}"
 
 
@@ -595,8 +604,8 @@ def check_average_reward(
         action = get_action(agent, 0)
     assert action == 1, f"Expected action to be 1, got {action=}"
     value = get_value(agent, 0, env().TIME_LIMIT)
-    assert value == pytest.approx(
-        2 / 5, rel=0.5
+    assert _isclose(
+        2 / 5, value, abs_tol=1e-12, rel_tol=0.5
     ), f"Expected value to be close to {value / env().TIME_LIMIT}, got {value=}"
 
 

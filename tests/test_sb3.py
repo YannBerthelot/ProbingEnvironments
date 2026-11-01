@@ -26,6 +26,9 @@ from probing_environments.checks import (
     check_reward_discounting,
 )
 
+# Every test here trains PPO, so the file is in the medium tier (run by tox/CI).
+pytestmark = pytest.mark.medium
+
 AgentType = Any
 AGENT = PPO
 LEARNING_RATE = 1e-3
