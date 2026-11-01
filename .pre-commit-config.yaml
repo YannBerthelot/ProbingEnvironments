@@ -6,6 +6,9 @@ repos:
     hooks:
       - id: check-toml
       - id: check-yaml
+        # Syntax only: mkdocs.yml uses mkdocs' own !ENV tag, which the strict
+        # docs build (ci.yml) checks.
+        args: [--unsafe]
       - id: end-of-file-fixer
       - id: mixed-line-ending
 

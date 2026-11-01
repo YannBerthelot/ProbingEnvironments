@@ -1,0 +1,83 @@
+# Every pull request and every push to main: lint, the small and medium test
+# tiers on the oldest and newest supported Python, and the documentation site
+# built strictly. The large tier, when there is one, runs in the Release
+# workflow (release.yml), which also looks here for a green run on the commit
+# it releases.
+
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # The version that wrote uv.lock: older ones cannot read its format.
+  UV_VERSION: "0.13.6"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v4
+    - uses: astral-sh/setup-uv@v5
+      with:
+        version: ${{ env.UV_VERSION }}
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    - run: uv sync --frozen --only-group lint
+    - run: uv run --no-sync pre-commit run --all-files
+
+  tests:
+    name: tests (${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.14"]
+    env:
+      UV_PYTHON: ${{ matrix.python }}
+      JAX_PLATFORMS: cpu
+    steps:
+    - uses: actions/checkout@v4
+    - uses: astral-sh/setup-uv@v5
+      with:
+        version: ${{ env.UV_VERSION }}
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    - run: uv sync --frozen
+    - name: Small and medium tiers, with coverage
+      run: |
+        uv run --no-sync coverage run -m pytest -q -m "not large"
+        uv run --no-sync coverage report
+        uv run --no-sync coverage xml -o coverage.xml
+    - if: matrix.python == '3.11'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        files: ./coverage.xml
+
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v4
+    - uses: astral-sh/setup-uv@v5
+      with:
+        version: ${{ env.UV_VERSION }}
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    - run: uv sync --frozen --only-group docs
+    - run: uv run --no-sync mkdocs build --strict

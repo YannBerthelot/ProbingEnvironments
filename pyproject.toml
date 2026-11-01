@@ -1,63 +1,105 @@
-[tool.poetry]
-name = "probing_environments"
-# Placeholder -- the real version is set at build time by
-# poetry-dynamic-versioning from the git tag (see [tool.poetry-dynamic-
-# versioning] below and the publish.yaml workflow). Edits to this
-# value here are ignored when the plugin is active.
-version = "0.0.0"
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "probing-environments"
+dynamic = ["version"]  # derived from git tags by hatch-vcs
 description = "Probing environments for RL/DeepRL algorithms debugging"
-authors = ["Yann Berthelot <yannberthelot1@gmail.com>"]
+authors = [{ name = "Yann Berthelot", email = "yannberthelot1@gmail.com" }]
 readme = "README.md"
-
-[tool.poetry-dynamic-versioning]
-enable = true
-
-[tool.poetry.dependencies]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["reinforcement-learning", "debugging", "testing", "gymnax", "jax"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 # gymnax 1.0.1 supports Python < 3.15.
-python = ">=3.11,<3.15"
-mypy-extensions = "^1.0.0"
-gymnasium = ">=1.2"
-# Imported directly by the envs and checks, so declared rather than left to
-# arrive through gymnax. The jax floor is gymnax 1.0's own.
-jax = ">=0.6"
-flax = ">=0.10"
-numpy = ">=1.26"
-# Upstream gymnax (PyPI). ProbingEnvironments only imports
-# ``gymnax.environments.{environment, spaces}`` -- the base Environment
-# class and the spaces module -- so a plain version constraint is enough
-# and avoids PyPI's "no direct git deps" rejection (PEP 440) that blocked
-# the v0.5.1 release attempt.
-#
-# 1.0 is required, not merely preferred: the envs implement
-# ``is_terminated``, which only the 1.0 base class dispatches to (0.0.9
-# calls ``is_terminal``), and gymnax 1.0's six-value step API reports the
-# time limit as ``truncated`` rather than folding it into ``done``.
-gymnax = "^1.0.0"
-chex = "^0.1.91"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    # 1.0 is required, not merely preferred: the envs implement
+    # ``is_terminated``, which only the 1.0 base class dispatches to (0.0.9
+    # calls ``is_terminal``), and gymnax 1.0's six-value step API reports the
+    # time limit as ``truncated`` rather than folding it into ``done``.
+    "gymnax>=1.0,<2",
+    "gymnasium>=1.2",
+    # Imported directly by the envs and checks, so declared rather than left
+    # to arrive through gymnax. The jax floor is gymnax 1.0's own.
+    "jax>=0.6",
+    "flax>=0.10",
+    "numpy>=1.26",
+    "chex>=0.1.91",
+    "mypy-extensions>=1.0",
+    # gymnax 1.0.1 imports six (gymnax/utils/load_mnist.py, loaded by
+    # ``import gymnax``) without declaring it; nothing else in a fresh install
+    # brings it any more, so ``import probing_environments`` would fail.
+    "six>=1.16",
+]
 
+[project.optional-dependencies]
+# The premade Stable-Baselines3 adaptor (probing_environments.adaptors.sb3).
+sb3 = ["stable-baselines3>=2.0"]
 
-[tool.poetry.group.dev.dependencies]
-pytest = ">=7.4"
-isort = "^5.12.0"
-stable-baselines3 = "^2.0.0"
-pre-commit = "^2.20.0"
-scriv = {extras = ["toml"], version = "^0.15.2"}
-tox = "^3.25.1"
-flake8 = "^7.0.0"
-black = "^24.4.2"
-coverage = {extras = ["toml"], version = "^7.5.0"}
-mypy = "^1.10.0"
+[project.urls]
+Documentation = "https://yannberthelot.github.io/ProbingEnvironments/"
+Source = "https://github.com/YannBerthelot/ProbingEnvironments"
+Changelog = "https://github.com/YannBerthelot/ProbingEnvironments/blob/main/CHANGELOG.md"
 
+[dependency-groups]
+test = [
+    "pytest>=7.4",
+    "coverage[toml]>=7.5",
+]
+lint = [
+    "pre-commit>=2.20",
+    "black>=24.4.2",
+    "isort>=5.12",
+    "flake8>=7.0",
+    "mypy>=1.10",
+]
+docs = [
+    "mkdocs-material>=9.5",
+    "mike==2.2.0",
+]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+    # The checks' own tests train Stable-Baselines3 agents.
+    "probing-environments[sb3]",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/probing_environments"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/probing_environments", "README.md", "LICENSE", "CHANGELOG.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # Test sizes as in ~/.claude/TESTING.md: plain ``pytest`` runs the small tier;
-# ``pytest -m "not large"`` (tox and CI) adds the medium tier.
+# ``pytest -m "not large"`` (CI) adds the medium tier.
 addopts = "-m 'not medium and not large' --durations=15"
 markers = [
   "medium: trains an agent or runs the README examples; under 5 min",
   "large: network, real hardware or long training; under 15 min",
 ]
+
+[tool.coverage.run]
+source = ["probing_environments"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 75
+show_missing = true
 
 [tool.pylint]
 adopts = ["--ignore==src/probing_environments/envs.py"]
@@ -72,49 +114,3 @@ profile = "black"
 
 [tool.flake8]
 max-line-length = 88
-
-
-[tool.tox]
-legacy_tox_ini = """
-
-[tox]
-isolated_build = True
-envlist =
-    py312
-    linting
-    coverage
-
-[testenv:testing]
-allowlist_externals = poetry, pytest
-skip_install = true
-deps = pyproject.toml
-changedir = {envtmpdir}  # Move elsewhere to ensure pytest doesn't run from source root.
-commands =
-    poetry install
-    poetry run pytest -m "not large" {toxinidir}
-
-[testenv:linting]
-deps = pre-commit
-commands = pre-commit run --all-files
-
-[testenv:coverage]
-allowlist_externals = poetry
-skip_install = true
-deps =
-    coverage[toml]
-    pyproject.toml
-    pytest
-commands =
-    poetry install
-    poetry run coverage run --source=probing_environments --branch -m pytest -m "not large" {toxinidir}
-    poetry run coverage report -m --fail-under 75
-    poetry run coverage xml -o {toxinidir}/coverage.xml
-
-[gh-actions]
-python =
-    3.12: py312, coverage, linting
-"""
-
-[build-system]
-requires = ["poetry-core>=2.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"

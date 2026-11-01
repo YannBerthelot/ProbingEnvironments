@@ -30,10 +30,22 @@ A minor release, because these changes break code written for 0.5.1:
 - **pytest is no longer installed with this package.** It moved to the
   development dependencies; add it to your own if you relied on it.
 
+### Added
+
+- The `sb3` extra: `pip install "probing-environments[sb3]"` installs
+  Stable-Baselines3 for the premade adaptor.
+- A documentation site, versioned per release:
+  https://yannberthelot.github.io/ProbingEnvironments/
+
 ### Changed
 
 - `jax`, `flax` and `numpy` are declared as dependencies. The package
   imports them directly; before, they only arrived through gymnax.
+- `six` is declared: gymnax 1.0.1 imports it without declaring it, so a fresh
+  install could not import the package.
+- Python 3.11 to 3.14 is supported; gymnax 1.0.1 supports Python below 3.15.
+- The package is built with hatchling and versioned from git tags. Release
+  tags are now named `vX.Y.Z`; earlier ones had no `v`.
 
 ### Deprecated
 
