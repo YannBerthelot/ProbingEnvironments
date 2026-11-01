@@ -19,4 +19,7 @@ def test_the_readme_python_examples_run():
     assert blocks, "README.md has no python examples"
     namespace: dict = {}
     for block in blocks:
-        exec(compile(block, str(README), "exec"), namespace)  # noqa: S102
+        # Executing the README's own code is what this test is for.
+        exec(  # pylint: disable=exec-used
+            compile(block, str(README), "exec"), namespace
+        )
