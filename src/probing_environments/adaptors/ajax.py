@@ -13,13 +13,24 @@ The "agent" flowing through the adaptor is a dict with:
     - "env_params": the environment parameters
     - "key": JAX PRNG key
     - "kind": "q" for Q-function agents, "v" for V-function agents
+
+Deprecated since 0.6.0, to be removed in 0.7.0: Ajax ships its own probe
+adaptor in its test suite (tests/probing/).
 """
 
+import warnings
 from typing import Any, List, Optional
 
 import jax
 import jax.numpy as jnp
 import numpy as np
+
+warnings.warn(
+    "probing_environments.adaptors.ajax is deprecated and will be removed in"
+    " 0.7.0; Ajax ships its own probe adaptor in its test suite.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 AgentDict = dict[str, Any]
 
