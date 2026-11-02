@@ -1,0 +1,2091 @@
+{
+ "note": "Characterization pins (TESTING.md \u00a77): current behaviour, not a spec. May encode bugs. See tests/characterization/pin_recorder.py.",
+ "recorded_with": {
+  "jax": "0.10.2",
+  "jax_threefry_partitionable": true
+ },
+ "env_lists": {
+  "probing_environments.gymnax_envs": ["gymnax:probing_environments.gymnax_envs.AdvantagePolicyLossPolicyUpdateEnv", "gymnax:probing_environments.gymnax_envs.PolicyAndValueEnv", "gymnax:probing_environments.gymnax_envs.RewardDiscountingEnv", "gymnax:probing_environments.gymnax_envs.ValueBackpropEnv", "gymnax:probing_environments.gymnax_envs.ValueLossOrOptimizerEnv", "gymnax:probing_environments.gymnax_envs.RecurrentValueEnv"],
+  "probing_environments.gymnax_envs.continuous_actions": ["gymnax:probing_environments.gymnax_envs.continuous_actions.AdvantagePolicyLossPolicyUpdateEnv", "gymnax:probing_environments.gymnax_envs.continuous_actions.PolicyAndValueEnv", "gymnax:probing_environments.gymnax_envs.continuous_actions.RewardDiscountingEnv", "gymnax:probing_environments.gymnax_envs.continuous_actions.ValueBackpropEnv", "gymnax:probing_environments.gymnax_envs.continuous_actions.ValueLossOrOptimizerEnv"]
+ },
+ "hierarchy": {
+  "gymnax:probing_environments.gymnax_envs.ValueLossOrOptimizerEnv": [],
+  "gymnax:probing_environments.gymnax_envs.ValueBackpropEnv": [],
+  "gymnax:probing_environments.gymnax_envs.RewardDiscountingEnv": [],
+  "gymnax:probing_environments.gymnax_envs.AdvantagePolicyLossPolicyUpdateEnv": [],
+  "gymnax:probing_environments.gymnax_envs.PolicyAndValueEnv": [],
+  "gymnax:probing_environments.gymnax_envs.RecurrentValueEnv": [],
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.ValueLossOrOptimizerEnv": [],
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.ValueBackpropEnv": [],
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.RewardDiscountingEnv": [],
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.AdvantagePolicyLossPolicyUpdateEnv": [],
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.PolicyAndValueEnv": [],
+  "gymnax:probing_environments.gymnax_envs.average_reward.two_choice_MDP.TwoChoiceMDP": [],
+  "gymnasium:probing_environments.envs.ValueLossOrOptimizerEnv": [],
+  "gymnasium:probing_environments.envs.ValueBackpropEnv": [],
+  "gymnasium:probing_environments.envs.RewardDiscountingEnv": [],
+  "gymnasium:probing_environments.envs.AdvantagePolicyLossPolicyUpdateEnv": [],
+  "gymnasium:probing_environments.envs.AdvantagePolicyLossPolicyUpdateEnvContinuous": [],
+  "gymnasium:probing_environments.envs.PolicyAndValueEnv": [],
+  "gymnasium:probing_environments.envs.PolicyAndValueEnvContinuous": [],
+  "gymnasium:probing_environments.envs.TwoChoiceMDP": []
+ },
+ "envs": {
+  "gymnax:probing_environments.gymnax_envs.ValueLossOrOptimizerEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 1,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["int32"],
+    "step_obs": ["int32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["int32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[0], "jax.Array[int32[1]]"],
+    "reward": [1.0, "float"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [0],
+   "obs_through_get_obs_override": {
+    "reset": [10],
+    "step": [10],
+    "step_final": [10]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   "autoreset_obs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [[[0], [0], 1.0, true, true, 0.0, [0, 0]], [[0], [0], 1.0, true, true, 0.0, [0, 0]]],
+    "params=default start=key0 action=[0]": [[[0], [0], 1.0, true, true, 0.0, [0, 0]], [[0], [0], 1.0, true, true, 0.0, [0, 0]]],
+    "params=max_steps=10000 start=key0 action=0": [[[0], [0], 1.0, true, false, 0.0, [0, 0]], [[0], [0], 1.0, true, false, 0.0, [0, 0]]]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.ValueBackpropEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 1,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1.0], "jax.Array[float32[1]]"],
+    "reward": [1.0, "jax.Array[float32[]]"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [1.0],
+   "obs_through_get_obs_override": {
+    "reset": [11.0],
+    "step": [10.0],
+    "step_final": [11.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+   "autoreset_obs": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [[[1.0], [0.0], 1.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[0]": [[[1.0], [0.0], 1.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=0": [[[0.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[0]": [[[0.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key0 action=0": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key1 action=0": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.RewardDiscountingEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 2
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 1,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["int32"],
+    "step_obs": ["int32"],
+    "reward": ["int32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["int32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1], "jax.Array[int32[1]]"],
+    "reward": [0, "jax.Array[int32[]]"],
+    "terminated": [false, "jax.Array[bool[]]"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [false, false],
+   "discount_direct": [1.0, 1.0],
+   "obs_of_state_rebuilt_from_x_and_time": [0],
+   "obs_through_get_obs_override": {
+    "reset": [10],
+    "step": [11],
+    "step_final": [11]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   "autoreset_obs": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [
+     [[1], [1], 0, false, false, 1.0, [1, 1]],
+     [[2], [0], 1, true, true, 0.0, [0, 0]],
+     [[1], [1], 0, false, false, 1.0, [1, 1]]
+    ],
+    "params=default start=key0 action=[0]": [
+     [[1], [1], 0, false, false, 1.0, [1, 1]],
+     [[2], [0], 1, true, true, 0.0, [0, 0]],
+     [[1], [1], 0, false, false, 1.0, [1, 1]]
+    ],
+    "params=max_steps=10000 start=key0 action=0": [
+     [[1], [1], 0, false, false, 1.0, [1, 1]],
+     [[2], [0], 1, true, false, 0.0, [0, 0]],
+     [[1], [1], 0, false, false, 1.0, [1, 1]]
+    ]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.AdvantagePolicyLossPolicyUpdateEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 2,
+   "default_params": {
+    "max_steps_in_episode": 1
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["int32"],
+    "step_obs": ["int32"],
+    "reward": ["int32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["int32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[0], "jax.Array[int32[1]]"],
+    "reward": [1, "jax.Array[int32[]]"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [0],
+   "obs_through_get_obs_override": {
+    "reset": [10],
+    "step": [10],
+    "step_final": [10]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   "autoreset_obs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [[[0], [0], 1, true, true, 0.0, [0, 0]], [[0], [0], 1, true, true, 0.0, [0, 0]]],
+    "params=default start=key0 action=1": [[[0], [0], 0, true, true, 0.0, [0, 0]], [[0], [0], 0, true, true, 0.0, [0, 0]]],
+    "params=default start=key0 action=[0]": [[[0], [0], [1], true, true, 0.0, [0, 0]], [[0], [0], [1], true, true, 0.0, [0, 0]]],
+    "params=default start=key0 action=[1]": [[[0], [0], [0], true, true, 0.0, [0, 0]], [[0], [0], [0], true, true, 0.0, [0, 0]]],
+    "params=max_steps=10000 start=key0 action=0": [[[0], [0], 1, true, false, 0.0, [0, 0]], [[0], [0], 1, true, false, 0.0, [0, 0]]]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.PolicyAndValueEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 2,
+   "default_params": {
+    "max_steps_in_episode": 1
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1.0], "jax.Array[float32[1]]"],
+    "reward": [0.0, "jax.Array[float32[]]"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [1.0],
+   "obs_through_get_obs_override": {
+    "reset": [11.0],
+    "step": [10.0],
+    "step_final": [11.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+   "autoreset_obs": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [[[1.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 1.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=1": [[[1.0], [0.0], 1.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[0]": [[[1.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[1]": [[[1.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=0": [[[0.0], [0.0], 1.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 1.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=1": [[[0.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[0]": [[[0.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[1]": [[[0.0], [0.0], 0.0, true, true, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, true, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key0 action=0": [[[1.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key1 action=0": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.RecurrentValueEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 2,
+   "default_params": {
+    "max_steps_in_episode": 2
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0,
+    "original_state": 0.0
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"],
+     "original_state": ["float32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "object",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[2.0], "jax.Array[float32[1]]"],
+    "reward": [0.0, "jax.Array[float32[]]"],
+    "terminated": [false, "jax.Array[bool[]]"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [false, false],
+   "discount_direct": [1.0, 1.0],
+   "obs_of_state_rebuilt_from_x_and_time": [1.0],
+   "obs_through_get_obs_override": {
+    "reset": [11.0],
+    "step": [12.0],
+    "step_final": [12.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+   "autoreset_obs": [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]],
+     [[3.0], [1.0], 1.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key0 action=1": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]],
+     [[3.0], [1.0], 1.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key0 action=[0]": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]],
+     [[3.0], [1.0], 1.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key0 action=[1]": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]],
+     [[3.0], [1.0], 1.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key1 action=0": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 0.0]],
+     [[3.0], [1.0], 0.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key1 action=1": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 0.0]],
+     [[3.0], [1.0], 0.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key1 action=[0]": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 0.0]],
+     [[3.0], [1.0], 0.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=default start=key1 action=[1]": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 0.0]],
+     [[3.0], [1.0], 0.0, true, true, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=max_steps=10000 start=key0 action=0": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]],
+     [[3.0], [1.0], 1.0, true, false, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ],
+    "params=max_steps=10000 start=key1 action=0": [
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 0.0]],
+     [[3.0], [1.0], 0.0, true, false, 0.0, [1.0, 0, 1.0]],
+     [[2.0], [2.0], 0.0, false, false, 1.0, [2.0, 1, 1.0]]
+    ]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.ValueLossOrOptimizerEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1000
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Box",
+    "low": -1.0,
+    "high": 1.0,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[0.0], "jax.Array[float32[1]]"],
+    "reward": [1.0, "float"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [0.0],
+   "obs_through_get_obs_override": {
+    "reset": [10.0],
+    "step": [10.0],
+    "step_final": [10.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+   "autoreset_obs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=[-1.0]": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=default start=key0 action=[0.0]": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=default start=key0 action=[0.5]": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=default start=key0 action=[1.0]": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=default start=key0 action=[2.0]": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=default start=key0 action=-1.0": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=default start=key0 action=1.0": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]],
+    "params=max_steps=10000 start=key0 action=[-1.0]": [[[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]]]
+   },
+   "reward_gradient": {
+    "-1.0": [0.0],
+    "0.0": [0.0],
+    "0.5": [0.0],
+    "1.0": [0.0],
+    "2.0": [0.0]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.ValueBackpropEnv": {
+   "name": "ValueBackpropEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1000
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Box",
+    "low": -1.0,
+    "high": 1.0,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1.0], "jax.Array[float32[1]]"],
+    "reward": [1.0, "jax.Array[float32[]]"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [1.0],
+   "obs_through_get_obs_override": {
+    "reset": [11.0],
+    "step": [10.0],
+    "step_final": [11.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+   "autoreset_obs": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=[-1.0]": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[0.0]": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[0.5]": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[1.0]": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[2.0]": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=-1.0": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=1.0": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[-1.0]": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[0.0]": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[0.5]": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[1.0]": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=[2.0]": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=-1.0": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key1 action=1.0": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key0 action=[-1.0]": [[[1.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key1 action=[-1.0]": [[[0.0], [0.0], 0.0, true, false, 0.0, [0.0, 0]], [[0.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]]
+   },
+   "reward_gradient": {
+    "-1.0": [0.0],
+    "0.0": [0.0],
+    "0.5": [0.0],
+    "1.0": [0.0],
+    "2.0": [0.0]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.RewardDiscountingEnv": {
+   "name": "RewardDiscountingEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1000
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Box",
+    "low": -1.0,
+    "high": 1.0,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 2,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 0,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1.0], "jax.Array[float32[1]]"],
+    "reward": [0.0, "jax.Array[float32[]]"],
+    "terminated": [false, "jax.Array[bool[]]"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [false, false],
+   "discount_direct": [1.0, 1.0],
+   "obs_of_state_rebuilt_from_x_and_time": [0.0],
+   "obs_through_get_obs_override": {
+    "reset": [10.0],
+    "step": [11.0],
+    "step_final": [11.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+   "autoreset_obs": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=[-1.0]": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=default start=key0 action=[0.0]": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=default start=key0 action=[0.5]": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=default start=key0 action=[1.0]": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=default start=key0 action=[2.0]": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=default start=key0 action=-1.0": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=default start=key0 action=1.0": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ],
+    "params=max_steps=10000 start=key0 action=[-1.0]": [
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]],
+     [[2.0], [0.0], 1.0, true, false, 0.0, [0.0, 0]],
+     [[1.0], [1.0], 0.0, false, false, 1.0, [1.0, 1]]
+    ]
+   },
+   "reward_gradient": {
+    "-1.0": [0.0],
+    "0.0": [0.0],
+    "0.5": [0.0],
+    "1.0": [0.0],
+    "2.0": [0.0]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.AdvantagePolicyLossPolicyUpdateEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1000
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 1,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1.0], "jax.Array[float32[1]]"],
+    "reward": [-1.0, "jax.Array[float32[]]"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [1.0],
+   "obs_through_get_obs_override": {
+    "reset": [11.0],
+    "step": [11.0],
+    "step_final": [11.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+   "autoreset_obs": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=[-1.0]": [[[1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[0.0]": [[[1.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], 0.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[0.5]": [[[1.0], [1.0], 0.5, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], 0.5, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[1.0]": [[[1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=[2.0]": [[[1.0], [1.0], 2.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], 2.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=-1.0": [[[1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]],
+    "params=default start=key0 action=1.0": [[[1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]],
+    "params=max_steps=10000 start=key0 action=[-1.0]": [[[1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]], [[1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]]
+   },
+   "reward_gradient": {
+    "-1.0": [1.0],
+    "0.0": [1.0],
+    "0.5": [1.0],
+    "1.0": [1.0],
+    "2.0": [1.0]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.continuous_actions.PolicyAndValueEnv": {
+   "name": "ValueLossOrOptimizerEnv",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1000
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": 0
+   },
+   "action_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": 0,
+    "high": 1,
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Box",
+      "low": 0,
+      "high": 1,
+      "shape": [],
+      "dtype": "float32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["float32"],
+    "step_obs": ["float32"],
+    "reward": ["float32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["float32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1.0], "jax.Array[float32[1]]"],
+    "reward": [-1.0, "jax.Array[float32[]]"],
+    "terminated": [true, "bool"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [true, true],
+   "discount_direct": [0.0, 0.0],
+   "obs_of_state_rebuilt_from_x_and_time": [1.0],
+   "obs_through_get_obs_override": {
+    "reset": [11.0],
+    "step": [9.0],
+    "step_final": [11.0]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, 1.0, 1.0, 1.0],
+   "autoreset_obs": [-1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0, 1.0, 1.0],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=[-1.0]": [
+     [[1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key0 action=[0.0]": [
+     [[1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key0 action=[0.5]": [
+     [[1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key0 action=[1.0]": [
+     [[1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key0 action=[2.0]": [
+     [[1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key0 action=-1.0": [
+     [[1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key0 action=1.0": [
+     [[1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=[-1.0]": [
+     [[-1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=[0.0]": [
+     [[-1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=[0.5]": [
+     [[-1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=[1.0]": [
+     [[-1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=[2.0]": [
+     [[-1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=-1.0": [
+     [[-1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=default start=key1 action=1.0": [
+     [[-1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], -1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=max_steps=10000 start=key0 action=[-1.0]": [
+     [[1.0], [-1.0], -1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ],
+    "params=max_steps=10000 start=key1 action=[-1.0]": [
+     [[-1.0], [-1.0], 1.0, true, false, 0.0, [-1.0, 0]],
+     [[-1.0], [1.0], 1.0, true, false, 0.0, [1.0, 0]]
+    ]
+   },
+   "reward_gradient": {
+    "-1.0": [0.0],
+    "0.0": [0.0],
+    "0.5": [0.0],
+    "1.0": [0.0],
+    "2.0": [0.0]
+   }
+  },
+  "gymnax:probing_environments.gymnax_envs.average_reward.two_choice_MDP.TwoChoiceMDP": {
+   "name": "TwoChoiceMDP",
+   "num_actions": 1,
+   "default_params": {
+    "max_steps_in_episode": 1000
+   },
+   "state_fields": {
+    "x": "<required>",
+    "time": "<required>"
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "observation_space": {
+    "type": "Discrete",
+    "n": 9,
+    "shape": [],
+    "dtype": "int32"
+   },
+   "state_space": {
+    "type": "Dict",
+    "spaces": {
+     "x": {
+      "type": "Discrete",
+      "n": 9,
+      "shape": [],
+      "dtype": "int32"
+     },
+     "time": {
+      "type": "Discrete",
+      "n": 1000,
+      "shape": [],
+      "dtype": "int32"
+     }
+    }
+   },
+   "get_obs_signature": ["self", "state", "params=None", "key=None"],
+   "step_returns": 6,
+   "step_info_keys": ["discount", "final_observation", "terminated", "truncated"],
+   "dtypes": {
+    "reset_obs": ["int32"],
+    "step_obs": ["int32"],
+    "reward": ["int32"],
+    "terminated": ["bool"],
+    "truncated": ["bool"],
+    "discount": ["float32"],
+    "state": {
+     "x": ["int32"],
+     "time": ["int32"]
+    }
+   },
+   "attributes_after_reset": {
+    "obs_shape": [1],
+    "action_shape": [1],
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_env_direct": {
+    "returns": 5,
+    "obs": [[1], "jax.Array[int32[1]]"],
+    "reward": [1, "jax.Array[int32[]]"],
+    "terminated": [false, "jax.Array[bool[]]"],
+    "info_keys": ["discount"]
+   },
+   "is_terminated_direct": [false, false],
+   "discount_direct": [1.0, 1.0],
+   "obs_of_state_rebuilt_from_x_and_time": [0],
+   "obs_through_get_obs_override": {
+    "reset": [10],
+    "step": [11],
+    "step_final": [11]
+   },
+   "reset_obs_shape": [1],
+   "reset_obs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   "autoreset_obs": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+   "vmapped_reset_matches": true,
+   "vmapped_step_matches": true,
+   "episodes": {
+    "params=default start=key0 action=0": [
+     [[1], [1], 1, false, false, 1.0, [1, 1]],
+     [[2], [2], 0, false, false, 1.0, [2, 2]],
+     [[3], [3], 0, false, false, 1.0, [3, 3]],
+     [[4], [4], 0, false, false, 1.0, [4, 4]],
+     [[0], [0], 0, false, false, 1.0, [0, 5]],
+     [[1], [1], 1, false, false, 1.0, [1, 6]],
+     [[2], [2], 0, false, false, 1.0, [2, 7]],
+     [[3], [3], 0, false, false, 1.0, [3, 8]],
+     [[4], [4], 0, false, false, 1.0, [4, 9]],
+     [[0], [0], 0, false, false, 1.0, [0, 10]],
+     [[1], [1], 1, false, false, 1.0, [1, 11]],
+     [[2], [2], 0, false, false, 1.0, [2, 12]]
+    ],
+    "params=default start=key0 action=1": [
+     [[5], [5], 0, false, false, 1.0, [5, 1]],
+     [[6], [6], 0, false, false, 1.0, [6, 2]],
+     [[7], [7], 0, false, false, 1.0, [7, 3]],
+     [[8], [8], 2, false, false, 1.0, [8, 4]],
+     [[0], [0], 0, false, false, 1.0, [0, 5]],
+     [[5], [5], 0, false, false, 1.0, [5, 6]],
+     [[6], [6], 0, false, false, 1.0, [6, 7]],
+     [[7], [7], 0, false, false, 1.0, [7, 8]],
+     [[8], [8], 2, false, false, 1.0, [8, 9]],
+     [[0], [0], 0, false, false, 1.0, [0, 10]],
+     [[5], [5], 0, false, false, 1.0, [5, 11]],
+     [[6], [6], 0, false, false, 1.0, [6, 12]]
+    ],
+    "params=default start=key0 action=[0]": [
+     [[5], [5], 0, false, false, 1.0, [5, 1]],
+     [[6], [6], 0, false, false, 1.0, [6, 2]],
+     [[7], [7], 0, false, false, 1.0, [7, 3]],
+     [[8], [8], 2, false, false, 1.0, [8, 4]],
+     [[0], [0], 0, false, false, 1.0, [0, 5]],
+     [[5], [5], 0, false, false, 1.0, [5, 6]],
+     [[6], [6], 0, false, false, 1.0, [6, 7]],
+     [[7], [7], 0, false, false, 1.0, [7, 8]],
+     [[8], [8], 2, false, false, 1.0, [8, 9]],
+     [[0], [0], 0, false, false, 1.0, [0, 10]],
+     [[5], [5], 0, false, false, 1.0, [5, 11]],
+     [[6], [6], 0, false, false, 1.0, [6, 12]]
+    ],
+    "params=default start=key0 action=[1]": [
+     [[5], [5], 0, false, false, 1.0, [5, 1]],
+     [[6], [6], 0, false, false, 1.0, [6, 2]],
+     [[7], [7], 0, false, false, 1.0, [7, 3]],
+     [[8], [8], 2, false, false, 1.0, [8, 4]],
+     [[0], [0], 0, false, false, 1.0, [0, 5]],
+     [[5], [5], 0, false, false, 1.0, [5, 6]],
+     [[6], [6], 0, false, false, 1.0, [6, 7]],
+     [[7], [7], 0, false, false, 1.0, [7, 8]],
+     [[8], [8], 2, false, false, 1.0, [8, 9]],
+     [[0], [0], 0, false, false, 1.0, [0, 10]],
+     [[5], [5], 0, false, false, 1.0, [5, 11]],
+     [[6], [6], 0, false, false, 1.0, [6, 12]]
+    ],
+    "params=max_steps=10000 start=key0 action=0": [
+     [[1], [1], 1, false, false, 1.0, [1, 1]],
+     [[2], [2], 0, false, false, 1.0, [2, 2]],
+     [[3], [3], 0, false, false, 1.0, [3, 3]],
+     [[4], [4], 0, false, false, 1.0, [4, 4]],
+     [[0], [0], 0, false, false, 1.0, [0, 5]],
+     [[1], [1], 1, false, false, 1.0, [1, 6]],
+     [[2], [2], 0, false, false, 1.0, [2, 7]],
+     [[3], [3], 0, false, false, 1.0, [3, 8]],
+     [[4], [4], 0, false, false, 1.0, [4, 9]],
+     [[0], [0], 0, false, false, 1.0, [0, 10]],
+     [[1], [1], 1, false, false, 1.0, [1, 11]],
+     [[2], [2], 0, false, false, 1.0, [2, 12]]
+    ],
+    "params=max_steps=3 start=key0 action=0": [
+     [[1], [1], 1, false, false, 1.0, [1, 1]],
+     [[2], [2], 0, false, false, 1.0, [2, 2]],
+     [[3], [0], 0, false, true, 1.0, [0, 0]],
+     [[1], [1], 1, false, false, 1.0, [1, 1]]
+    ]
+   }
+  },
+  "gymnasium:probing_environments.envs.ValueLossOrOptimizerEnv": {
+   "signatures": {
+    "__init__": ["self", "*args", "**kwargs"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 1,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [0], [0], [0], [0], [0], [0], [0]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": false,
+    "seed=0": false
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=0 episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=0 episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=0 episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=2": [[[0]], [[0], 1, true, false]]
+   },
+   "reset_reset_step_step": [[[0], 1, true, false], [[0], 1, true, false]]
+  },
+  "gymnasium:probing_environments.envs.ValueBackpropEnv": {
+   "signatures": {
+    "__init__": ["self", "num_envs=1", "sequential=False"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 1,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [1], [0], [0], [0], [1], [0], [1]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": true,
+    "seed=0": true
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "object",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"ndarray[int64[]]\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=0 episode=0": [[[0]], [[1], 0, true, false]],
+    "default action=0 episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=0 episode=2": [[[0]], [[1], 0, true, false]],
+    "default action=np.int64(0) episode=0": [[[0]], [[1], 0, true, false]],
+    "default action=np.int64(0) episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=np.int64(0) episode=2": [[[0]], [[1], 0, true, false]],
+    "default action=[0] episode=0": [[[0]], [[1], 0, true, false]],
+    "default action=[0] episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=[0] episode=2": [[[0]], [[1], 0, true, false]]
+   },
+   "reset_reset_step_step": [[[1], 1, true, false], ["raises", "IndexError"]]
+  },
+  "gymnasium:probing_environments.envs.RewardDiscountingEnv": {
+   "signatures": {
+    "__init__": ["self", "num_envs=1", "sequential=False"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 1,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [0], [0], [0], [0], [0], [0], [0]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": false,
+    "seed=0": false
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "object",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=0 episode=0": [[[0]], [[0], 0, false, false], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=0 episode=1": [[[0]], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=0 episode=2": [[[0]], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=np.int64(0) episode=0": [[[0]], [[0], 0, false, false], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=np.int64(0) episode=1": [[[0]], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=np.int64(0) episode=2": [[[0]], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=[0] episode=0": [[[0]], [[0], 0, false, false], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=[0] episode=1": [[[0]], [[1], 0, false, false], [[2], 1, true, false]],
+    "default action=[0] episode=2": [[[0]], [[1], 0, false, false], [[2], 1, true, false]]
+   },
+   "reset_reset_step_step": [[[0], 0, false, false], [[1], 0, false, false]]
+  },
+  "gymnasium:probing_environments.envs.AdvantagePolicyLossPolicyUpdateEnv": {
+   "signatures": {
+    "__init__": ["self", "*args", "**kwargs"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [0], [0], [0], [0], [0], [0], [0]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": true,
+    "seed=0": true
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=0 episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=0 episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=0 episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=1 episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=1 episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=1 episode=2": [[[0]], [[0], -1, true, false]],
+    "default action=np.int64(0) episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(1) episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=np.int64(1) episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=np.int64(1) episode=2": [[[0]], [[0], -1, true, false]],
+    "default action=[0] episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=[1] episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=[1] episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=[1] episode=2": [[[0]], [[0], -1, true, false]]
+   },
+   "reset_reset_step_step": [[[0], 1, true, false], [[0], 1, true, false]]
+  },
+  "gymnasium:probing_environments.envs.AdvantagePolicyLossPolicyUpdateEnvContinuous": {
+   "signatures": {
+    "__init__": ["self", "*args", "**kwargs"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [0], [0], [0], [0], [0], [0], [0]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": true,
+    "seed=0": true
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "<missing>",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"float\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=[-1.0] episode=0": [[[0]], [[0], -1.0, true, false]],
+    "default action=[-1.0] episode=1": [[[0]], [[0], -1.0, true, false]],
+    "default action=[-1.0] episode=2": [[[0]], [[0], -1.0, true, false]],
+    "default action=[0.0] episode=0": [[[0]], [[0], 0.0, true, false]],
+    "default action=[0.0] episode=1": [[[0]], [[0], 0.0, true, false]],
+    "default action=[0.0] episode=2": [[[0]], [[0], 0.0, true, false]],
+    "default action=[0.5] episode=0": [[[0]], [[0], 0.5, true, false]],
+    "default action=[0.5] episode=1": [[[0]], [[0], 0.5, true, false]],
+    "default action=[0.5] episode=2": [[[0]], [[0], 0.5, true, false]],
+    "default action=[1.0] episode=0": [[[0]], [[0], 1.0, true, false]],
+    "default action=[1.0] episode=1": [[[0]], [[0], 1.0, true, false]],
+    "default action=[1.0] episode=2": [[[0]], [[0], 1.0, true, false]],
+    "default action=[2.0] episode=0": [[[0]], [[0], 2.0, true, false]],
+    "default action=[2.0] episode=1": [[[0]], [[0], 2.0, true, false]],
+    "default action=[2.0] episode=2": [[[0]], [[0], 2.0, true, false]],
+    "default action=0.5 episode=0": [[[0]], [[0], 0.5, true, false]],
+    "default action=0.5 episode=1": [[[0]], [[0], 0.5, true, false]],
+    "default action=0.5 episode=2": [[[0]], [[0], 0.5, true, false]],
+    "default action=1.0 episode=0": [[[0]], [[0], 1.0, true, false]],
+    "default action=1.0 episode=1": [[[0]], [[0], 1.0, true, false]],
+    "default action=1.0 episode=2": [[[0]], [[0], 1.0, true, false]]
+   },
+   "reset_reset_step_step": [[[0], -1.0, true, false], [[0], -1.0, true, false]]
+  },
+  "gymnasium:probing_environments.envs.PolicyAndValueEnv": {
+   "signatures": {
+    "__init__": ["self", "num_envs=1", "sequential=False"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [1], [0], [0], [0], [1], [0], [1]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": true,
+    "seed=0": true
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "object",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=0 episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=0 episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=0 episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=1 episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=1 episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=1 episode=2": [[[0]], [[0], -1, true, false]],
+    "default action=np.int64(0) episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=np.int64(0) episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(1) episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=np.int64(1) episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=np.int64(1) episode=2": [[[0]], [[0], -1, true, false]],
+    "default action=[0] episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=[0] episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=[1] episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=[1] episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=[1] episode=2": [[[0]], [[0], -1, true, false]]
+   },
+   "reset_reset_step_step": [[[1], -1, true, false], ["raises", "IndexError"]]
+  },
+  "gymnasium:probing_environments.envs.PolicyAndValueEnvContinuous": {
+   "signatures": {
+    "__init__": ["self", "num_envs=1", "sequential=False"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "observation_space": {
+    "type": "Box",
+    "low": [0.0],
+    "high": [1.0],
+    "shape": [1],
+    "dtype": "float32"
+   },
+   "reset_obs": [[0], [1], [0], [0], [0], [1], [0], [1]],
+   "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": true,
+    "seed=0": true
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": "<missing>",
+    "obs_stack": "object",
+    "time_stack": "<missing>"
+   },
+   "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=[-1.0] episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=[-1.0] episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=[-1.0] episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=[0.0] episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=[0.0] episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=[0.0] episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=[0.5] episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=[0.5] episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=[0.5] episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=[1.0] episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=[1.0] episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=[1.0] episode=2": [[[0]], [[0], -1, true, false]],
+    "default action=[2.0] episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=[2.0] episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=[2.0] episode=2": [[[0]], [[0], -1, true, false]],
+    "default action=0.5 episode=0": [[[0]], [[0], 1, true, false]],
+    "default action=0.5 episode=1": [[[1]], [[1], -1, true, false]],
+    "default action=0.5 episode=2": [[[0]], [[0], 1, true, false]],
+    "default action=1.0 episode=0": [[[0]], [[0], -1, true, false]],
+    "default action=1.0 episode=1": [[[1]], [[1], 1, true, false]],
+    "default action=1.0 episode=2": [[[0]], [[0], -1, true, false]]
+   },
+   "reset_reset_step_step": [[[1], -1, true, false], ["raises", "IndexError"]]
+  },
+  "gymnasium:probing_environments.envs.TwoChoiceMDP": {
+   "signatures": {
+    "__init__": ["self", "num_envs=1", "sequential=False", "time_limit=1000"],
+    "reset": ["self", "seed=None"],
+    "step": ["self", "action"]
+   },
+   "metadata": {
+    "render.modes": ["human"]
+   },
+   "action_space": {
+    "type": "Discrete",
+    "n": 2,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "observation_space": {
+    "type": "Discrete",
+    "n": 9,
+    "start": 0,
+    "shape": [],
+    "dtype": "int64"
+   },
+   "reset_obs": [0, 0, 0, 0, 0, 0, 0, 0],
+   "reset_kinds": ["[\"int\", []]"],
+   "reset_with_options": "TypeError",
+   "reset_moves_global_rng": {
+    "seed=None": true,
+    "seed=0": true
+   },
+   "attributes_after_reset": {
+    "obs_shape": "<missing>",
+    "action_shape": "<missing>",
+    "original_state": "<missing>",
+    "TIME_LIMIT": 1000,
+    "obs_stack": "object",
+    "time_stack": "object"
+   },
+   "step_kinds": ["[\"int\", \"int\", \"bool\", \"bool\", []]"],
+   "episodes": {
+    "default action=0 episode=0": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=0 episode=1": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=0 episode=2": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=1 episode=0": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=1 episode=1": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=1 episode=2": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=np.int64(0) episode=0": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=np.int64(0) episode=1": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=np.int64(0) episode=2": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=np.int64(1) episode=0": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=np.int64(1) episode=1": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=np.int64(1) episode=2": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=[0] episode=0": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=[0] episode=1": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=[0] episode=2": [
+     [0],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false],
+     [3, 0, false, false],
+     [4, 0, false, false],
+     [0, 0, false, false],
+     [1, 1, false, false],
+     [2, 0, false, false]
+    ],
+    "default action=[1] episode=0": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=[1] episode=1": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "default action=[1] episode=2": [
+     [0],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false],
+     [7, 0, false, false],
+     [8, 2, false, false],
+     [0, 0, false, false],
+     [5, 0, false, false],
+     [6, 0, false, false]
+    ],
+    "time_limit=3 action=0 episode=0": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=0 episode=1": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=0 episode=2": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=1 episode=0": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=1 episode=1": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=1 episode=2": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=np.int64(0) episode=0": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=np.int64(0) episode=1": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=np.int64(0) episode=2": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=np.int64(1) episode=0": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=np.int64(1) episode=1": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=np.int64(1) episode=2": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=[0] episode=0": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=[0] episode=1": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=[0] episode=2": [[0], [1, 1, false, false], [2, 0, false, false], [3, 0, true, false]],
+    "time_limit=3 action=[1] episode=0": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=[1] episode=1": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]],
+    "time_limit=3 action=[1] episode=2": [[0], [5, 0, false, false], [6, 0, false, false], [7, 0, true, false]]
+   },
+   "reset_reset_step_step": [[1, 1, false, false], [2, 0, false, false]]
+  }
+ }
+}

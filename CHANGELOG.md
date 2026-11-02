@@ -6,6 +6,14 @@ Notable changes to ProbingEnvironments. The format follows
 
 ## [Unreleased]
 
+### Internal
+
+- Characterization pins (`tests/characterization/`) record how every
+  environment behaves today, through the API users and Ajax rely on. They
+  keep the 0.7 refactor honest: a restructuring must leave them unchanged,
+  and each deliberate behaviour change shows up as a pin difference with its
+  own upgrade note here. No change to the package.
+
 ## [0.6.0]
 
 ### Upgrading from 0.5.1

@@ -118,6 +118,7 @@ addopts = "-m 'not medium and not large' --durations=15"
 markers = [
   "medium: trains an agent or runs the README examples; under 5 min",
   "large: network, real hardware or long training; under 15 min",
+  "characterization: pins current behaviour, not a spec (TESTING.md §7)",
 ]
 
 [tool.coverage.run]
