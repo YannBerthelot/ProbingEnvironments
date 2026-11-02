@@ -1,0 +1,128 @@
+# Publishes docs/ to GitHub Pages, one site version per release (mike), as
+# ~/.claude/RELEASING.md §3 asks:
+#
+#   dev       built from main on every push, with a banner saying so
+#   X.Y       each release's docs, deployed by release.yml from its tag
+#   latest    an alias of the newest release, which the site's root opens
+#
+# mike commits each version to the gh-pages branch; the publish job uploads
+# that branch as the Pages artifact, so Pages deploys from Actions (Settings >
+# Pages > Source: GitHub Actions).
+#
+# Building and checking the site is the `docs` job in ci.yml, on every pull
+# request; this workflow only deploys, so a broken page fails review rather
+# than reaching the published site.
+
+name: docs-deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  # Republishes a version by hand: a tag, its X.Y, and "latest" to make it the
+  # default.
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: The tag to build, e.g. v0.6.0.
+        required: true
+      version:
+        description: The site version it becomes, X.Y.
+        required: true
+      alias:
+        description: latest to make it the default version, else empty.
+        default: ""
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+      alias:
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+env:
+  UV_VERSION: "0.13.6"
+
+jobs:
+  deploy:
+    name: deploy ${{ inputs.version || 'dev' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    # One writer per version; a new push queues behind the one in flight.
+    concurrency:
+      group: docs-${{ inputs.version || 'dev' }}
+      cancel-in-progress: false
+    env:
+      # The banner says which ref a version was built from (overrides/main.html).
+      PROBING_ENVIRONMENTS_DOCS_REF: ${{ inputs.ref || 'main' }}
+      VERSION: ${{ inputs.version || 'dev' }}
+      ALIAS: ${{ inputs.alias }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.ref || github.sha }}
+        fetch-depth: 0
+    - uses: astral-sh/setup-uv@v5
+      with:
+        version: ${{ env.UV_VERSION }}
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    - run: uv sync --frozen --only-group docs
+
+    # mike builds the site from mkdocs.yml and commits the version to
+    # gh-pages. Retried because two versions deploying at once (a release and
+    # a push to main) can race on the push.
+    - name: Commit the version to gh-pages
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        for attempt in 1 2 3; do
+          if git fetch -q origin gh-pages; then
+            git branch -f gh-pages origin/gh-pages
+          fi
+          uv run --no-sync mike deploy --update-aliases "$VERSION" $ALIAS
+          if [ "$ALIAS" = latest ]; then
+            uv run --no-sync mike set-default latest
+          elif ! git cat-file -e gh-pages:index.html 2> /dev/null; then
+            # No release yet: the root opens dev until the first one.
+            uv run --no-sync mike set-default "$VERSION"
+          fi
+          git push origin gh-pages && exit 0
+          sleep 10
+        done
+        exit 1
+
+  publish:
+    name: publish
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    # Pages allows one deployment at a time, and cancelling one halfway is how
+    # a site ends up serving a partial build.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: site
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: site
+    - id: deployment
+      uses: actions/deploy-pages@v4

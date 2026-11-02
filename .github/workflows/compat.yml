@@ -1,0 +1,67 @@
+# The declared dependency ranges, tested beyond uv.lock, which every other
+# job uses (~/.claude/RELEASING.md §3). "newest" resolves the latest versions
+# the ranges allow, on the newest supported Python; "lowest" puts every
+# direct dependency at its floor, on the oldest. A user's pip can land
+# anywhere between, so both ends have to work.
+#
+# Ported from TargetGym, where it exists because the ranges had drifted from
+# the truth without anything noticing: on 2026-11-01 a fresh install could
+# not import (gymnax's undeclared six). Weekly, because new releases upstream
+# change the "newest" end without a commit here.
+
+name: Compatibility
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"  # Mondays 04:00 UTC
+  workflow_dispatch:
+  pull_request:
+    branches: [ "main", "release/**" ]
+    paths:
+      - pyproject.toml
+      - uv.lock
+      - .github/workflows/compat.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # The version that wrote uv.lock: older ones cannot read its format.
+  UV_VERSION: "0.13.6"
+  JAX_PLATFORMS: cpu
+
+jobs:
+  compat:
+    name: compat (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: newest
+            python: "3.14"
+            resolution: highest
+            sync: uv sync --upgrade --group dev
+          - name: lowest
+            python: "3.11"
+            resolution: lowest-direct
+            sync: uv sync --group dev
+    # Every uv command of the job resolves in the same mode: uv.lock records
+    # the mode it was resolved in, and the job re-resolves it in this one.
+    env:
+      UV_RESOLUTION: ${{ matrix.resolution }}
+      UV_PYTHON: ${{ matrix.python }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: astral-sh/setup-uv@v5
+      with:
+        version: ${{ env.UV_VERSION }}
+    - run: ${{ matrix.sync }}
+    - run: uv pip list
+    # The small tier, as on every pull request.
+    - run: uv run --no-sync pytest -q

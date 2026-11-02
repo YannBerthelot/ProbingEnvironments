@@ -14,8 +14,10 @@ Functionnalities :
 # Installation
 ```bash
 pip install probing-environments
+# with the premade Stable-Baselines3 adaptor
+pip install "probing-environments[sb3]"
 ```
-Version 0.6.0 and later need gymnax 1.0 or newer. The premade Stable-Baselines3 adaptor also needs `pip install stable-baselines3`.
+Version 0.6.0 and later need gymnax 1.0 or newer, and Python 3.11 to 3.14.
 
 # How-to
 Every snippet below runs as written; the test suite executes them (`tests/test_readme.py`).

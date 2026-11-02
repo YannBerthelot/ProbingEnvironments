@@ -1,0 +1,47 @@
+site_name: ProbingEnvironments
+site_description: >-
+  Tiny reinforcement learning environments with known answers, to find bugs in
+  deep-RL agents without long training runs.
+site_url: https://yannberthelot.github.io/ProbingEnvironments/
+repo_url: https://github.com/YannBerthelot/ProbingEnvironments
+repo_name: YannBerthelot/ProbingEnvironments
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; Yann Berthelot
+
+theme:
+  name: material
+  # The banner on every version but the latest release (overrides/main.html).
+  custom_dir: overrides
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  # The pages include README.md and CHANGELOG.md, so the site cannot drift
+  # from them; check_paths makes a missing file fail the strict build.
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+
+nav:
+  - Home: index.md
+  - Changelog: changelog.md
+
+# One site version per release, deployed by mike (docs-deploy.yml): X.Y for
+# each release, "latest" the newest, "dev" built from main.
+extra:
+  source_ref: !ENV [PROBING_ENVIRONMENTS_DOCS_REF, main]
+  version:
+    provider: mike
+    default: latest
+    alias: true

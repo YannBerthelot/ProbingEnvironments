@@ -5,31 +5,30 @@ SHELL=/bin/bash
 # GPU from the CUDA driver entirely so CUDA init can't probe it.
 CPU_ENV := CUDA_VISIBLE_DEVICES="" JAX_PLATFORMS=cpu JAX_PLATFORM_NAME=cpu
 
-.PHONY: ci ci-tox ci-linting ci-coverage test help
+.PHONY: ci lint test test-all docs build help
 
 help:  ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
 # ---------------------------------------------------------------------------
-# Canonical local-CI -- runs tox which covers linting + tests + coverage,
-# matching what .github/workflows/poetry_build.yaml runs in CI.
-# Coverage gate per tox.ini ([testenv:coverage]) is --fail-under 75.
+# Canonical local CI -- the same steps as .github/workflows/ci.yml.
+# Coverage gate: fail_under in [tool.coverage.report] (pyproject.toml).
 # ---------------------------------------------------------------------------
 
-ci: ci-tox  ## Full local CI (matches .github/workflows/poetry_build.yaml -> tox)
+ci: lint test-all docs  ## Full local CI (matches .github/workflows/ci.yml)
 
-ci-tox:  ## Run the full tox envlist (py312, linting, coverage)
-	$(CPU_ENV) poetry run tox
+lint:  ## Linters, as pre-commit runs them
+	uv run pre-commit run --all-files
 
-ci-linting:  ## Only the linting (pre-commit) env
-	poetry run tox -e linting
+test:  ## Small tier only, on CPU (the inner loop)
+	$(CPU_ENV) uv run pytest --tb=short --disable-warnings
 
-ci-coverage:  ## Only the coverage env (--fail-under 75)
-	$(CPU_ENV) poetry run tox -e coverage
+test-all:  ## Small and medium tiers with the coverage gate, on CPU
+	$(CPU_ENV) uv run coverage run -m pytest -q -m "not large"
+	uv run coverage report
 
-# ---------------------------------------------------------------------------
-# Convenience: fast CPU-only pytest run without the coverage gate.
-# ---------------------------------------------------------------------------
+docs:  ## Build the documentation site strictly
+	uv run --group docs mkdocs build --strict
 
-test:  ## Run pytest on CPU only (no coverage gate)
-	$(CPU_ENV) poetry run pytest --tb=short --disable-warnings
+build:  ## Build the wheel and the sdist into dist/
+	uv build --no-sources
