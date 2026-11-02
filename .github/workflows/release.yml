@@ -4,9 +4,9 @@
 #   check    the version is X.Y.Z, its CHANGELOG entry is on the branch, its
 #            tag does not exist, and the commit is the branch's head: main, or
 #            release/X.Y for a patch to an older minor (scripts/release_check.py)
-#   slow     the slowest test tiers green on this commit: CI (ci.yml) runs them
-#            on every push to main, and they run here only if that run is
-#            missing or red
+#   slow     the slowest test tiers green on this commit: the large tier always
+#            runs here; CI (ci.yml) runs the others on every push to main, and
+#            they run here too only if that run is missing or red
 #   package  the wheel and sdist built once and checked installed, outside the
 #            checkout, on the oldest and newest Python (package.yml)
 #   tag      vX.Y.Z on the checked commit; tags come only from this workflow
@@ -79,7 +79,6 @@ jobs:
 
   slow:
     needs: check
-    if: needs.check.outputs.green == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -93,15 +92,21 @@ jobs:
         enable-cache: true
         cache-dependency-glob: "uv.lock"
     - run: uv sync --frozen
-    - name: Run every test tier
-      run: uv run --no-sync pytest -q -m ""
+    # CI never runs the large tier, so it runs here on every release; the
+    # others run here only when CI has no green run on this commit. Exit code
+    # 5 is pytest's "no tests collected": there are no large tests yet.
+    - name: Run the large tier, and the others if CI is not green here
+      env:
+        GREEN: ${{ needs.check.outputs.green }}
+      run: |
+        if [ "$GREEN" = true ]; then
+          uv run --no-sync pytest -q -m large || [ $? -eq 5 ]
+        else
+          uv run --no-sync pytest -q -m ""
+        fi
 
-  # Skipped jobs upstream skip every job after them unless it says always().
   package:
     needs: [check, slow]
-    if: >-
-      always() && needs.check.result == 'success'
-      && (needs.slow.result == 'success' || needs.slow.result == 'skipped')
     uses: ./.github/workflows/package.yml
     with:
       version: ${{ inputs.version }}

@@ -27,8 +27,10 @@ dependencies = [
     "gymnax>=1.0,<2",
     "gymnasium>=1.2",
     # Imported directly by the envs and checks, so declared rather than left
-    # to arrive through gymnax. The jax floor is gymnax 1.0's own.
-    "jax>=0.6",
+    # to arrive through gymnax. The jax floor is the lowest the other floors
+    # allow: chex 0.1.91 needs jaxlib >= 0.7 (the compatibility job's lowest
+    # resolution).
+    "jax>=0.7",
     "flax>=0.10",
     "numpy>=1.26",
     "chex>=0.1.91",
@@ -69,10 +71,27 @@ dev = [
     { include-group = "lint" },
     # The checks' own tests train Stable-Baselines3 agents.
     "probing-environments[sb3]",
+    # Declared explicitly, though stable-baselines3 already requires it: a
+    # [tool.uv.sources] entry only binds to a direct dependency, and the one
+    # below routes Linux to the CPU wheel.
+    "torch>=2.0",
 ]
 
 [tool.uv]
 default-groups = ["dev"]
+
+# stable-baselines3 pulls torch, and torch's default Linux wheel drags in the
+# whole CUDA runtime -- about 3 GB of nvidia-* wheels that every CPU-only CI
+# job would download and never use. The CPU build is the same torch for these
+# tests. `uv build --no-sources` keeps this out of the published metadata.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+# explicit: nothing resolves from here unless it is named above.
+explicit = true
 
 [tool.hatch.version]
 source = "vcs"
