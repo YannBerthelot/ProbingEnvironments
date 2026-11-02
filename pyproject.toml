@@ -79,6 +79,14 @@ dev = [
 
 [tool.uv]
 default-groups = ["dev"]
+# The platforms the project is developed and tested on: the lock must hold
+# wheels for both. Without this, the compatibility job's lowest resolution
+# picked torch 2.3.0 from the CPU index, whose plain (no "+cpu") wheels are
+# aarch64-only, so CI's x86_64 runner had nothing to install.
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
 
 # stable-baselines3 pulls torch, and torch's default Linux wheel drags in the
 # whole CUDA runtime -- about 3 GB of nvidia-* wheels that every CPU-only CI
