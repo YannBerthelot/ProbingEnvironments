@@ -3,6 +3,7 @@
 from functools import partial
 from typing import Any
 
+import numpy as np
 import pytest
 from stable_baselines3 import PPO
 
@@ -25,6 +26,7 @@ from probing_environments.checks import (
     check_loss_or_optimizer_value_net,
     check_reward_discounting,
 )
+from probing_environments.envs import PolicyAndValueEnv
 
 # Every test here trains PPO, so the file is in the medium tier (run by tox/CI).
 pytestmark = pytest.mark.medium
@@ -207,6 +209,20 @@ def test_check_actor_and_critic_coupling_2_envs():
         learning_rate=LEARNING_RATE,
         budget=BUDGET * 2,
     )
+
+
+def _values_after_training(seed):
+    agent = init_agent(AGENT, PolicyAndValueEnv, run_name="reproducibility", seed=seed)
+    agent = train_agent(agent, 256)
+    return [get_value(agent, np.array([0])), get_value(agent, np.array([1]))]
+
+
+def test_training_twice_with_the_same_seed_gives_the_same_critic():
+    """
+    The adaptor's seed makes a run reproducible, so a failing check can be rerun
+    as it was. PolicyAndValueEnv draws a random observation every episode.
+    """
+    assert _values_after_training(seed=1) == _values_after_training(seed=1)
 
 
 def test_errors():

@@ -25,11 +25,12 @@ class ValueLossOrOptimizerEnv(gym.Env):
         return np.array([0]), 1, True, False, {}
 
     def reset(self, seed=None):
+        super().reset(seed=seed)
         return np.array([0]), {}
 
 
-def get_random_obs():
-    return np.random.choice([0, 1])
+def get_random_obs(rng=np.random):
+    return rng.choice([0, 1])
 
 
 class ValueBackpropEnv(gym.Env):
@@ -62,8 +63,8 @@ class ValueBackpropEnv(gym.Env):
         return np.array([1]), reward, True, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
-        random_obs = np.copy(get_random_obs())
+        super().reset(seed=seed)
+        random_obs = np.copy(get_random_obs(self.np_random))
         self.obs_stack.append(random_obs)
         return np.array([random_obs]), {}
 
@@ -106,6 +107,7 @@ class RewardDiscountingEnv(gym.Env):
         return np.array([t]), int(is_done), is_done, False, {}
 
     def reset(self, seed=None):
+        super().reset(seed=seed)
         return np.array([0]), {}
 
 
@@ -136,7 +138,7 @@ class AdvantagePolicyLossPolicyUpdateEnv(gym.Env):
         return np.array([0]), 1 if action == 0 else -1, True, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
+        super().reset(seed=seed)
         return np.array([0]), {}
 
 
@@ -167,7 +169,7 @@ class AdvantagePolicyLossPolicyUpdateEnvContinuous(gym.Env):
         return np.array([0]), float(np.asarray(action).item()), True, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
+        super().reset(seed=seed)
         return np.array([0]), {}
 
 
@@ -210,8 +212,8 @@ class PolicyAndValueEnv(gym.Env):
         return np.array([random_obs]), reward, True, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
-        random_obs = np.copy(get_random_obs())
+        super().reset(seed=seed)
+        random_obs = np.copy(get_random_obs(self.np_random))
         self.obs_stack.append(random_obs)
         return np.array([random_obs]), {}
 
@@ -258,8 +260,8 @@ class PolicyAndValueEnvContinuous(gym.Env):
         return np.array([random_obs]), reward, True, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
-        random_obs = np.copy(get_random_obs())
+        super().reset(seed=seed)
+        random_obs = np.copy(get_random_obs(self.np_random))
         self.obs_stack.append(random_obs)
         return np.array([random_obs]), {}
 
@@ -313,7 +315,7 @@ class TwoChoiceMDP(gym.Env):
         return obs, reward, time >= self.TIME_LIMIT, False, {}
 
     def reset(self, seed=None):
-        np.random.seed(seed)
+        super().reset(seed=seed)
         obs = 0
         time = 0
         self.obs_stack.append(obs)
