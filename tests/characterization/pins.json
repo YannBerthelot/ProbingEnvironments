@@ -1425,12 +1425,12 @@
     "shape": [1],
     "dtype": "float32"
    },
-   "reset_obs": [[0], [1], [0], [0], [0], [1], [0], [1]],
+   "reset_obs": [[1], [0], [1], [1], [1], [1], [0], [1]],
    "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
    "reset_with_options": "TypeError",
    "reset_moves_global_rng": {
-    "seed=None": true,
-    "seed=0": true
+    "seed=None": false,
+    "seed=0": false
    },
    "attributes_after_reset": {
     "obs_shape": "<missing>",
@@ -1442,17 +1442,17 @@
    },
    "step_kinds": ["[\"ndarray[int64[1]]\", \"ndarray[int64[]]\", \"bool\", \"bool\", []]"],
    "episodes": {
-    "default action=0 episode=0": [[[0]], [[1], 0, true, false]],
-    "default action=0 episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=0 episode=2": [[[0]], [[1], 0, true, false]],
-    "default action=np.int64(0) episode=0": [[[0]], [[1], 0, true, false]],
-    "default action=np.int64(0) episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=np.int64(0) episode=2": [[[0]], [[1], 0, true, false]],
-    "default action=[0] episode=0": [[[0]], [[1], 0, true, false]],
-    "default action=[0] episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=[0] episode=2": [[[0]], [[1], 0, true, false]]
+    "default action=0 episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=0 episode=1": [[[0]], [[1], 0, true, false]],
+    "default action=0 episode=2": [[[1]], [[1], 1, true, false]],
+    "default action=np.int64(0) episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=np.int64(0) episode=1": [[[0]], [[1], 0, true, false]],
+    "default action=np.int64(0) episode=2": [[[1]], [[1], 1, true, false]],
+    "default action=[0] episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=[0] episode=1": [[[0]], [[1], 0, true, false]],
+    "default action=[0] episode=2": [[[1]], [[1], 1, true, false]]
    },
-   "reset_reset_step_step": [[[1], 1, true, false], ["raises", "IndexError"]]
+   "reset_reset_step_step": [[[1], 0, true, false], ["raises", "IndexError"]]
   },
   "gymnasium:probing_environments.envs.RewardDiscountingEnv": {
    "signatures": {
@@ -1533,8 +1533,8 @@
    "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
    "reset_with_options": "TypeError",
    "reset_moves_global_rng": {
-    "seed=None": true,
-    "seed=0": true
+    "seed=None": false,
+    "seed=0": false
    },
    "attributes_after_reset": {
     "obs_shape": "<missing>",
@@ -1594,8 +1594,8 @@
    "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
    "reset_with_options": "TypeError",
    "reset_moves_global_rng": {
-    "seed=None": true,
-    "seed=0": true
+    "seed=None": false,
+    "seed=0": false
    },
    "attributes_after_reset": {
     "obs_shape": "<missing>",
@@ -1654,12 +1654,12 @@
     "shape": [1],
     "dtype": "float32"
    },
-   "reset_obs": [[0], [1], [0], [0], [0], [1], [0], [1]],
+   "reset_obs": [[1], [0], [1], [1], [1], [1], [0], [1]],
    "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
    "reset_with_options": "TypeError",
    "reset_moves_global_rng": {
-    "seed=None": true,
-    "seed=0": true
+    "seed=None": false,
+    "seed=0": false
    },
    "attributes_after_reset": {
     "obs_shape": "<missing>",
@@ -1671,26 +1671,26 @@
    },
    "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
    "episodes": {
-    "default action=0 episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=0 episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=0 episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=1 episode=0": [[[0]], [[0], -1, true, false]],
-    "default action=1 episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=1 episode=2": [[[0]], [[0], -1, true, false]],
-    "default action=np.int64(0) episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=np.int64(0) episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=np.int64(0) episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=np.int64(1) episode=0": [[[0]], [[0], -1, true, false]],
-    "default action=np.int64(1) episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=np.int64(1) episode=2": [[[0]], [[0], -1, true, false]],
-    "default action=[0] episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=[0] episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=[0] episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=[1] episode=0": [[[0]], [[0], -1, true, false]],
-    "default action=[1] episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=[1] episode=2": [[[0]], [[0], -1, true, false]]
+    "default action=0 episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=0 episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=0 episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=1 episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=1 episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=1 episode=2": [[[1]], [[1], 1, true, false]],
+    "default action=np.int64(0) episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=np.int64(0) episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=np.int64(0) episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=np.int64(1) episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=np.int64(1) episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=np.int64(1) episode=2": [[[1]], [[1], 1, true, false]],
+    "default action=[0] episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=[0] episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=[0] episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=[1] episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=[1] episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=[1] episode=2": [[[1]], [[1], 1, true, false]]
    },
-   "reset_reset_step_step": [[[1], -1, true, false], ["raises", "IndexError"]]
+   "reset_reset_step_step": [[[0], 1, true, false], ["raises", "IndexError"]]
   },
   "gymnasium:probing_environments.envs.PolicyAndValueEnvContinuous": {
    "signatures": {
@@ -1715,12 +1715,12 @@
     "shape": [1],
     "dtype": "float32"
    },
-   "reset_obs": [[0], [1], [0], [0], [0], [1], [0], [1]],
+   "reset_obs": [[1], [0], [1], [1], [1], [1], [0], [1]],
    "reset_kinds": ["[\"ndarray[int64[1]]\", []]"],
    "reset_with_options": "TypeError",
    "reset_moves_global_rng": {
-    "seed=None": true,
-    "seed=0": true
+    "seed=None": false,
+    "seed=0": false
    },
    "attributes_after_reset": {
     "obs_shape": "<missing>",
@@ -1732,29 +1732,29 @@
    },
    "step_kinds": ["[\"ndarray[int64[1]]\", \"int\", \"bool\", \"bool\", []]"],
    "episodes": {
-    "default action=[-1.0] episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=[-1.0] episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=[-1.0] episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=[0.0] episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=[0.0] episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=[0.0] episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=[0.5] episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=[0.5] episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=[0.5] episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=[1.0] episode=0": [[[0]], [[0], -1, true, false]],
-    "default action=[1.0] episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=[1.0] episode=2": [[[0]], [[0], -1, true, false]],
-    "default action=[2.0] episode=0": [[[0]], [[0], -1, true, false]],
-    "default action=[2.0] episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=[2.0] episode=2": [[[0]], [[0], -1, true, false]],
-    "default action=0.5 episode=0": [[[0]], [[0], 1, true, false]],
-    "default action=0.5 episode=1": [[[1]], [[1], -1, true, false]],
-    "default action=0.5 episode=2": [[[0]], [[0], 1, true, false]],
-    "default action=1.0 episode=0": [[[0]], [[0], -1, true, false]],
-    "default action=1.0 episode=1": [[[1]], [[1], 1, true, false]],
-    "default action=1.0 episode=2": [[[0]], [[0], -1, true, false]]
+    "default action=[-1.0] episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=[-1.0] episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=[-1.0] episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=[0.0] episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=[0.0] episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=[0.0] episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=[0.5] episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=[0.5] episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=[0.5] episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=[1.0] episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=[1.0] episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=[1.0] episode=2": [[[1]], [[1], 1, true, false]],
+    "default action=[2.0] episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=[2.0] episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=[2.0] episode=2": [[[1]], [[1], 1, true, false]],
+    "default action=0.5 episode=0": [[[1]], [[1], -1, true, false]],
+    "default action=0.5 episode=1": [[[0]], [[0], 1, true, false]],
+    "default action=0.5 episode=2": [[[1]], [[1], -1, true, false]],
+    "default action=1.0 episode=0": [[[1]], [[1], 1, true, false]],
+    "default action=1.0 episode=1": [[[0]], [[0], -1, true, false]],
+    "default action=1.0 episode=2": [[[1]], [[1], 1, true, false]]
    },
-   "reset_reset_step_step": [[[1], -1, true, false], ["raises", "IndexError"]]
+   "reset_reset_step_step": [[[0], 1, true, false], ["raises", "IndexError"]]
   },
   "gymnasium:probing_environments.envs.TwoChoiceMDP": {
    "signatures": {
@@ -1783,8 +1783,8 @@
    "reset_kinds": ["[\"int\", []]"],
    "reset_with_options": "TypeError",
    "reset_moves_global_rng": {
-    "seed=None": true,
-    "seed=0": true
+    "seed=None": false,
+    "seed=0": false
    },
    "attributes_after_reset": {
     "obs_shape": "<missing>",

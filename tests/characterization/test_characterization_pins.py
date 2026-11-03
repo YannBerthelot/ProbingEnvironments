@@ -7,9 +7,9 @@ must leave every pin unchanged, and every deliberate behaviour change must
 show up here, be listed with ``pin_recorder.py --diff``, get an upgrade note
 in the CHANGELOG, and be rewritten with ``pin_recorder.py``. Suspicious
 behaviour they pin today is listed in REFACTOR.md §2.3, for example the
-3-step first episode of the Gymnasium ``RewardDiscountingEnv``, the Gymnasium
-envs moving numpy's global RNG, and the discrete ``PolicyAndValueEnv`` paying
-0 for the right action given with shape (1,).
+3-step first episode of the Gymnasium ``RewardDiscountingEnv`` and the
+discrete ``PolicyAndValueEnv`` paying 0 for the right action given with
+shape (1,).
 """
 
 import json
