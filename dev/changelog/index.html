@@ -395,6 +395,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -501,6 +512,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -552,6 +574,12 @@
   there.</li>
 <li><strong>pytest is no longer installed with this package.</strong> It moved to the
   development dependencies; add it to your own if you relied on it.</li>
+<li><strong>The Gymnasium environments draw from their own generator.</strong>
+  <code>reset(seed=s)</code> seeds <code>env.np_random</code>, as Gymnasium specifies, instead of
+  reseeding numpy's global generator, and a later <code>reset()</code> continues that
+  stream. Seeded start observations no longer match 0.5.1's, where only the
+  first one depended on the seed. If your code relied on <code>reset</code> seeding
+  <code>np.random</code>, seed it yourself.</li>
 </ul>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
@@ -574,6 +602,13 @@
 <ul>
 <li><code>probing_environments.adaptors.ajax</code> warns on import and will be removed in
   0.7.0. Ajax ships its own probe adaptor in its test suite.</li>
+</ul>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A seeded run through the SB3 adaptor is reproducible. The Gymnasium
+  environments reseeded numpy's global generator from OS entropy on every
+  automatic reset, so each run differed and the README's PPO example failed
+  about once in 50 runs.</li>
 </ul>
 
 
