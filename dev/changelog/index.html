@@ -337,6 +337,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="[Unreleased]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#internal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -454,6 +471,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="[Unreleased]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#internal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -553,6 +587,14 @@
 <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>, and versions follow
 <a href="https://semver.org/">semantic versioning</a>.</p>
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h3 id="internal">Internal<a class="headerlink" href="#internal" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Characterization pins (<code>tests/characterization/</code>) record how every
+  environment behaves today, through the API users and Ajax rely on. They
+  keep the 0.7 refactor honest: a restructuring must leave them unchanged,
+  and each deliberate behaviour change shows up as a pin difference with its
+  own upgrade note here. No change to the package.</li>
+</ul>
 <h2 id="060">[0.6.0]<a class="headerlink" href="#060" title="Permanent link">&para;</a></h2>
 <h3 id="upgrading-from-051">Upgrading from 0.5.1<a class="headerlink" href="#upgrading-from-051" title="Permanent link">&para;</a></h3>
 <p>A minor release, because these changes break code written for 0.5.1:</p>
