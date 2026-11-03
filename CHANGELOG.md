@@ -37,6 +37,12 @@ A minor release, because these changes break code written for 0.5.1:
   there.
 - **pytest is no longer installed with this package.** It moved to the
   development dependencies; add it to your own if you relied on it.
+- **The Gymnasium environments draw from their own generator.**
+  `reset(seed=s)` seeds `env.np_random`, as Gymnasium specifies, instead of
+  reseeding numpy's global generator, and a later `reset()` continues that
+  stream. Seeded start observations no longer match 0.5.1's, where only the
+  first one depended on the seed. If your code relied on `reset` seeding
+  `np.random`, seed it yourself.
 
 ### Added
 
@@ -59,3 +65,10 @@ A minor release, because these changes break code written for 0.5.1:
 
 - `probing_environments.adaptors.ajax` warns on import and will be removed in
   0.7.0. Ajax ships its own probe adaptor in its test suite.
+
+### Fixed
+
+- A seeded run through the SB3 adaptor is reproducible. The Gymnasium
+  environments reseeded numpy's global generator from OS entropy on every
+  automatic reset, so each run differed and the README's PPO example failed
+  about once in 50 runs.
