@@ -6,6 +6,8 @@ Notable changes to ProbingEnvironments. The format follows
 
 ## [Unreleased]
 
+## [0.6.1]
+
 ### Added
 
 - **`prove` shows that a probe catches the bug it is named after.** It runs a
