@@ -55,36 +55,42 @@ def provisional(
     seeds: Sequence[int] = SEEDS,
     tolerances: Optional[Mapping[str, float]] = None,
 ) -> Rule:
-    """Every seed must be in band at ``at``, and must have had a query out of
-    band before training and a counter that moved. There is no vote."""
+    """Every seed must end in band, with a counter that moved and a query that
+    was out of band before training, so it could have failed. There is no vote.
+    A row that could not have failed is ``not_tested``, not a catch."""
     ids = tuple(seeds)
+    if not ids:
+        raise ValueError("a rule needs at least one seed")
 
-    def row(readings: Readings, query: Query) -> np.ndarray:
-        return np.asarray(readings[query.name], float).reshape(len(ids))
+    def row(readings: Readings, name: str) -> np.ndarray:
+        return np.asarray(readings[name], float).reshape(len(ids))
 
     def rule(queries: Sequence[Query], read: Read) -> Verdict:
         bands = _bands(queries, tolerances)
         try:
             before, after = read(ids, 0), read(ids, at)
-            start = [row(before, q) for q in queries]
-            end = [row(after, q) for q in queries]
+            start = [row(before, q.name) for q in queries]
+            end = [row(after, q.name) for q in queries]
+            counted = UPDATES in before and UPDATES in after
+            moved = counted and (row(after, UPDATES) > row(before, UPDATES)).all()
         except Exception as error:  # pylint: disable=broad-exception-caught
             return Verdict("crashed", f"{type(error).__name__}: {error}")
         tols = [bands[q.name] for q in queries]
         lines = "\n".join(map(_line, queries, end, tols))
-        if not np.isfinite([*start, *end]).all():
+        # First: a run that did not train says nothing about what follows.
+        if not moved:
+            return Verdict("not_tested", f"no update counter moved\n{lines}")
+        if not np.isfinite(end).all():
             return Verdict("diverged", f"a reading is not finite\n{lines}")
-        if UPDATES not in before or UPDATES not in after:
-            return Verdict("not_tested", f"no update counter\n{lines}")
-        if not (np.asarray(after[UPDATES]) > np.asarray(before[UPDATES])).all():
-            return Verdict("not_tested", f"a counter did not move\n{lines}")
         off = [np.abs(r - q.truth) > t for r, q, t in zip(start, queries, tols)]
         on = [np.abs(r - q.truth) <= t for r, q, t in zip(end, queries, tols)]
-        could_fail, within = np.any(off, axis=0), np.all(on, axis=0)
+        within = np.all(on, axis=0)
         report = f"{int(within.sum())} of {len(ids)} seeds within\n{lines}"
-        if not could_fail.all():
-            return Verdict("flagged", f"in band before training\n{report}")
-        return Verdict("passed" if within.all() else "flagged", report)
+        if not within.all():
+            return Verdict("flagged", report)
+        if not (np.isfinite(start).all() and np.any(off, axis=0).all()):
+            return Verdict("not_tested", f"it could not have failed\n{report}")
+        return Verdict("passed", report)
 
     return rule
 

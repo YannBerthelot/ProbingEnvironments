@@ -39,6 +39,7 @@ os.environ.setdefault("JAX_PLATFORMS", "cpu")
 import jax  # noqa: E402
 
 import probing_environments.checks  # noqa: E402,F401
+import probing_environments.runner  # noqa: E402,F401
 from probing_environments import envs as gymnasium_envs  # noqa: E402
 from probing_environments.gymnax_envs import env_list  # noqa: E402
 from probing_environments.gymnax_envs.average_reward.two_choice_MDP import (  # noqa: E402

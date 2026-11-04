@@ -46,6 +46,7 @@ def discounting(gamma: float) -> Probe:
     as the discount, 1 - gamma; no discounting, 1; a done flag stored one step
     early or late, which cuts the bootstrap, 0. If the end is ignored, the
     return runs on into the next episode's s0, so V(1) = 1 + gamma^2 V(1).
+    The band narrows as gamma nears 0.5, where 1 - gamma nears the truth.
     """
     if not 0 < gamma < 1:
         raise ValueError(f"gamma must lie strictly between 0 and 1, got {gamma}")

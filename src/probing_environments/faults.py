@@ -7,8 +7,8 @@ from typing import Mapping
 
 @dataclasses.dataclass(frozen=True)
 class Fault:
-    """``settings`` maps a role to its value; each adaptor knows its library's
-    name for a role."""
+    """``settings`` go to the agent's ``reader``. So far they are named as SB3
+    and Ajax both name them; a library that differs maps them in its adaptor."""
 
     id: str
     settings: Mapping[str, float]

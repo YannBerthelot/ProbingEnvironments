@@ -200,10 +200,10 @@ environment.
 
 ## Proving that a probe catches its bug
 
-A probe is only worth running if it can fail. `prove` trains your agent twice:
-once healthy, and once with the bug the probe is named after, planted through
-an ordinary setting so your library needs no edit. A probe is `proven` only if
-the healthy run passes and the rule catches the faulted one.
+A probe is only worth running if it can fail. `prove` trains your agent on
+every seed twice: once healthy, and once with the bug the probe is named after,
+planted through an ordinary setting so your library needs no edit. A probe is
+`proven` only if the healthy run passes and the rule catches the faulted one.
 
 ```python
 from stable_baselines3 import PPO
@@ -220,8 +220,9 @@ print(proof.faulted.report)
 ```
 
 Every seed has to pass; there is no vote. A run ends in one of five states:
-`passed`, `flagged`, `not_tested` (a counter did not move), `crashed` or
-`diverged`. A run that crashed or trained nothing proves nothing.
+`passed`, `flagged`, `not_tested` (no update counter moved, or the row was
+right before training, so it could not have failed), `crashed` or `diverged`.
+A faulted run counts as caught only if it is `flagged` or `diverged`.
 
 `discounting` is the only probe here so far. This API is provisional: the rule
 will change, and its name says so. To connect another library, give an agent

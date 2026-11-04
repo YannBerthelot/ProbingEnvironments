@@ -1,24 +1,26 @@
 """A probe must show that it catches the bug it is named after.
 
-Contract, taken from the owner's direction of 2026-11-04 and from
-COMPACT_PASS.md (clauses c3, f1, f2, f4, g1), never from the code. The rule is
-provisional: it holds only the clauses all three candidate rules share, and
-the frozen rule replaces it.
+Contract, taken from the owner's direction and decisions of 2026-11-04 and the
+candidate probe rules, never from the code. The rule is provisional: it holds
+only the clauses all candidates share, and the frozen rule replaces it.
 
 The rule reads every query before training and at ``at``.
 - A seed passes if every query is in band at ``at``, at least one query was
   out of band before training (it could have failed), and its update counter
   moved. Being on the band's edge is in band.
 - A row passes only if every seed passes. There is no vote.
-- Anything else is a named state: ``crashed`` if training raised, ``diverged``
-  if a reading is not finite, ``not_tested`` if a counter did not move or is
-  missing, ``flagged`` otherwise.
-- A tolerance may be tighter than the query's band, never wider.
+- Anything else is a named state, the first that applies: ``crashed`` if
+  training raised; ``not_tested`` if a counter is missing or did not move;
+  ``diverged`` if a reading after training is not finite; ``flagged`` if a seed
+  ends out of band; ``not_tested`` if a row that ended in band could not have
+  failed, or was unreadable before training.
+- A tolerance may be tighter than the query's band, never wider, and must name
+  a query. A rule needs a seed.
 
 ``prove`` requires a healthy run that passes and a faulted run the rule caught
-(``flagged`` or ``diverged``). A crash or an untested run proves nothing. The
-truth always comes from the probe, so a fault cannot change what it is judged
-against.
+(``flagged`` or ``diverged``). A crash, a run that did not train and a row that
+could not have failed prove nothing. The truth always comes from the probe, so
+a fault cannot change what it is judged against.
 
 The band is half the gap to the nearest named wrong answer, at most 0.1.
 ``discounting`` is V(0) = gamma and V(1) = 1 (one reward of 1 on the second
@@ -31,7 +33,7 @@ import jax
 import numpy as np
 import pytest
 
-from probing_environments import gymnax_envs
+from probing_environments import envs, gymnax_envs
 from probing_environments.faults import Fault, no_discount
 from probing_environments.gymnax_envs import continuous_actions
 from probing_environments.probes import Probe, Query, discounting
@@ -86,7 +88,7 @@ def test_the_band_edge_is_in_band(reading: float, status: str) -> None:
 
 
 def test_a_row_already_in_band_before_training_could_not_have_failed() -> None:
-    assert judge((1.0, 1.0, 1.0), (1.0, 1.0, 1.0)).status == "flagged"
+    assert judge((1.0, 1.0, 1.0), (1.0, 1.0, 1.0)).status == "not_tested"
 
 
 def test_one_query_out_of_band_before_training_is_enough() -> None:
@@ -96,7 +98,11 @@ def test_one_query_out_of_band_before_training_is_enough() -> None:
 
 
 def test_the_could_have_failed_control_is_per_seed() -> None:
-    assert judge((0.0, 0.0, 1.0), (1.0, 1.0, 1.0)).status == "flagged"
+    assert judge((0.0, 0.0, 1.0), (1.0, 1.0, 1.0)).status == "not_tested"
+
+
+def test_a_wrong_reading_outranks_the_could_have_failed_control() -> None:
+    assert judge((1.0, 0.0, 0.0), (0.5, 1.0, 1.0)).status == "flagged"
 
 
 @pytest.mark.parametrize("moved", [(5, 5, 0), (0, 0, 0)])
@@ -112,16 +118,25 @@ def test_a_missing_counter_means_not_tested() -> None:
     assert provisional(AT, SEEDS)((V,), read).status == "not_tested"
 
 
-@pytest.mark.parametrize(
-    "before, after",
-    [
-        (FRESH, (1.0, np.nan, 1.0)),
-        (FRESH, (1.0, np.inf, 1.0)),
-        ((np.nan, 0.0, 0.0), (1.0, 1.0, 1.0)),
-    ],
-)
-def test_a_non_finite_reading_means_diverged(before: Row, after: Row) -> None:
-    assert judge(before, after).status == "diverged"
+@pytest.mark.parametrize("after", [(1.0, np.nan, 1.0), (1.0, np.inf, 1.0)])
+def test_a_non_finite_reading_after_training_means_diverged(after: Row) -> None:
+    assert judge(FRESH, after).status == "diverged"
+
+
+def test_a_row_unreadable_before_training_is_not_tested() -> None:
+    before = {"V": (np.nan, 0.0, 0.0), "W": (0.5, 0.5, 0.5)}  # W stays out of band
+    after = {"V": (1.0,) * 3, "W": (0.0,) * 3}
+    got = provisional(AT, SEEDS)((V, W), fake_read(before, after))
+    assert got.status == "not_tested"
+
+
+def test_a_wrong_reading_outranks_an_unreadable_start() -> None:
+    assert judge((np.nan, 0.0, 0.0), (0.5, 1.0, 1.0)).status == "flagged"
+
+
+def test_a_run_that_did_not_train_is_not_tested_even_if_it_is_not_finite() -> None:
+    read = fake_read({"V": FRESH}, {"V": (np.nan,) * 3}, (0, 0, 0))
+    assert provisional(AT, SEEDS)((V,), read).status == "not_tested"
 
 
 def test_diverged_outranks_a_flag_on_another_seed() -> None:
@@ -140,6 +155,16 @@ def test_training_that_raises_is_crashed_and_named() -> None:
 def test_readings_of_the_wrong_length_are_crashed_not_broadcast() -> None:
     read = fake_read({"V": (0.0,)}, {"V": (1.0,)})
     assert provisional(AT, SEEDS)((V,), read).status == "crashed"
+
+
+def test_a_counter_of_the_wrong_length_is_crashed_not_broadcast() -> None:
+    read = fake_read({"V": FRESH}, {"V": (1.0,) * 3}, (5,))
+    assert provisional(AT, SEEDS)((V,), read).status == "crashed"
+
+
+def test_a_rule_needs_a_seed() -> None:
+    with pytest.raises(ValueError, match="seed"):
+        provisional(AT, ())
 
 
 def test_a_tolerance_tighter_than_the_band_is_used() -> None:
@@ -166,7 +191,7 @@ def test_it_reads_before_training_and_at_the_budget_with_these_seeds() -> None:
         return inner(seeds, at)
 
     provisional(AT, SEEDS)((V,), read)
-    assert asked == [(SEEDS, 0), (SEEDS, AT)]
+    assert sorted(asked) == [(SEEDS, 0), (SEEDS, AT)]
 
 
 def test_the_report_names_the_nearest_wrong_answer() -> None:
@@ -182,7 +207,7 @@ def test_the_report_names_the_nearest_wrong_answer() -> None:
 class Agent:
     """A fake agent whose value is whatever gamma it trained at, with hooks to
     misbehave: ``deaf`` ignores the fault, ``healthy``/``faulted`` replace the
-    trained readings."""
+    trained readings, ``fresh`` is the reading before training."""
 
     def __init__(
         self,
@@ -190,9 +215,10 @@ class Agent:
         healthy: Any = None,
         faulted: Any = None,
         counts: bool = True,
+        fresh: Any = 0.0,
     ) -> None:
         self.deaf, self.healthy, self.faulted = deaf, healthy, faulted
-        self.counts = counts
+        self.counts, self.fresh = counts, fresh
 
     def reader(self, probe: Probe, **settings: float) -> Any:
         g = probe.gamma if self.deaf else settings.get("gamma", probe.gamma)
@@ -203,7 +229,9 @@ class Agent:
             n = len(seeds)
             if isinstance(values, Exception):
                 raise values
-            out = {k: np.full(n, v if at else 0.0) for k, v in values.items()}
+            fresh = self.fresh if settings else 0.0
+            start = fresh if isinstance(fresh, dict) else dict.fromkeys(values, fresh)
+            out = {k: np.full(n, v if at else start[k]) for k, v in values.items()}
             moved = self.counts or not settings
             return out | {UPDATES: np.full(n, 5 if at and moved else 0)}
 
@@ -238,6 +266,16 @@ def test_a_faulted_run_that_crashed_proves_nothing() -> None:
 
 def test_a_faulted_run_that_was_not_tested_proves_nothing() -> None:
     assert not proof(Agent(counts=False)).proven
+
+
+def test_a_faulted_run_that_could_not_have_failed_proves_nothing() -> None:
+    clean = {"V(0)": 0.8, "V(1)": 1.0}  # on the truth before and after training
+    assert not proof(Agent(faulted=clean, fresh=clean)).proven
+
+
+def test_a_faulted_run_that_never_trained_proves_nothing() -> None:
+    agent = Agent(faulted={"V(0)": np.nan, "V(1)": np.nan}, fresh=np.nan, counts=False)
+    assert not proof(agent).proven
 
 
 def test_a_faulted_run_that_diverged_is_caught() -> None:
@@ -325,3 +363,21 @@ def test_discounting_truths_are_the_real_envs_discounted_returns(
     v0, v1 = discounting(gamma).queries
     assert returns == {0.0: pytest.approx(v0.truth), 1.0: pytest.approx(v1.truth)}
     assert discounting(gamma).env == env_class.__name__
+
+
+def test_discounting_truths_hold_on_the_gymnasium_env_from_its_second_episode() -> None:
+    # Its first episode runs one step long, 0 -> 0 -> 1 -> end: reset() does not
+    # clear its observation stack. A finding, left for the generated envs.
+    gamma = 0.8
+    env = envs.RewardDiscountingEnv()
+    for _ in range(2):
+        obs, _ = env.reset()
+        trace, done = [], False
+        while not done:
+            next_obs, reward, done, _, _ = env.step(0)
+            trace.append((float(obs[0]), float(reward)))
+            obs = next_obs
+
+    v0, v1 = discounting(gamma).queries
+    assert trace == [(v0.obs, 0.0), (v1.obs, 1.0)]  # V(1) = 1, V(0) = gamma * 1
+    assert (v0.truth, v1.truth) == (gamma, 1.0)
