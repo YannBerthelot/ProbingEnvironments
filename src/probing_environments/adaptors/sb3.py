@@ -2,7 +2,7 @@
 Connectors template for your agent.
 """
 
-from typing import Any, List, Optional, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 import gymnasium as gym
 import numpy as np
@@ -11,6 +11,38 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.vec_env import DummyVecEnv
+
+from probing_environments import envs
+from probing_environments.probes import Probe
+from probing_environments.runner import UPDATES, Read
+
+
+class SB3:
+    """An SB3 algorithm for ``runner.prove``. Provisional, like ``runner``."""
+
+    def __init__(self, algo: Type[Any], **settings: Any) -> None:
+        self.algo, self.settings = algo, settings
+
+    def reader(self, probe: Probe, **fault: float) -> Read:
+        """One fresh agent per seed, at the probe's gamma unless faulted."""
+        env_class = getattr(envs, probe.env)
+        settings = {"gamma": probe.gamma, **self.settings, **fault}
+
+        def one(seed: int, at: int) -> Dict[str, float]:
+            model = self.algo(
+                "MlpPolicy", env_class(), seed=seed, device="cpu", **settings
+            )
+            if at:
+                model.learn(at)
+            out = {q.name: get_value(model, np.array([q.obs])) for q in probe.queries}
+            # pylint: disable-next=protected-access
+            return {**out, UPDATES: model._n_updates}
+
+        def read(seeds: Tuple[int, ...], at: int) -> Dict[str, np.ndarray]:
+            rows = [one(seed, at) for seed in seeds]
+            return {k: np.array([row[k] for row in rows]) for k in rows[0]}
+
+        return read
 
 
 def init_agent(

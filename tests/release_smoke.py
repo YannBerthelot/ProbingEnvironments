@@ -20,7 +20,8 @@ core
 sb3
     With the extra, the premade Stable-Baselines3 adaptor drives a check end
     to end: PPO learns that the value of the only observation of
-    ValueLossOrOptimizerEnv is 1.
+    ValueLossOrOptimizerEnv is 1. ``prove`` runs end to end too: on one seed,
+    PPO passes discounting and is caught at gamma 1.
 """
 
 from __future__ import annotations
@@ -83,13 +84,27 @@ def core() -> None:
 def sb3() -> None:
     from stable_baselines3 import PPO
 
-    from probing_environments.adaptors.sb3 import get_value, init_agent, train_agent
+    from probing_environments.adaptors.sb3 import (
+        SB3,
+        get_value,
+        init_agent,
+        train_agent,
+    )
     from probing_environments.checks import check_loss_or_optimizer_value_net
+    from probing_environments.faults import no_discount
+    from probing_environments.probes import discounting
+    from probing_environments.runner import prove, provisional
 
     check_loss_or_optimizer_value_net(
         PPO, init_agent, train_agent, get_value, budget=2_000
     )
     print("ok sb3 adaptor")
+
+    agent = SB3(PPO, n_steps=32, learning_rate=1e-3)
+    rule = provisional(at=2_000, seeds=(0,))
+    proof = prove(discounting(0.8), agent, no_discount, rule)
+    assert proof.proven, f"{proof.healthy.report}\n{proof.faulted.report}"
+    print("ok prove")
 
 
 if __name__ == "__main__":

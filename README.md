@@ -198,6 +198,36 @@ documents `init_agent`, `train_agent`, `get_value`, `get_policy` and
 pass `gymnax=True` to a check to train on the gymnax version of its
 environment.
 
+## Proving that a probe catches its bug
+
+A probe is only worth running if it can fail. `prove` trains your agent twice:
+once healthy, and once with the bug the probe is named after, planted through
+an ordinary setting so your library needs no edit. A probe is `proven` only if
+the healthy run passes and the rule catches the faulted one.
+
+```python
+from stable_baselines3 import PPO
+
+from probing_environments.adaptors.sb3 import SB3
+from probing_environments.faults import no_discount
+from probing_environments.probes import discounting
+from probing_environments.runner import prove, provisional
+
+agent = SB3(PPO, n_steps=32, learning_rate=1e-3)
+proof = prove(discounting(gamma=0.8), agent, no_discount, provisional(at=2000))
+print(proof.proven, proof.healthy.status, proof.faulted.status)
+print(proof.faulted.report)
+```
+
+Every seed has to pass; there is no vote. A run ends in one of five states:
+`passed`, `flagged`, `not_tested` (a counter did not move), `crashed` or
+`diverged`. A run that crashed or trained nothing proves nothing.
+
+`discounting` is the only probe here so far. This API is provisional: the rule
+will change, and its name says so. To connect another library, give an agent
+one method, `reader(probe, **settings)`, returning `read(seeds, at)`: the query
+values and an `"updates"` counter, one number per seed.
+
 ## Documentation
 
 The [documentation site](https://yannberthelot.github.io/ProbingEnvironments/)
