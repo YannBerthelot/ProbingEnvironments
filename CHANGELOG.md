@@ -6,6 +6,18 @@ Notable changes to ProbingEnvironments. The format follows
 
 ## [Unreleased]
 
+## [0.6.1]
+
+### Added
+
+- **`prove` shows that a probe catches the bug it is named after.** It runs a
+  probe healthy and with a planted fault, through any agent, and requires the
+  first to pass and the second to be caught. This release carries one probe
+  (`probes.discounting`), one fault (`faults.no_discount`, a setting, so the
+  library needs no edit) and an `adaptors.sb3.SB3` agent.
+- **Provisional:** `runner.provisional` holds only what the candidate rules
+  share, and it will be replaced. Do not treat its results as stable yet.
+
 ### Internal
 
 - Characterization pins (`tests/characterization/`) record how every
