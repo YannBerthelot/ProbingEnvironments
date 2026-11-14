@@ -9,6 +9,8 @@ comes from the tag (hatch-vcs), so the build job checks the wheel it makes
 against the input.
 
     python scripts/release_check.py 0.6.0
+    python scripts/release_check.py 0.6.0 --notes   # its CHANGELOG entry, for
+                                                    # the GitHub Release
 """
 
 from __future__ import annotations
@@ -23,6 +25,23 @@ from collections.abc import Iterable
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 VERSION = re.compile(r"\d+\.\d+\.\d+")
+
+
+def _entry(version: str) -> str:
+    # ``## 0.7.0`` or Keep a Changelog's ``## [0.7.0] - 2026-11-02``.
+    return rf"^## (?:{re.escape(version)}|\[{re.escape(version)}\])(?: .*)?$"
+
+
+def notes(version: str, changelog: str) -> str:
+    """The body of ``version``'s CHANGELOG entry, up to the next entry."""
+    # Only a release has notes: "Unreleased" is a heading, not a version.
+    released = VERSION.fullmatch(version)
+    found = released and re.search(_entry(version), changelog, re.MULTILINE)
+    if not found:
+        raise ValueError(f"CHANGELOG.md has no '## [{version}]' entry")
+    rest = changelog[found.end() :]
+    following = re.search(r"^## ", rest, re.MULTILINE)
+    return rest[: following.start() if following else None].strip()
 
 
 def problems(
@@ -41,9 +60,7 @@ def problems(
     minor = version.rsplit(".", 1)[0]
     if branch not in ("main", f"release/{minor}"):
         found.append(f"{version} cannot be released from {branch}")
-    # ``## 0.7.0`` or Keep a Changelog's ``## [0.7.0] - 2026-11-02``.
-    entry = rf"^## (?:{re.escape(version)}|\[{re.escape(version)}\])(?: .*)?$"
-    if not re.search(entry, changelog, re.MULTILINE):
+    if not re.search(_entry(version), changelog, re.MULTILINE):
         found.append(f"CHANGELOG.md has no '## [{version}]' entry")
     if f"v{version}" in set(tags):
         found.append(f"the tag v{version} already exists")
@@ -61,7 +78,12 @@ def _git(*args: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("version")
-    version = parser.parse_args().version
+    parser.add_argument("--notes", action="store_true", help="print the entry")
+    args = parser.parse_args()
+    version = args.version
+    if args.notes:
+        print(notes(version, (ROOT / "CHANGELOG.md").read_text()))
+        return 0
     # The branch the workflow was started on (GITHUB_REF_NAME in Actions).
     branch = os.environ.get("GITHUB_REF_NAME") or _git(
         "rev-parse", "--abbrev-ref", "HEAD"

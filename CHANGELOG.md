@@ -65,6 +65,11 @@ A minor release, because these changes break code written for 0.5.1:
 
 - `probing_environments.adaptors.ajax` warns on import and will be removed in
   0.7.0. Ajax ships its own probe adaptor in its test suite.
+- 0.7.0 replaces the check functions and the function adaptors with a new
+  API, and removes `probing_environments.checks`, the adaptor functions of
+  `probing_environments.adaptors.sb3`, `adaptors.template` and
+  `adaptors.rlberry` (which does not run with the current checks). They do
+  not warn. The environment classes and their import paths stay.
 
 ### Fixed
 

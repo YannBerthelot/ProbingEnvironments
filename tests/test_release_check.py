@@ -115,3 +115,51 @@ def test_a_release_branch_releases_only_its_own_minor():
 @pytest.mark.parametrize("branch", ["feature/gate", "release/0.6.x", "releases/0.7"])
 def test_any_other_branch_is_refused(branch):
     assert len(_problems(branch=branch)) == 1
+
+
+# The GitHub Release's notes (RELEASING.md §2, step 7): "the version's
+# CHANGELOG entry as notes". Contract for ``release_check.notes``: the text
+# under the version's heading, up to the next entry's heading, without the
+# heading itself or surrounding blank lines; subsections belong to the entry.
+# A version with no entry has no notes, and asking for them is an error.
+
+TWO_ENTRIES = """# Changelog
+
+## [Unreleased]
+
+- Not released.
+
+## [0.7.0] - 2026-11-02
+
+### Changed
+
+- Something.
+
+### Fixed
+
+- Something else.
+
+## [0.6.0]
+
+- Older.
+"""
+
+
+def test_the_notes_are_the_entry_without_its_heading_or_its_neighbours():
+    assert release_check.notes("0.7.0", TWO_ENTRIES) == (
+        "### Changed\n\n- Something.\n\n### Fixed\n\n- Something else."
+    )
+
+
+def test_the_last_entry_runs_to_the_end_of_the_changelog():
+    assert release_check.notes("0.6.0", TWO_ENTRIES) == "- Older."
+
+
+def test_a_plain_heading_has_notes_too():
+    assert release_check.notes("0.7.0", "## 0.7.0\n\n- Something.\n") == "- Something."
+
+
+@pytest.mark.parametrize("version", ["0.8.0", "7.0", "Unreleased"])
+def test_a_version_with_no_entry_has_no_notes(version):
+    with pytest.raises(ValueError):
+        release_check.notes(version, TWO_ENTRIES)
