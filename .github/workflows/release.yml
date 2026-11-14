@@ -12,6 +12,10 @@
 #   tag      vX.Y.Z on the checked commit; tags come only from this workflow
 #   publish  those exact files to PyPI by trusted publishing, from the pypi
 #            environment, whose required reviewer approves the upload
+#   github-release
+#            the GitHub Release for the tag, with the version's CHANGELOG entry
+#            as its notes and the published files attached; Latest only when
+#            released from main
 #   docs     the tag's documentation deployed as the site's X.Y, and made the
 #            default ("latest") when released from main (docs-deploy.yml)
 #   verify   probing-environments==X.Y.Z installed back from PyPI and its
@@ -150,13 +154,41 @@ jobs:
         version: ${{ env.UV_VERSION }}
     - run: uv publish --trusted-publishing always
 
+  # The GitHub Release for the tag: the notes are the version's CHANGELOG entry
+  # and the attached files are the ones PyPI received. A patch to an older
+  # minor, from its release/X.Y branch, must not take Latest from the newer one.
+  github-release:
+    needs: publish
+    if: always() && needs.publish.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: v${{ inputs.version }}
+    - uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist
+    - env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ inputs.version }}
+        LATEST: ${{ github.ref == 'refs/heads/main' }}
+      run: |
+        python3 scripts/release_check.py "$VERSION" --notes > "$RUNNER_TEMP/notes.md"
+        gh release create "v$VERSION" dist/* --verify-tag \
+          --title "ProbingEnvironments $VERSION" \
+          --notes-file "$RUNNER_TEMP/notes.md" --latest="$LATEST"
+
   # The tag pushed with the default token starts no workflow, so the site's X.Y
   # is deployed from here, once the release is on PyPI. Only a release from
   # main becomes "latest": a patch to an older minor, from its release/X.Y
   # branch, must not take the default from the newer one.
   docs:
-    needs: [check, publish]
-    if: always() && needs.publish.result == 'success'
+    needs: [check, github-release]
+    if: always() && needs.github-release.result == 'success'
     permissions:
       contents: write
       pages: write
